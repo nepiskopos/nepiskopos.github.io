@@ -323,20 +323,81 @@ h1, h2, h3, h4, h5, h6 {
     position: relative;
 }
 
-/* Social icon text replacements */
-.social-icon-text {
-    font-size: 1.2rem;
-    font-weight: bold;
-    z-index: 1;
-    position: relative;
+/* CSS-based social media icons */
+.social-icon {
+    width: 1.2rem;
+    height: 1.2rem;
     display: inline-block;
-    color: currentColor !important;
-    visibility: visible !important;
-    opacity: 1 !important;
+    position: relative;
+    background: currentColor;
+    border-radius: 2px;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
 }
 
-.social-icon-text.large {
-    font-size: 1.5rem;
+.social-icon.large {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.social-icon:hover {
+    opacity: 1;
+}
+
+/* GitHub icon - looks like a square with rounded corners */
+.github-icon {
+    border-radius: 6px;
+}
+
+.github-icon::before {
+    content: 'GH';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.6rem;
+    font-weight: bold;
+    color: var(--bg-primary);
+    background: none;
+}
+
+/* LinkedIn icon - looks like a rounded rectangle */
+.linkedin-icon {
+    border-radius: 3px;
+}
+
+.linkedin-icon::before {
+    content: 'in';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.6rem;
+    font-weight: bold;
+    color: var(--bg-primary);
+    background: none;
+}
+
+/* ORCID icon - circular */
+.orcid-icon {
+    border-radius: 50%;
+}
+
+.orcid-icon::before {
+    content: 'iD';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.5rem;
+    font-weight: bold;
+    color: var(--bg-primary);
+    background: none;
+}
+
+/* Larger versions for social links section */
+.social-icon.large::before {
+    font-size: 0.8rem;
 }
 
 /* Ensure navigation social links are always visible */
@@ -345,7 +406,7 @@ h1, h2, h3, h4, h5, h6 {
     opacity: 1 !important;
 }
 
-.nav-social-link .social-icon-text {
+.nav-social-link .social-icon {
     visibility: visible !important;
     display: inline-block !important;
     opacity: 1 !important;
