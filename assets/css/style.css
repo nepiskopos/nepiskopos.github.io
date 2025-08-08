@@ -323,6 +323,19 @@ h1, h2, h3, h4, h5, h6 {
     position: relative;
 }
 
+/* Social icon text replacements */
+.social-icon-text {
+    font-size: 1.2rem;
+    font-weight: bold;
+    z-index: 1;
+    position: relative;
+    display: inline-block;
+}
+
+.social-icon-text.large {
+    font-size: 1.5rem;
+}
+
 
 
 .nav-toggle {
@@ -1311,6 +1324,12 @@ h1, h2, h3, h4, h5, h6 {
 
 .social-link i {
     font-size: 1.5rem;
+}
+
+.social-link .social-icon-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-right: 0.5rem;
 }
 
 /* Projects Section */
