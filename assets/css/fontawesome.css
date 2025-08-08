@@ -41,10 +41,15 @@
 .fa-database::before { content: "🗄️"; }
 .fa-cloud::before { content: "☁️"; }
 
-/* Brand icons - Better fallback emojis */
-.fa-github::before { content: "🐙"; }
-.fa-linkedin::before { content: "💼"; }
-.fa-orcid::before { content: "🔬"; }
+/* Brand icons - Visible text content */
+.fab.fa-github::before { content: "GitHub" !important; }
+.fab.fa-linkedin::before { content: "LinkedIn" !important; }
+.fab.fa-orcid::before { content: "ORCID" !important; }
+
+/* Shorter versions for nav bar */
+.nav-social-link .fab.fa-github::before { content: "GH" !important; }
+.nav-social-link .fab.fa-linkedin::before { content: "LI" !important; }
+.nav-social-link .fab.fa-orcid::before { content: "OR" !important; }
 
 /* Alternative approach using SVG data URIs for better icons */
 .fa-github {
@@ -59,27 +64,31 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='currentColor' d='M294.75 188.19h-45.92V342h47.47c67.62 0 83.12-51.34 83.12-76.91 0-41.64-26.54-76.9-84.67-76.9zM256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm-80.79 360.76h-29.84v-207.5h29.84zm-14.92-231.14a19.57 19.57 0 1 1 19.57-19.57 19.64 19.64 0 0 1-19.57 19.57zM300 369h-81V161.26h80.6c76.73 0 110.44 54.83 110.44 103.85C410 318.39 368.38 369 300 369z'/%3E%3C/svg%3E");
 }
 
-/* Apply background image styles to icons that support it */
-.nav-social-link i,
-.social-link i {
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 1em;
-    height: 1em;
-    display: inline-block;
-    font-size: 0; /* Hide fallback text while keeping SVG visible */
+/* Force visibility for social media icons with high specificity */
+.nav-social-link i.fab.fa-github,
+.nav-social-link i.fab.fa-linkedin,
+.nav-social-link i.fab.fa-orcid,
+.social-link i.fab.fa-github,
+.social-link i.fab.fa-linkedin,
+.social-link i.fab.fa-orcid {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    font-style: normal !important;
+    font-weight: bold !important;
+    text-rendering: auto !important;
+    display: inline-block !important;
+    color: currentColor !important;
+    background: none !important;
+    text-indent: 0 !important;
 }
 
-/* Specific styling for social media icons */
-.nav-social-link .fa-github,
-.nav-social-link .fa-linkedin,
-.nav-social-link .fa-orcid,
-.social-link .fa-github,
-.social-link .fa-linkedin,
-.social-link .fa-orcid {
-    text-indent: 0;
-    font-size: 0;
+/* Navigation social icon sizing */
+.nav-social-link i.fab {
+    font-size: 1.2rem !important;
+}
+
+/* Social link icon sizing */
+.social-link i.fab {
+    font-size: 1.5rem !important;
 }
 
 /* Ensure text-based fallbacks work properly */
