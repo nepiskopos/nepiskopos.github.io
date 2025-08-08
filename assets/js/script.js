@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initDynamicContent();
     initScrollToTop();
     initPerformanceOptimizations();
+    initSocialIconFallbacks();
+    initAvatarFallbacks();
 });
 
 // Mobile Navigation
@@ -1530,10 +1532,380 @@ function initScrollToTop() {
     });
 }
 
+// Social Icon Fallbacks - Ad Blocker Resistant
+function initSocialIconFallbacks() {
+    // Check if SVG icons are working after a short delay
+    setTimeout(() => {
+        const socialLinks = document.querySelectorAll('.nav-social-link, .social-link');
+
+        socialLinks.forEach(link => {
+            const svg = link.querySelector('.social-svg');
+            if (svg) {
+                // Check if SVG is properly rendered
+                const svgRect = svg.getBoundingClientRect();
+                if (svgRect.width === 0 || svgRect.height === 0 ||
+                    getComputedStyle(svg).display === 'none' ||
+                    getComputedStyle(svg).visibility === 'hidden') {
+
+                    // SVG is blocked, add fallback
+                    link.classList.add('no-svg');
+                    console.log('SVG blocked for', link.getAttribute('aria-label'), 'adding text fallback');
+
+                    // Add additional text fallback for nav links
+                    if (link.classList.contains('nav-social-link')) {
+                        addTextFallback(link);
+                    }
+                }
+            }
+        });
+    }, 500);
+}
+
+function addTextFallback(link) {
+    const label = link.getAttribute('aria-label');
+    let shortText = '';
+
+    if (label.includes('GitHub')) {
+        shortText = 'GH';
+    } else if (label.includes('LinkedIn')) {
+        shortText = 'LI';
+    } else if (label.includes('ORCID')) {
+        shortText = 'OR';
+    }
+
+    // Create text fallback element
+    const textFallback = document.createElement('span');
+    textFallback.className = 'icon-text-fallback';
+    textFallback.textContent = shortText;
+    textFallback.style.cssText = `
+        display: inline-block;
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: currentColor;
+        text-align: center;
+        width: 100%;
+    `;
+
+    // Hide SVG and show text
+    const svg = link.querySelector('.social-svg');
+    if (svg) {
+        svg.style.display = 'none';
+    }
+
+    link.appendChild(textFallback);
+}
+
+// Additional fallback detection using various methods
+function detectAdBlocker() {
+    return new Promise((resolve) => {
+        // Test if certain social media patterns are blocked
+        const testDiv = document.createElement('div');
+        testDiv.innerHTML = '<svg style="width:1px;height:1px;"><path d="M12 0c-6.626 0-12 5.373-12 12"></path></svg>';
+        testDiv.style.cssText = 'position:absolute;left:-9999px;width:1px;height:1px;';
+        document.body.appendChild(testDiv);
+
+        setTimeout(() => {
+            const isBlocked = testDiv.offsetHeight === 0 ||
+                            getComputedStyle(testDiv).display === 'none';
+            document.body.removeChild(testDiv);
+            resolve(isBlocked);
+        }, 100);
+    });
+}
+
+// Alternative icon loading approach
+function loadAlternativeIcons() {
+    const links = document.querySelectorAll('.nav-social-link');
+    const iconMap = {
+        'github': '⚡',
+        'linkedin': '💼',
+        'orcid': '🆔'
+    };
+
+    links.forEach(link => {
+        const platform = link.className.match(/\b(github|linkedin|orcid)\b/)?.[1];
+        if (platform && iconMap[platform]) {
+            const emojiIcon = document.createElement('span');
+            emojiIcon.textContent = iconMap[platform];
+            emojiIcon.style.fontSize = '1.2rem';
+            emojiIcon.className = 'emoji-fallback';
+
+            // Add as additional fallback
+            link.appendChild(emojiIcon);
+        }
+    });
+}
+
+// Simplified Avatar Fallback System
+function initAvatarFallbacks() {
+    const avatarImg = document.querySelector('.avatar-image');
+    if (!avatarImg) return;
+
+    let fallbackTriggered = false;
+
+    // Function to check if image actually loaded properly
+    function isImageLoaded(img) {
+        return img.complete &&
+               img.naturalWidth > 0 &&
+               img.naturalHeight > 0;
+    }
+
+    // Set up a simple timeout fallback (5 seconds)
+    const loadingTimeout = setTimeout(() => {
+        if (!fallbackTriggered && !isImageLoaded(avatarImg)) {
+            console.log('Avatar loading timeout - triggering fallback');
+            fallbackTriggered = true;
+            handleAvatarError(avatarImg);
+        }
+    }, 5000);
+
+    // Monitor successful loading
+    avatarImg.addEventListener('load', function() {
+        console.log('Avatar load event fired');
+        clearTimeout(loadingTimeout);
+        if (isImageLoaded(this)) {
+            fallbackTriggered = false;
+            showAvatar(this);
+        }
+    });
+
+    // Monitor errors
+    avatarImg.addEventListener('error', function() {
+        console.log('Avatar error event fired');
+        clearTimeout(loadingTimeout);
+        if (!fallbackTriggered) {
+            fallbackTriggered = true;
+            handleAvatarError(this);
+        }
+    });
+
+    // Initial check if image is already loaded
+    if (isImageLoaded(avatarImg)) {
+        console.log('Avatar already loaded');
+        clearTimeout(loadingTimeout);
+        showAvatar(avatarImg);
+    }
+}
+
+// Enhanced Global avatar error handler function
+function handleAvatarError(img) {
+    console.log('Avatar error handler called for:', img.src);
+
+    // Prevent infinite loops by tracking attempts
+    if (!img.dataset.fallbackAttempts) {
+        img.dataset.fallbackAttempts = '0';
+    }
+
+    const attempts = parseInt(img.dataset.fallbackAttempts);
+    img.dataset.fallbackAttempts = (attempts + 1).toString();
+
+    // If too many attempts, go straight to CSS fallback
+    if (attempts >= 3) {
+        console.log('Too many fallback attempts, using CSS fallback');
+        createCSSAvatar(img);
+        return;
+    }
+
+    // Remove any existing error handlers to prevent conflicts
+    img.onerror = null;
+
+    // Determine next fallback based on current src
+    if (img.src.includes('avatars.githubusercontent.com') || (!img.src.includes('avatar-fallback'))) {
+        console.log('Trying SVG fallback...');
+        img.src = 'assets/img/avatar-fallback.svg';
+
+        // Set up new error handler with timeout
+        let errorHandled = false;
+        const errorTimeout = setTimeout(() => {
+            if (!errorHandled) {
+                errorHandled = true;
+                handleAvatarError(img);
+            }
+        }, 2000);
+
+        img.onerror = function() {
+            if (!errorHandled) {
+                errorHandled = true;
+                clearTimeout(errorTimeout);
+                console.log('SVG fallback failed');
+                handleAvatarError(this);
+            }
+        };
+
+        img.onload = function() {
+            errorHandled = true;
+            clearTimeout(errorTimeout);
+            console.log('SVG fallback loaded successfully');
+            showAvatar(this);
+        };
+
+    } else if (img.src.includes('avatar-fallback.svg')) {
+        console.log('Trying PNG fallback...');
+        img.src = 'assets/img/avatar-fallback.png';
+
+        let errorHandled = false;
+        const errorTimeout = setTimeout(() => {
+            if (!errorHandled) {
+                errorHandled = true;
+                createCSSAvatar(img);
+            }
+        }, 2000);
+
+        img.onerror = function() {
+            if (!errorHandled) {
+                errorHandled = true;
+                clearTimeout(errorTimeout);
+                console.log('PNG fallback failed, using CSS fallback');
+                createCSSAvatar(this);
+            }
+        };
+
+        img.onload = function() {
+            errorHandled = true;
+            clearTimeout(errorTimeout);
+            console.log('PNG fallback loaded successfully');
+            showAvatar(this);
+        };
+
+    } else {
+        // Final fallback - CSS-based avatar
+        console.log('Using CSS fallback as final option');
+        createCSSAvatar(img);
+    }
+}
+
+// Create a CSS-based avatar as the ultimate fallback
+function createCSSAvatar(img) {
+    const container = img.parentElement;
+
+    // Hide the loading indicator
+    const loadingIndicator = document.getElementById('avatar-loading');
+    if (loadingIndicator) {
+        loadingIndicator.style.display = 'none';
+    }
+
+    // Hide the broken image
+    img.style.display = 'none';
+
+    // Check if CSS avatar already exists
+    if (container.querySelector('.css-avatar-fallback')) {
+        console.log('CSS avatar already exists');
+        return;
+    }
+
+    // Create CSS avatar
+    const cssAvatar = document.createElement('div');
+    cssAvatar.className = 'css-avatar-fallback';
+    cssAvatar.style.cssText = `
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #3b82f6 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        font-weight: bold;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        border: 4px solid var(--accent-primary);
+        box-shadow: var(--shadow-heavy);
+        position: relative;
+        z-index: 2;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    `;
+
+    // Add initials
+    cssAvatar.textContent = 'NE';
+
+    // Add a subtle pattern overlay
+    const pattern = document.createElement('div');
+    pattern.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2) 0%, transparent 70%);
+        pointer-events: none;
+    `;
+    cssAvatar.appendChild(pattern);
+
+    container.appendChild(cssAvatar);
+
+    // Fade in the CSS avatar
+    setTimeout(() => {
+        cssAvatar.style.opacity = '1';
+    }, 100);
+
+    console.log('CSS avatar fallback created successfully');
+}
+
+// Enhanced avatar preloading with multiple sources
+function preloadAvatar() {
+    const avatarSources = [
+        'https://avatars.githubusercontent.com/u/58558195?v=4',
+        'assets/img/avatar-fallback.svg',
+        'assets/img/avatar-fallback.png'
+    ];
+
+    avatarSources.forEach((src, index) => {
+        const img = new Image();
+        img.onload = function() {
+            console.log(`Avatar source ${index + 1} preloaded successfully: ${src}`);
+        };
+        img.onerror = function() {
+            console.log(`Avatar source ${index + 1} failed to preload: ${src}`);
+        };
+        img.src = src;
+    });
+}
+
+// Avatar visibility management
+function showAvatar(img) {
+    console.log('Avatar loaded successfully, hiding loading indicator');
+    const loadingIndicator = document.getElementById('avatar-loading');
+
+    // Ensure image is visible
+    img.classList.remove('loading');
+    img.style.opacity = '1';
+    img.style.display = 'block';
+
+    // Hide loading indicator
+    if (loadingIndicator) {
+        loadingIndicator.classList.add('hidden');
+        setTimeout(() => {
+            loadingIndicator.style.display = 'none';
+        }, 300);
+    }
+}
+
+function hideAvatar(img) {
+    console.log('Hiding avatar, showing loading indicator');
+    const loadingIndicator = document.getElementById('avatar-loading');
+
+    // Show loading indicator
+    if (loadingIndicator) {
+        loadingIndicator.style.display = 'flex';
+        loadingIndicator.classList.remove('hidden');
+    }
+
+    // Hide image
+    img.classList.add('loading');
+}
+
+// Call preload on page load
+window.addEventListener('load', preloadAvatar);
+
 // Export functions for potential external use
 window.NikolaosPortfolio = {
     initThemeSwitcher,
     initEmailProtection,
+    initSocialIconFallbacks,
+    initAvatarFallbacks,
+    handleAvatarError,
     trackEvent,
     validateContactForm,
     loadSkills,
@@ -1543,5 +1915,13 @@ window.NikolaosPortfolio = {
     cacheController,
     forceRefresh: () => CacheController.forceReload(),
     checkForUpdates: () => cacheController.checkForUpdates(),
-    clearCache: () => cacheController.clearApplicationCache()
+    clearCache: () => cacheController.clearApplicationCache(),
+    detectAdBlocker,
+    loadAlternativeIcons,
+    preloadAvatar
 };
+
+// Make functions globally available for HTML attributes
+window.handleAvatarError = handleAvatarError;
+window.showAvatar = showAvatar;
+window.hideAvatar = hideAvatar;
