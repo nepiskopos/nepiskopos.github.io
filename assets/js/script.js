@@ -2960,18 +2960,16 @@ function startContinuousAntiBlockingSystem() {
 
 // Mobile Accordion Functionality
 function initMobileAccordion() {
-    // Only initialize on mobile devices
+    // Mobile detection function
     function isMobile() {
         return window.innerWidth <= 768;
     }
 
+    // Get all accordion elements
     const accordionHeaders = document.querySelectorAll('.accordion-header');
 
-    // Function to open a specific accordion
-    function openAccordion(targetId) {
-        if (!isMobile()) return;
-
-        // Close all accordions first
+    // Function to close all accordions
+    function closeAllAccordions() {
         accordionHeaders.forEach(header => {
             header.classList.remove('active');
             const contentId = header.getAttribute('data-target');
@@ -2980,6 +2978,14 @@ function initMobileAccordion() {
                 content.classList.remove('active');
             }
         });
+    }
+
+    // Function to open a specific accordion
+    function openAccordion(targetId) {
+        if (!isMobile()) return;
+
+        // Close all accordions first
+        closeAllAccordions();
 
         // Open the target accordion
         const targetHeader = document.querySelector(`[data-target="${targetId}"]`);
@@ -3000,49 +3006,43 @@ function initMobileAccordion() {
         }
     }
 
-    // Accordion header click handlers
-    accordionHeaders.forEach(header => {
-        header.addEventListener('click', function() {
-            if (!isMobile()) return;
+    // Initialize accordion click handlers
+    function initAccordionHandlers() {
+        accordionHeaders.forEach(header => {
+            header.addEventListener('click', function() {
+                if (!isMobile()) return;
 
-            const targetId = this.getAttribute('data-target');
-            const content = document.getElementById(targetId);
-            const isActive = this.classList.contains('active');
+                const targetId = this.getAttribute('data-target');
+                const content = document.getElementById(targetId);
+                const isActive = this.classList.contains('active');
 
-            // Always close all other accordions first
-            accordionHeaders.forEach(otherHeader => {
-                if (otherHeader !== this) {
-                    otherHeader.classList.remove('active');
-                    const otherTargetId = otherHeader.getAttribute('data-target');
-                    const otherContent = document.getElementById(otherTargetId);
-                    if (otherContent) {
-                        otherContent.classList.remove('active');
-                    }
+                if (isActive) {
+                    // Close this accordion
+                    this.classList.remove('active');
+                    content.classList.remove('active');
+                } else {
+                    // Close all first, then open this one
+                    closeAllAccordions();
+                    this.classList.add('active');
+                    content.classList.add('active');
+
+                    // Smooth scroll to header after opening
+                    setTimeout(() => {
+                        this.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start',
+                            inline: 'nearest'
+                        });
+                    }, 300);
                 }
             });
-
-            // Toggle current accordion
-            if (isActive) {
-                this.classList.remove('active');
-                content.classList.remove('active');
-            } else {
-                this.classList.add('active');
-                content.classList.add('active');
-
-                // Smooth scroll to header after opening
-                setTimeout(() => {
-                    this.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start',
-                        inline: 'nearest'
-                    });
-                }, 300);
-            }
         });
-    });
+    }
 
-    // Button handlers for mobile accordion opening
-    if (isMobile()) {
+    // Initialize button handlers for mobile only
+    function initButtonHandlers() {
+        if (!isMobile()) return;
+
         // "Unlock AI's Potential" button -> Contact accordion
         const unlockButton = document.querySelector('a[href="#contact"].btn.btn-primary');
         if (unlockButton) {
@@ -3061,7 +3061,7 @@ function initMobileAccordion() {
             });
         }
 
-        // Mobile navigation links should also open accordions
+        // Mobile navigation links
         const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
         mobileNavLinks.forEach(link => {
             link.addEventListener('click', function(e) {
@@ -3085,7 +3085,7 @@ function initMobileAccordion() {
                         targetId = 'contact-content';
                         break;
                     case '#home':
-                        // For home, just close mobile menu without opening accordion
+                        // For home, just close mobile menu
                         const mobileMenu = document.querySelector('.mobile-menu');
                         const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
                         if (mobileMenu) mobileMenu.classList.remove('active');
@@ -3110,35 +3110,30 @@ function initMobileAccordion() {
         });
     }
 
-    // Open the first accordion by default (About Me) only on mobile
+    // Initialize everything
+    initAccordionHandlers();
+    initButtonHandlers();
+
+    // Open the first accordion by default on mobile
     if (isMobile()) {
-        const firstHeader = document.querySelector('[data-target="about-content"]');
-        const firstContent = document.getElementById('about-content');
-        if (firstHeader && firstContent) {
-            firstHeader.classList.add('active');
-            firstContent.classList.add('active');
-        }
+        setTimeout(() => {
+            openAccordion('about-content');
+        }, 100);
     }
 
-    // Re-initialize when window is resized
+    // Handle window resize
     window.addEventListener('resize', () => {
-        // Remove all active states when switching to desktop
         if (!isMobile()) {
-            accordionHeaders.forEach(header => {
-                header.classList.remove('active');
-                const targetId = header.getAttribute('data-target');
-                const content = document.getElementById(targetId);
-                if (content) {
-                    content.classList.remove('active');
-                }
-            });
+            closeAllAccordions();
         } else {
-            // Re-activate first accordion when switching back to mobile
-            const aboutHeader = document.querySelector('[data-target="about-content"]');
-            const aboutContent = document.getElementById('about-content');
-            if (aboutHeader && aboutContent && !aboutHeader.classList.contains('active')) {
-                aboutHeader.classList.add('active');
-                aboutContent.classList.add('active');
+            // Re-initialize button handlers for mobile
+            initButtonHandlers();
+            // Open first accordion if none are open
+            const hasActiveAccordion = document.querySelector('.accordion-header.active');
+            if (!hasActiveAccordion) {
+                setTimeout(() => {
+                    openAccordion('about-content');
+                }, 100);
             }
         }
     });
