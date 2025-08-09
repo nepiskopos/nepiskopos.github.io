@@ -830,7 +830,16 @@ class CacheController {
     hasContentChanged(lastModified, etag) {
         const storedLastModified = localStorage.getItem('last_modified');
         const storedEtag = localStorage.getItem('stored_etag');
+        const isFirstVisit = !localStorage.getItem('has_visited_before');
 
+        // On first visit, just store the values but don't consider it a change
+        if (isFirstVisit) {
+            if (lastModified) localStorage.setItem('last_modified', lastModified);
+            if (etag) localStorage.setItem('stored_etag', etag);
+            return false; // No change on first visit
+        }
+
+        // Check for actual changes on subsequent visits
         if (lastModified && lastModified !== storedLastModified) {
             localStorage.setItem('last_modified', lastModified);
             return true;
@@ -883,6 +892,16 @@ class CacheController {
 
     // Show update notification to user
     showUpdateNotification() {
+        // Check if this is the first visit - don't show notification if so
+        const isFirstVisit = !localStorage.getItem('has_visited_before');
+
+        if (isFirstVisit) {
+            // Mark that user has visited the site
+            localStorage.setItem('has_visited_before', 'true');
+            console.log('First visit detected, skipping update notification');
+            return;
+        }
+
         // Create notification element
         const notification = document.createElement('div');
         notification.className = 'update-notification';
@@ -1075,11 +1094,16 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 
                 // Listen for service worker updates
                 registration.addEventListener('updatefound', () => {
+                    console.log('Service worker update found');
                     const newWorker = registration.installing;
                     newWorker.addEventListener('statechange', () => {
+                        console.log('Service worker state changed to:', newWorker.state);
+                        console.log('Has existing controller:', !!navigator.serviceWorker.controller);
+
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                             // New service worker installed and we have an existing controller
                             // This means it's an update, not a first install
+                            console.log('Triggering update notification from service worker');
                             cacheController.showUpdateNotification();
                         }
                     });
