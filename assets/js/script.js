@@ -20,10 +20,12 @@ function initMobileNavigation() {
     const navToggle = document.querySelector('.nav-toggle');
     const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
     const navMenu = document.querySelector('.nav-menu');
+    const mobileMenu = document.querySelector('.mobile-menu');
     const navLinks = document.querySelectorAll('.nav-link');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
 
     // Handle desktop navbar toggle
-    if (navToggle) {
+    if (navToggle && navMenu) {
         navToggle.addEventListener('click', function() {
             navToggle.classList.toggle('active');
             navMenu.classList.toggle('active');
@@ -31,32 +33,44 @@ function initMobileNavigation() {
     }
 
     // Handle mobile floating hamburger toggle
-    if (mobileNavToggle) {
+    if (mobileNavToggle && mobileMenu) {
         mobileNavToggle.addEventListener('click', function() {
             mobileNavToggle.classList.toggle('active');
-            navMenu.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
         });
     }
 
-    // Close mobile menu when clicking on a link
+    // Close desktop menu when clicking on a desktop nav link
     navLinks.forEach(link => {
         link.addEventListener('click', function() {
             if (navToggle) navToggle.classList.remove('active');
-            if (mobileNavToggle) mobileNavToggle.classList.remove('active');
-            navMenu.classList.remove('active');
+            if (navMenu) navMenu.classList.remove('active');
         });
     });
 
-    // Close mobile menu when clicking outside
+    // Close mobile menu when clicking on a mobile nav link
+    mobileNavLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            if (mobileNavToggle) mobileNavToggle.classList.remove('active');
+            if (mobileMenu) mobileMenu.classList.remove('active');
+        });
+    });
+
+    // Close menus when clicking outside
     document.addEventListener('click', function(e) {
-        const isClickInsideMenu = navMenu && navMenu.contains(e.target);
+        const isClickInsideNavMenu = navMenu && navMenu.contains(e.target);
+        const isClickInsideMobileMenu = mobileMenu && mobileMenu.contains(e.target);
         const isClickOnDesktopToggle = navToggle && navToggle.contains(e.target);
         const isClickOnMobileToggle = mobileNavToggle && mobileNavToggle.contains(e.target);
 
-        if (!isClickInsideMenu && !isClickOnDesktopToggle && !isClickOnMobileToggle) {
+        if (!isClickInsideNavMenu && !isClickOnDesktopToggle) {
             if (navToggle) navToggle.classList.remove('active');
-            if (mobileNavToggle) mobileNavToggle.classList.remove('active');
             if (navMenu) navMenu.classList.remove('active');
+        }
+
+        if (!isClickInsideMobileMenu && !isClickOnMobileToggle) {
+            if (mobileNavToggle) mobileNavToggle.classList.remove('active');
+            if (mobileMenu) mobileMenu.classList.remove('active');
         }
     });
 }
@@ -719,11 +733,16 @@ document.addEventListener('keydown', function(e) {
         const navToggle = document.querySelector('.nav-toggle');
         const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
         const navMenu = document.querySelector('.nav-menu');
+        const mobileMenu = document.querySelector('.mobile-menu');
 
         if (navMenu && navMenu.classList.contains('active')) {
             if (navToggle) navToggle.classList.remove('active');
-            if (mobileNavToggle) mobileNavToggle.classList.remove('active');
             navMenu.classList.remove('active');
+        }
+
+        if (mobileMenu && mobileMenu.classList.contains('active')) {
+            if (mobileNavToggle) mobileNavToggle.classList.remove('active');
+            mobileMenu.classList.remove('active');
         }
     }
 

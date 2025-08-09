@@ -255,13 +255,10 @@ h1, h2, h3, h4, h5, h6 {
     gap: 1rem;
 }
 
-/* Hide mobile social links on desktop */
-.mobile-social-links {
-    display: none;
-}
-
-/* Hide mobile hamburger on desktop */
-.mobile-nav-toggle {
+/* Hide mobile elements on desktop */
+.mobile-social-links,
+.mobile-nav-toggle,
+.mobile-menu {
     display: none;
 }
 
@@ -2631,7 +2628,7 @@ a[href*="orcid.org"].nav-social-link {
     }
 
     /* Mobile menu - positioned as overlay */
-    .nav-menu {
+    .mobile-menu {
         position: fixed;
         left: -100%;
         top: 0;
@@ -2652,7 +2649,7 @@ a[href*="orcid.org"].nav-social-link {
         gap: 2rem;
     }
 
-    .nav-menu.active {
+    .mobile-menu.active {
         left: 0;
     }
 
@@ -2751,8 +2748,8 @@ a[href*="orcid.org"].nav-social-link {
         display: none;
     }
 
-    /* Navigation links styling for mobile */
-    .nav-link {
+    /* Mobile navigation links styling */
+    .mobile-nav-link {
         font-size: 1.2rem;
         padding: 1rem 2rem;
         margin: 0.5rem 0;
@@ -2760,9 +2757,12 @@ a[href*="orcid.org"].nav-social-link {
         transition: all var(--transition-fast);
         width: 100%;
         max-width: 300px;
+        text-decoration: none;
+        color: var(--text-primary);
+        display: block;
     }
 
-    .nav-link:hover {
+    .mobile-nav-link:hover {
         background: var(--bg-tertiary);
         color: var(--accent-primary);
     }
