@@ -18,9 +18,11 @@ document.addEventListener('DOMContentLoaded', function() {
 // Mobile Navigation
 function initMobileNavigation() {
     const navToggle = document.querySelector('.nav-toggle');
+    const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
     const navMenu = document.querySelector('.nav-menu');
     const navLinks = document.querySelectorAll('.nav-link');
 
+    // Handle desktop navbar toggle
     if (navToggle) {
         navToggle.addEventListener('click', function() {
             navToggle.classList.toggle('active');
@@ -28,19 +30,33 @@ function initMobileNavigation() {
         });
     }
 
+    // Handle mobile floating hamburger toggle
+    if (mobileNavToggle) {
+        mobileNavToggle.addEventListener('click', function() {
+            mobileNavToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+    }
+
     // Close mobile menu when clicking on a link
     navLinks.forEach(link => {
         link.addEventListener('click', function() {
-            navToggle.classList.remove('active');
+            if (navToggle) navToggle.classList.remove('active');
+            if (mobileNavToggle) mobileNavToggle.classList.remove('active');
             navMenu.classList.remove('active');
         });
     });
 
     // Close mobile menu when clicking outside
     document.addEventListener('click', function(e) {
-        if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
-            navToggle.classList.remove('active');
-            navMenu.classList.remove('active');
+        const isClickInsideMenu = navMenu && navMenu.contains(e.target);
+        const isClickOnDesktopToggle = navToggle && navToggle.contains(e.target);
+        const isClickOnMobileToggle = mobileNavToggle && mobileNavToggle.contains(e.target);
+
+        if (!isClickInsideMenu && !isClickOnDesktopToggle && !isClickOnMobileToggle) {
+            if (navToggle) navToggle.classList.remove('active');
+            if (mobileNavToggle) mobileNavToggle.classList.remove('active');
+            if (navMenu) navMenu.classList.remove('active');
         }
     });
 }
@@ -701,10 +717,12 @@ document.addEventListener('keydown', function(e) {
     // Escape key to close mobile menu
     if (e.key === 'Escape') {
         const navToggle = document.querySelector('.nav-toggle');
+        const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
         const navMenu = document.querySelector('.nav-menu');
 
-        if (navToggle && navMenu) {
-            navToggle.classList.remove('active');
+        if (navMenu && navMenu.classList.contains('active')) {
+            if (navToggle) navToggle.classList.remove('active');
+            if (mobileNavToggle) mobileNavToggle.classList.remove('active');
             navMenu.classList.remove('active');
         }
     }
