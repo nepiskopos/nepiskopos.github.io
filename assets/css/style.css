@@ -259,8 +259,15 @@ h1, h2, h3, h4, h5, h6 {
 /* Hide mobile elements on desktop */
 .mobile-social-links,
 .mobile-nav-toggle,
-.mobile-menu {
+.mobile-menu,
+.mobile-only,
+.accordion-header {
     display: none;
+}
+
+/* Desktop accordion behavior - content always visible */
+.accordion-content {
+    display: block;
 }
 
 /* Navigation Social Icons - Ad Blocker Resistant */
@@ -2849,6 +2856,75 @@ a[href*="orcid.org"].nav-social-link {
 
     .about .container {
         padding: 0 1rem;
+    }
+
+    /* Mobile Accordion Styles */
+    .mobile-only {
+        display: block;
+    }
+
+    .desktop-title {
+        display: none;
+    }
+
+    .accordion-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 1rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        margin-bottom: 0.5rem;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        user-select: none;
+    }
+
+    .accordion-header:hover {
+        background: var(--bg-tertiary);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-light);
+    }
+
+    .accordion-header.active {
+        background: var(--accent-primary);
+        color: white;
+        border-color: var(--accent-primary);
+    }
+
+    .accordion-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 0;
+        color: inherit;
+    }
+
+    .accordion-icon {
+        transition: transform var(--transition-fast);
+        font-size: 1.1rem;
+    }
+
+    .accordion-header.active .accordion-icon {
+        transform: rotate(180deg);
+    }
+
+    .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height var(--transition-slow), padding var(--transition-fast);
+        padding: 0 1rem;
+    }
+
+    .accordion-content.active {
+        max-height: 2000px;
+        padding: 1.5rem 1rem 2rem 1rem;
+    }
+
+    /* Section spacing for accordion */
+    .accordion-section {
+        padding: 1rem 0;
+        margin-bottom: 0.5rem;
     }
 
     .contact-content {

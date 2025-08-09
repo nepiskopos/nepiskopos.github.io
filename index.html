@@ -284,10 +284,21 @@
     </section>
 
     <!-- About Section -->
-    <section id="about" class="about">
+    <section id="about" class="about accordion-section">
         <div class="container">
-            <h2 class="section-title">About Me</h2>
-            <div class="about-content">
+            <!-- Desktop title (always visible) -->
+            <h2 class="section-title desktop-title">About Me</h2>
+
+            <!-- Mobile accordion header -->
+            <div class="accordion-header mobile-only" data-target="about-content">
+                <h2 class="accordion-title">About Me</h2>
+                <span class="accordion-icon">
+                    <i class="fas fa-chevron-down"></i>
+                </span>
+            </div>
+
+            <!-- Collapsible content -->
+            <div class="accordion-content about-content" id="about-content">
                 <div class="about-text">
                     <div class="about-intro">
                         <p class="about-description">
@@ -311,39 +322,90 @@
     </section>
 
     <!-- Projects Section -->
-    <section id="projects" class="projects">
+    <section id="projects" class="projects accordion-section">
         <div class="container">
-            <h2 class="section-title">Featured Projects</h2>
-            <div class="projects-grid" id="projects-grid" aria-label="GitHub projects">
-                <!-- Projects will be populated by JavaScript -->
+            <!-- Desktop title (always visible) -->
+            <h2 class="section-title desktop-title">Featured Projects</h2>
+
+            <!-- Mobile accordion header -->
+            <div class="accordion-header mobile-only" data-target="projects-content">
+                <h2 class="accordion-title">Featured Projects</h2>
+                <span class="accordion-icon">
+                    <i class="fas fa-chevron-down"></i>
+                </span>
+            </div>
+
+            <!-- Collapsible content -->
+            <div class="accordion-content" id="projects-content">
+                <div class="projects-grid" id="projects-grid" aria-label="GitHub projects">
+                    <!-- Projects will be populated by JavaScript -->
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Experience Section -->
-    <section id="experience" class="experience">
+    <section id="experience" class="experience accordion-section">
         <div class="container">
-            <h2 class="section-title">Professional Experience</h2>
-            <div class="timeline" id="experience-timeline" aria-label="Professional experience timeline">
-                <!-- Timeline will be populated by JavaScript -->
+            <!-- Desktop title (always visible) -->
+            <h2 class="section-title desktop-title">Professional Experience</h2>
+
+            <!-- Mobile accordion header -->
+            <div class="accordion-header mobile-only" data-target="experience-content">
+                <h2 class="accordion-title">Professional Experience</h2>
+                <span class="accordion-icon">
+                    <i class="fas fa-chevron-down"></i>
+                </span>
+            </div>
+
+            <!-- Collapsible content -->
+            <div class="accordion-content" id="experience-content">
+                <div class="timeline" id="experience-timeline" aria-label="Professional experience timeline">
+                    <!-- Timeline will be populated by JavaScript -->
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Publications Section -->
-    <section id="publications" class="publications">
+    <section id="publications" class="publications accordion-section">
         <div class="container">
-            <h2 class="section-title">Research Publications</h2>
-            <div class="publications-grid" id="publications-grid" aria-label="Research publications">
-                <!-- Publications will be populated by JavaScript -->
+            <!-- Desktop title (always visible) -->
+            <h2 class="section-title desktop-title">Research Publications</h2>
+
+            <!-- Mobile accordion header -->
+            <div class="accordion-header mobile-only" data-target="publications-content">
+                <h2 class="accordion-title">Research Publications</h2>
+                <span class="accordion-icon">
+                    <i class="fas fa-chevron-down"></i>
+                </span>
+            </div>
+
+            <!-- Collapsible content -->
+            <div class="accordion-content" id="publications-content">
+                <div class="publications-grid" id="publications-grid" aria-label="Research publications">
+                    <!-- Publications will be populated by JavaScript -->
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="contact">
+    <section id="contact" class="contact accordion-section">
         <div class="container">
-            <h2 class="section-title">Ready to unlock AI's trillion-dollar potential? Let's build your competitive advantage.</h2>
+            <!-- Desktop title (always visible) -->
+            <h2 class="section-title desktop-title">Ready to unlock AI's trillion-dollar potential? Let's build your competitive advantage.</h2>
+
+            <!-- Mobile accordion header -->
+            <div class="accordion-header mobile-only" data-target="contact-content">
+                <h2 class="accordion-title">Contact</h2>
+                <span class="accordion-icon">
+                    <i class="fas fa-chevron-down"></i>
+                </span>
+            </div>
+
+            <!-- Collapsible content -->
+            <div class="accordion-content" id="contact-content">
             <div class="contact-content">
                 <div class="contact-info">
                     <div class="contact-item">
@@ -403,6 +465,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     </section>
