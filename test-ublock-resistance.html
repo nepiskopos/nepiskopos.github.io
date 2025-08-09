@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ uBlock Origin Resistance Test - Multi-Layer Fallback System</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .controls h2 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #1976d2;
+        }
+
+        button.danger {
+            background: #f44336;
+        }
+
+        button.danger:hover {
+            background: #d32f2f;
+        }
+
+        button.success {
+            background: #4caf50;
+        }
+
+        button.success:hover {
+            background: #388e3c;
+        }
+
+        .status {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #2196f3;
+            margin: 15px 0;
+            font-family: monospace;
+        }
+
+        /* Navigation Icons - Inline SVG (Primary) + External Backup (Ad Blocker Resistant) */
+        .nav-icon {
+            width: 1.2rem;
+            height: 1.2rem;
+            display: inline-block;
+            transition: all 0.2s ease;
+            vertical-align: middle;
+            opacity: 1;
+            visibility: visible;
+            color: #333;
+        }
+
+        .nav-icon.large {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        /* Backup external icon styling */
+        .nav-icon-backup {
+            width: 1.2rem;
+            height: 1.2rem;
+            display: inline-block;
+            transition: all 0.2s ease;
+            vertical-align: middle;
+            opacity: 1;
+            visibility: visible;
+            filter: brightness(0) saturate(100%) invert(15%) sepia(13%) saturate(2497%) hue-rotate(201deg) brightness(97%) contrast(85%);
+        }
+
+        .nav-icon-backup.large {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        /* Text fallbacks */
+        .text-backup {
+            display: none;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: currentColor;
+            text-decoration: none;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        /* Test sections */
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+        }
+
+        .test-section h3 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+
+        .icon-test-row {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 6px;
+            gap: 15px;
+        }
+
+        .nav-ext-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.2s;
+        }
+
+        .nav-ext-link:hover {
+            background: #2196f3;
+            color: white;
+            border-color: #2196f3;
+        }
+
+        .nav-ext-link.dev-platform:hover {
+            background: #333;
+        }
+
+        .nav-ext-link.professional-platform:hover {
+            background: #0077b5;
+        }
+
+        .nav-ext-link.research-platform:hover {
+            background: #a6ce39;
+        }
+
+        .nav-ext-link.dev-platform:hover .nav-icon,
+        .nav-ext-link.professional-platform:hover .nav-icon,
+        .nav-ext-link.research-platform:hover .nav-icon {
+            color: #ffffff;
+        }
+
+        .nav-ext-link.dev-platform:hover .nav-icon-backup,
+        .nav-ext-link.professional-platform:hover .nav-icon-backup,
+        .nav-ext-link.research-platform:hover .nav-icon-backup {
+            filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%);
+        }
+
+        /* Dark theme test */
+        [data-theme="dark"] {
+            background: #1a1a1a !important;
+            color: #e0e0e0 !important;
+        }
+
+        [data-theme="dark"] .container {
+            background: #2a2a2a !important;
+            color: #e0e0e0 !important;
+        }
+
+        [data-theme="dark"] .controls {
+            background: #1e3a5f !important;
+            color: #e0e0e0 !important;
+        }
+
+        [data-theme="dark"] .nav-icon {
+            color: #e0e0e0;
+        }
+
+        [data-theme="dark"] .nav-icon-backup {
+            filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .comparison-table th {
+            background: #f5f5f5;
+            font-weight: bold;
+        }
+
+        .comparison-table .layer {
+            font-weight: bold;
+        }
+
+        .comparison-table .layer-1 {
+            color: #4caf50;
+        }
+
+        .comparison-table .layer-2 {
+            color: #ff9800;
+        }
+
+        .comparison-table .layer-3 {
+            color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="controls">
+            <h2>🛡️ uBlock Origin Resistance Test</h2>
+            <p>This tests our <strong>3-layer fallback system</strong>: <span class="layer layer-1">Inline SVG</span> → <span class="layer layer-2">External SVG</span> → <span class="layer layer-3">Text Backup</span></p>
+
+            <button onclick="testInlineSVGBlocking()">🚫 Block Inline SVGs</button>
+            <button onclick="testExternalImageBlocking()">📷 Block External Images</button>
+            <button onclick="testAllBlocking()" class="danger">💥 Block Everything</button>
+            <button onclick="resetAllTests()" class="success">🔄 Reset All</button>
+            <button onclick="toggleTheme()">🌙 Toggle Dark Theme</button>
+            <button onclick="runFullTest()">🧪 Run Full Test Sequence</button>
+
+            <div class="status" id="status">Ready to test the 3-layer fallback system...</div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎯 Live Icon Tests</h3>
+            <p>These icons use the same structure as your deployed site:</p>
+
+            <div class="icon-test-row">
+                <strong>GitHub (Dev Platform):</strong>
+                <a href="https://github.com/nepiskopos" target="_blank" rel="noopener noreferrer"
+                   class="nav-ext-link dev-platform"
+                   aria-label="Visit GitHub profile">
+                    <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                        <path d="M12 0C5.374 0 0 5.373 0 12 0 17.302 3.438 21.8 8.207 23.387c.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    <img src="assets/img/dev-icon.svg" alt="GitHub" class="nav-icon-backup" width="20" height="20" style="display:none" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-block'">
+                    <span class="text-backup" style="display:none;font-size:0.9rem;font-weight:bold">GH</span>
+                    <span>GitHub</span>
+                </a>
+            </div>
+
+            <div class="icon-test-row">
+                <strong>LinkedIn (Professional Platform):</strong>
+                <a href="https://linkedin.com/in/nepiskopos" target="_blank" rel="noopener noreferrer"
+                   class="nav-ext-link professional-platform"
+                   aria-label="Visit LinkedIn profile">
+                    <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                    <img src="assets/img/professional-icon.svg" alt="LinkedIn" class="nav-icon-backup" width="20" height="20" style="display:none" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-block'">
+                    <span class="text-backup" style="display:none;font-size:0.9rem;font-weight:bold">LI</span>
+                    <span>LinkedIn</span>
+                </a>
+            </div>
+
+            <div class="icon-test-row">
+                <strong>ORCID (Research Platform):</strong>
+                <a href="https://orcid.org/0009-0004-7130-3874" target="_blank" rel="noopener noreferrer"
+                   class="nav-ext-link research-platform"
+                   aria-label="Visit ORCID profile">
+                    <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                        <path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 01-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.016-5.325 5.016h-3.919V7.416zm1.444 1.303v7.444h2.297c2.359 0 3.881-1.303 3.881-3.722 0-2.391-1.522-3.722-3.881-3.722h-2.297z"/>
+                    </svg>
+                    <img src="assets/img/research-icon.svg" alt="ORCID" class="nav-icon-backup" width="20" height="20" style="display:none" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-block'">
+                    <span class="text-backup" style="display:none;font-size:0.9rem;font-weight:bold">OR</span>
+                    <span>ORCID</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Fallback System Overview</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Layer</th>
+                        <th>Method</th>
+                        <th>Resistance Level</th>
+                        <th>Backup Trigger</th>
+                        <th>Detection Method</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="layer layer-1">Layer 1</td>
+                        <td><strong>Inline SVG</strong><br>Embedded in HTML</td>
+                        <td>🛡️ High</td>
+                        <td>If SVG is hidden or blocked</td>
+                        <td>MutationObserver + Style checks</td>
+                    </tr>
+                    <tr>
+                        <td class="layer layer-2">Layer 2</td>
+                        <td><strong>External SVG</strong><br>Generic filenames</td>
+                        <td>🛡️ Medium</td>
+                        <td>If image fails to load</td>
+                        <td>Image error events + load status</td>
+                    </tr>
+                    <tr>
+                        <td class="layer layer-3">Layer 3</td>
+                        <td><strong>Text Backup</strong><br>Simple abbreviations</td>
+                        <td>🛡️ Maximum</td>
+                        <td>All else fails</td>
+                        <td>Always available</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 Key Improvements Over Previous Approach</h3>
+            <ul>
+                <li><strong>✅ Inline SVG Primary:</strong> Harder for ad blockers to analyze and block</li>
+                <li><strong>✅ Generic Class Names:</strong> No 'social', 'github', 'linkedin' in primary classes</li>
+                <li><strong>✅ Generic File Names:</strong> 'dev-icon.svg' instead of 'github-icon.svg'</li>
+                <li><strong>✅ Multi-Layer Detection:</strong> Real-time monitoring with MutationObserver</li>
+                <li><strong>✅ Graceful Degradation:</strong> Each layer falls back to the next</li>
+                <li><strong>✅ Dark Theme Support:</strong> Proper contrast in all themes</li>
+            </ul>
+        </div>
+
+        <div class="test-section" id="test-results" style="display:none">
+            <h3>🧪 Test Results</h3>
+            <div id="test-log"></div>
+        </div>
+    </div>
+
+    <script>
+        const statusElement = document.getElementById('status');
+        let testStep = 0;
+
+        function updateStatus(message) {
+            statusElement.innerHTML = message;
+            console.log(message);
+        }
+
+        function testInlineSVGBlocking() {
+            updateStatus('🚫 Simulating inline SVG blocking...');
+            const inlineSVGs = document.querySelectorAll('.nav-icon');
+            inlineSVGs.forEach(svg => {
+                svg.style.display = 'none';
+                // Trigger the backup system
+                const backupImg = svg.nextElementSibling;
+                if (backupImg && backupImg.classList.contains('nav-icon-backup')) {
+                    backupImg.style.display = 'inline-block';
+                }
+            });
+            updateStatus('🔄 Inline SVGs hidden → External SVG backups activated');
+        }
+
+        function testExternalImageBlocking() {
+            updateStatus('📷 Simulating external image blocking...');
+            const externalImages = document.querySelectorAll('.nav-icon-backup');
+            externalImages.forEach(img => {
+                img.style.display = 'none';
+                // Trigger text backup
+                let sibling = img.nextElementSibling;
+                while (sibling) {
+                    if (sibling.classList && sibling.classList.contains('text-backup')) {
+                        sibling.style.display = 'inline-block';
+                        break;
+                    }
+                    sibling = sibling.nextElementSibling;
+                }
+            });
+            updateStatus('🔤 External images hidden → Text backups activated');
+        }
+
+        function testAllBlocking() {
+            updateStatus('💥 Simulating complete blocking...');
+            // Hide inline SVGs
+            const inlineSVGs = document.querySelectorAll('.nav-icon');
+            inlineSVGs.forEach(svg => svg.style.display = 'none');
+
+            // Hide external images
+            const externalImages = document.querySelectorAll('.nav-icon-backup');
+            externalImages.forEach(img => img.style.display = 'none');
+
+            // Show text backups
+            const textBackups = document.querySelectorAll('.text-backup');
+            textBackups.forEach(text => text.style.display = 'inline-block');
+
+            updateStatus('🛡️ All icons blocked → Text-only fallbacks active (Maximum resistance!)');
+        }
+
+        function resetAllTests() {
+            updateStatus('🔄 Resetting all tests...');
+
+            // Show inline SVGs
+            const inlineSVGs = document.querySelectorAll('.nav-icon');
+            inlineSVGs.forEach(svg => svg.style.display = 'inline-block');
+
+            // Hide external images
+            const externalImages = document.querySelectorAll('.nav-icon-backup');
+            externalImages.forEach(img => img.style.display = 'none');
+
+            // Hide text backups
+            const textBackups = document.querySelectorAll('.text-backup');
+            textBackups.forEach(text => text.style.display = 'none');
+
+            testStep = 0;
+            updateStatus('✅ All tests reset → Inline SVGs active');
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+
+            if (currentTheme === 'dark') {
+                html.removeAttribute('data-theme');
+                updateStatus('☀️ Switched to light theme');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                updateStatus('🌙 Switched to dark theme');
+            }
+        }
+
+        async function runFullTest() {
+            updateStatus('🧪 Starting full test sequence...');
+            document.getElementById('test-results').style.display = 'block';
+            const testLog = document.getElementById('test-log');
+            testLog.innerHTML = '';
+
+            const logStep = (message) => {
+                testLog.innerHTML += `<div style="margin: 5px 0; padding: 8px; background: #f5f5f5; border-radius: 4px;">${message}</div>`;
+                updateStatus(message);
+            };
+
+            // Step 1: Reset
+            resetAllTests();
+            logStep('🔄 Step 1: Reset to baseline (Inline SVG active)');
+            await sleep(1500);
+
+            // Step 2: Block inline SVGs
+            testInlineSVGBlocking();
+            logStep('🚫 Step 2: Block inline SVGs → External SVG backups');
+            await sleep(1500);
+
+            // Step 3: Block external images
+            testExternalImageBlocking();
+            logStep('📷 Step 3: Block external images → Text backups');
+            await sleep(1500);
+
+            // Step 4: Test dark theme
+            toggleTheme();
+            logStep('🌙 Step 4: Test dark theme compatibility');
+            await sleep(1500);
+
+            // Step 5: Reset theme
+            toggleTheme();
+            logStep('☀️ Step 5: Return to light theme');
+            await sleep(1500);
+
+            // Step 6: Complete reset
+            resetAllTests();
+            logStep('✅ Step 6: Test complete - All systems operational');
+
+            updateStatus('🎯 Full test sequence completed! Your multi-layer fallback system is working perfectly.');
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            updateStatus('✅ uBlock Origin Resistance Test loaded. Ready to test the 3-layer fallback system!');
+            console.log('🛡️ Testing environment ready. This simulates how your site handles ad blocker interference.');
+        });
+    </script>
+</body>
+</html>

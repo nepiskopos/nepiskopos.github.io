@@ -331,8 +331,26 @@ h1, h2, h3, h4, h5, h6 {
     position: relative;
 }
 
-/* Social Media Icons - External SVG Files (Ad Blocker Resistant) */
-.social-icon {
+/* Navigation Icons - Inline SVG (Primary) + External Backup (Ad Blocker Resistant) */
+.nav-icon {
+    width: 1.2rem;
+    height: 1.2rem;
+    display: inline-block;
+    transition: all var(--transition-fast);
+    vertical-align: middle;
+    opacity: 1;
+    visibility: visible;
+    /* Dark icons for light theme */
+    color: var(--text-color, #333);
+}
+
+.nav-icon.large {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+/* Backup external icon styling */
+.nav-icon-backup {
     width: 1.2rem;
     height: 1.2rem;
     display: inline-block;
@@ -344,27 +362,71 @@ h1, h2, h3, h4, h5, h6 {
     filter: brightness(0) saturate(100%) invert(15%) sepia(13%) saturate(2497%) hue-rotate(201deg) brightness(97%) contrast(85%);
 }
 
+.nav-icon-backup.large {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .nav-icon {
+    color: var(--text-color-dark, #e0e0e0);
+}
+
+[data-theme="dark"] .nav-icon-backup {
+    filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%);
+}
+
+/* Hover states for navigation icons */
+.nav-ext-link.dev-platform:hover .nav-icon,
+.nav-ext-link.professional-platform:hover .nav-icon,
+.nav-ext-link.research-platform:hover .nav-icon,
+.ext-link.dev-platform:hover .nav-icon,
+.ext-link.professional-platform:hover .nav-icon,
+.ext-link.research-platform:hover .nav-icon {
+    color: #ffffff;
+}
+
+.nav-ext-link.dev-platform:hover .nav-icon-backup,
+.nav-ext-link.professional-platform:hover .nav-icon-backup,
+.nav-ext-link.research-platform:hover .nav-icon-backup,
+.ext-link.dev-platform:hover .nav-icon-backup,
+.ext-link.professional-platform:hover .nav-icon-backup,
+.ext-link.research-platform:hover .nav-icon-backup {
+    filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%);
+}
+
+/* Text fallbacks for when everything fails */
+.text-backup {
+    display: none;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: currentColor;
+    text-decoration: none;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* Legacy support for old class names */
+.social-icon {
+    width: 1.2rem;
+    height: 1.2rem;
+    display: inline-block;
+    transition: all var(--transition-fast);
+    vertical-align: middle;
+    opacity: 1;
+    visibility: visible;
+    filter: brightness(0) saturate(100%) invert(15%) sepia(13%) saturate(2497%) hue-rotate(201deg) brightness(97%) contrast(85%);
+}
+
 .social-icon.large {
     width: 1.5rem;
     height: 1.5rem;
 }
 
-/* Light icons for dark theme */
 [data-theme="dark"] .social-icon {
     filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%);
 }
 
-/* Hover states - make icons white on colored backgrounds */
-.nav-social-link.github:hover .social-icon,
-.nav-social-link.linkedin:hover .social-icon,
-.nav-social-link.orcid:hover .social-icon,
-.social-link.github:hover .social-icon,
-.social-link.linkedin:hover .social-icon,
-.social-link.orcid:hover .social-icon {
-    filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%);
-}
-
-/* Text fallbacks for when images fail to load or are blocked */
 .text-fallback {
     display: none;
     font-size: 0.9rem;

@@ -1532,49 +1532,127 @@ function initScrollToTop() {
     });
 }
 
-// Simplified Social Icon Fallback System using External SVG Files
+// Advanced Icon Fallback System: Inline SVG → External SVG → Text
 function initSocialIconFallbacks() {
-    console.log('🔧 Initializing simplified social icon fallback system...');
+    console.log('🔧 Initializing advanced multi-layer icon fallback system...');
 
-    // Check for blocked images and activate text fallbacks
-    const socialIcons = document.querySelectorAll('.social-icon');
+    // Monitor for potential SVG blocking (inline SVGs can be blocked too)
+    monitorInlineSVGBlocking();
 
-    socialIcons.forEach(icon => {
-        // Set up additional error handling beyond the inline onerror
-        icon.addEventListener('error', function() {
-            console.log('📷 Icon failed to load:', this.src);
-            this.style.display = 'none';
-            const textFallback = this.nextElementSibling;
-            if (textFallback && textFallback.classList.contains('text-fallback')) {
-                textFallback.style.display = 'inline-block';
-            }
+    // Monitor external backup images
+    monitorExternalBackupImages();
+
+    // Aggressive blocking detection
+    setTimeout(() => {
+        checkForAdBlockerInterference();
+    }, 1500);
+
+    console.log('✅ Multi-layer fallback system initialized');
+}
+
+function monitorInlineSVGBlocking() {
+    // Check if inline SVGs are being hidden or blocked
+    const inlineSVGs = document.querySelectorAll('.nav-icon, .nav-icon.large');
+
+    inlineSVGs.forEach(svg => {
+        // Monitor for style changes that might indicate blocking
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                    const computedStyle = getComputedStyle(svg);
+                    if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden') {
+                        console.log('🚫 Inline SVG appears blocked, activating external backup');
+                        activateExternalBackup(svg);
+                    }
+                }
+            });
         });
 
-        // Check if already loaded or failed
-        if (!icon.complete || icon.naturalWidth === 0) {
+        observer.observe(svg, { attributes: true, attributeFilter: ['style', 'class'] });
+
+        // Initial check
+        setTimeout(() => {
+            const computedStyle = getComputedStyle(svg);
+            if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden' || svg.offsetWidth === 0) {
+                console.log('🚫 Inline SVG blocked on initial check, activating backup');
+                activateExternalBackup(svg);
+            }
+        }, 500);
+    });
+}
+
+function activateExternalBackup(inlineSvg) {
+    const backupImg = inlineSvg.nextElementSibling;
+    if (backupImg && backupImg.classList.contains('nav-icon-backup')) {
+        inlineSvg.style.display = 'none';
+        backupImg.style.display = 'inline-block';
+        console.log('🔄 Switched to external SVG backup');
+    }
+}
+
+function monitorExternalBackupImages() {
+    const backupImages = document.querySelectorAll('.nav-icon-backup');
+
+    backupImages.forEach(img => {
+        img.addEventListener('error', function() {
+            console.log('📷 External backup failed:', this.src);
+            activateTextBackup(this);
+        });
+
+        // Check loading status
+        if (!img.complete || img.naturalWidth === 0) {
             setTimeout(() => {
-                if (!icon.complete || icon.naturalWidth === 0) {
-                    icon.dispatchEvent(new Event('error'));
+                if (!img.complete || img.naturalWidth === 0) {
+                    activateTextBackup(img);
                 }
             }, 1000);
         }
     });
+}
 
-    // Monitor for dynamic blocking (less aggressive since we're using external files)
-    setTimeout(() => {
-        socialIcons.forEach(icon => {
-            if (!icon.complete || icon.naturalWidth === 0 || getComputedStyle(icon).display === 'none') {
-                console.log('🚫 Icon appears to be blocked, showing fallback');
-                icon.style.display = 'none';
-                const textFallback = icon.nextElementSibling;
-                if (textFallback && textFallback.classList.contains('text-fallback')) {
-                    textFallback.style.display = 'inline-block';
-                }
+function activateTextBackup(element) {
+    console.log('🔤 Activating text backup fallback');
+    element.style.display = 'none';
+
+    // Find the text backup (could be next sibling or a few siblings away)
+    let sibling = element.nextElementSibling;
+    while (sibling) {
+        if (sibling.classList && (sibling.classList.contains('text-backup') || sibling.classList.contains('text-fallback'))) {
+            sibling.style.display = 'inline-block';
+            console.log('✅ Text backup activated');
+            break;
+        }
+        sibling = sibling.nextElementSibling;
+    }
+}
+
+function checkForAdBlockerInterference() {
+    // Check all icon types for blocking
+    const allIcons = document.querySelectorAll('.nav-icon, .nav-icon-backup, .social-icon');
+    let blockedCount = 0;
+
+    allIcons.forEach(icon => {
+        const computedStyle = getComputedStyle(icon);
+        const isBlocked = computedStyle.display === 'none' ||
+                         computedStyle.visibility === 'hidden' ||
+                         icon.offsetWidth === 0 ||
+                         (icon.tagName === 'IMG' && (!icon.complete || icon.naturalWidth === 0));
+
+        if (isBlocked) {
+            blockedCount++;
+            if (icon.tagName === 'svg') {
+                activateExternalBackup(icon);
+            } else if (icon.tagName === 'IMG') {
+                activateTextBackup(icon);
             }
-        });
-    }, 2000);
+        }
+    });
 
-    console.log('✅ Simplified fallback system initialized');
+    if (blockedCount > 0) {
+        console.log(`🛡️ Detected ${blockedCount} blocked icons, fallbacks activated`);
+    } else {
+        console.log('✅ All icons loading successfully');
+    }
 }
 
 function addTextFallback(link) {
