@@ -1554,14 +1554,19 @@ function monitorInlineSVGBlocking() {
     // Check if inline SVGs are being hidden or blocked
     const inlineSVGs = document.querySelectorAll('.nav-icon, .nav-icon.large');
 
-    inlineSVGs.forEach(svg => {
+    console.log(`🔍 Monitoring ${inlineSVGs.length} inline SVG icons for blocking...`);
+
+    inlineSVGs.forEach((svg, index) => {
+        // Backups are hidden by default via CSS, no need to manually hide them
+        console.log(`🔧 Icon ${index + 1}: Monitoring for blocking`);
+
         // Monitor for style changes that might indicate blocking
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
                     const computedStyle = getComputedStyle(svg);
                     if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden') {
-                        console.log('🚫 Inline SVG appears blocked, activating external backup');
+                        console.log(`🚫 Icon ${index + 1}: Inline SVG appears blocked, activating external backup`);
                         activateExternalBackup(svg);
                     }
                 }
@@ -1574,8 +1579,10 @@ function monitorInlineSVGBlocking() {
         setTimeout(() => {
             const computedStyle = getComputedStyle(svg);
             if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden' || svg.offsetWidth === 0) {
-                console.log('🚫 Inline SVG blocked on initial check, activating backup');
+                console.log(`🚫 Icon ${index + 1}: Inline SVG blocked on initial check, activating backup`);
                 activateExternalBackup(svg);
+            } else {
+                console.log(`✅ Icon ${index + 1}: Inline SVG is visible and working`);
             }
         }, 500);
     });
@@ -1585,7 +1592,7 @@ function activateExternalBackup(inlineSvg) {
     const backupImg = inlineSvg.nextElementSibling;
     if (backupImg && backupImg.classList.contains('nav-icon-backup')) {
         inlineSvg.style.display = 'none';
-        backupImg.style.display = 'inline-block';
+        backupImg.classList.add('backup-active');
         console.log('🔄 Switched to external SVG backup');
     }
 }
