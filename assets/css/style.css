@@ -457,16 +457,21 @@ a[href*="orcid.org"] {
 .text-fallback-li::after { content: "LI"; }
 .text-fallback-or::after { content: "OR"; }
 
-/* Platform fallback elements */
+/* Platform fallback elements - Enhanced for uBlock Origin resistance */
 .platform-fallback {
-    display: none;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1rem;
-    z-index: 1000;
-    pointer-events: none;
+    display: none !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    font-size: 1.2rem !important;
+    z-index: 1000 !important;
+    pointer-events: none !important;
+    color: currentColor !important;
+    line-height: 1 !important;
+    user-select: none !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 /* Show fallbacks when SVG is hidden */

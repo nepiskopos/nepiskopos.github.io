@@ -1534,15 +1534,23 @@ function initScrollToTop() {
 
 // Lightweight Social Icon Fallback System
 function initSocialIconFallbacks() {
-    // Simple one-time deployment with fallbacks
-    setTimeout(() => {
-        deploySimpleFallbacks();
-    }, 100);
+    // Immediate setup
+    deploySimpleFallbacks();
 
-    // Single check after page load
-    setTimeout(() => {
-        checkAndActivateFallbacks();
-    }, 1000);
+    // Multiple checks to catch uBlock Origin blocking
+    const checkTimes = [250, 500, 1000, 1500];
+    checkTimes.forEach(delay => {
+        setTimeout(() => {
+            checkAndActivateFallbacks();
+        }, delay);
+    });
+
+    // Also check when the page becomes visible (handles tab switching)
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            setTimeout(() => checkAndActivateFallbacks(), 100);
+        }
+    });
 }
 
 function addTextFallback(link) {
@@ -2074,7 +2082,17 @@ window.NikolaosPortfolio = {
     // Manual triggers for testing anti-ad-blocker systems
     deploySimpleFallbacks: deploySimpleFallbacks,
     checkFallbacks: checkAndActivateFallbacks,
+    createBackups: () => {
+        document.querySelectorAll('.nav-social-link').forEach(createBackupFallback);
+    },
     activateNuclearFallback: activateNuclearCSSFallback,
+    // Test function to simulate blocking
+    simulateBlocking: () => {
+        document.querySelectorAll('.social-svg').forEach(svg => {
+            svg.style.display = 'none';
+        });
+        setTimeout(checkAndActivateFallbacks, 100);
+    },
     // Legacy functions for backward compatibility
     rebuildSocialIcons: rebuildSocialIconsCompletely,
     detectBlocked: detectAndRecreateBlockedIcons
@@ -2370,29 +2388,31 @@ function applyDynamicProtection(container) {
     });
 }
 
-// Simple fallback deployment
+// Enhanced fallback deployment with better uBlock Origin detection
 function deploySimpleFallbacks() {
     const socialLinks = document.querySelectorAll('.nav-social-link');
 
     socialLinks.forEach(link => {
-        // Add simple protection without aggressive monitoring
-        link.style.visibility = 'visible';
-        link.style.opacity = '1';
-        link.style.display = 'flex';
+        // Force visibility with maximum specificity
+        link.style.setProperty('visibility', 'visible', 'important');
+        link.style.setProperty('opacity', '1', 'important');
+        link.style.setProperty('display', 'flex', 'important');
+        link.style.setProperty('position', 'relative', 'important');
 
-        // Add simple emoji fallbacks
+        // Ensure fallback elements are ready
         const svg = link.querySelector('.social-svg');
         const fallback = link.querySelector('.platform-fallback');
 
         if (svg && fallback) {
-            // Simple visibility check
-            setTimeout(() => {
-                const svgStyle = getComputedStyle(svg);
-                if (svgStyle.display === 'none' || svgStyle.visibility === 'hidden') {
-                    svg.style.display = 'none';
-                    fallback.style.display = 'inline-block';
-                }
-            }, 100);
+            // Set up fallback with proper styling
+            fallback.style.setProperty('position', 'absolute', 'important');
+            fallback.style.setProperty('top', '50%', 'important');
+            fallback.style.setProperty('left', '50%', 'important');
+            fallback.style.setProperty('transform', 'translate(-50%, -50%)', 'important');
+            fallback.style.setProperty('font-size', '1.2rem', 'important');
+            fallback.style.setProperty('z-index', '1000', 'important');
+            fallback.style.setProperty('display', 'none', 'important');
+            fallback.style.setProperty('pointer-events', 'none', 'important');
         }
     });
 }
@@ -2407,22 +2427,98 @@ function checkAndActivateFallbacks() {
         const fallback = link.querySelector('.platform-fallback');
 
         if (svg && fallback) {
+            // Multiple detection methods for uBlock Origin
             const rect = svg.getBoundingClientRect();
             const style = getComputedStyle(svg);
+            const linkRect = link.getBoundingClientRect();
+            const linkStyle = getComputedStyle(link);
 
-            // Simple check if SVG is hidden
-            if (rect.width === 0 || rect.height === 0 ||
-                style.display === 'none' || style.visibility === 'hidden') {
-                // Show fallback
-                svg.style.display = 'none';
-                fallback.style.display = 'inline-block';
+            // Check if SVG or entire link is hidden by uBlock Origin
+            const svgBlocked = (
+                rect.width === 0 || rect.height === 0 ||
+                style.display === 'none' ||
+                style.visibility === 'hidden' ||
+                style.opacity === '0' ||
+                rect.x < -9999 || rect.y < -9999
+            );
+
+            const linkBlocked = (
+                linkRect.width === 0 || linkRect.height === 0 ||
+                linkStyle.display === 'none' ||
+                linkStyle.visibility === 'hidden' ||
+                linkStyle.opacity === '0'
+            );
+
+            if (svgBlocked || linkBlocked) {
+                console.log('🚫 Detected blocked social icon, activating fallback for:', link.getAttribute('aria-label'));
+
+                // Force link visibility first
+                link.style.setProperty('display', 'flex', 'important');
+                link.style.setProperty('visibility', 'visible', 'important');
+                link.style.setProperty('opacity', '1', 'important');
+                link.style.setProperty('align-items', 'center', 'important');
+                link.style.setProperty('justify-content', 'center', 'important');
+
+                // Hide SVG and show emoji fallback
+                svg.style.setProperty('display', 'none', 'important');
+                fallback.style.setProperty('display', 'inline-block', 'important');
+                fallback.style.setProperty('visibility', 'visible', 'important');
+                fallback.style.setProperty('opacity', '1', 'important');
+
+                // Add fallback class for CSS styling
                 link.classList.add('fallback-active');
+
+                // Create additional backup if emoji fallback might also be blocked
+                createBackupFallback(link);
+
+                console.log('✅ Fallback activated successfully');
             }
         }
     });
 }
 
-// Removed aggressive monitoring to prevent infinite loops
+// Create additional backup fallback elements
+function createBackupFallback(link) {
+    // Don't create duplicate backups
+    if (link.querySelector('.backup-text-fallback')) return;
+
+    const platform = link.getAttribute('data-platform');
+    const textMap = { github: 'GH', linkedin: 'LI', orcid: 'OR' };
+    const text = textMap[platform] || '●';
+
+    // Create text-based backup
+    const textBackup = document.createElement('span');
+    textBackup.className = 'backup-text-fallback';
+    textBackup.textContent = text;
+    textBackup.style.cssText = `
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        font-size: 0.9rem !important;
+        font-weight: bold !important;
+        z-index: 1001 !important;
+        color: currentColor !important;
+        display: none !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        user-select: none !important;
+        pointer-events: none !important;
+    `;
+    link.appendChild(textBackup);
+
+    // Check if emoji fallback is working, if not show text backup
+    setTimeout(() => {
+        const fallback = link.querySelector('.platform-fallback');
+        if (fallback) {
+            const fallbackRect = fallback.getBoundingClientRect();
+            if (fallbackRect.width === 0 || fallbackRect.height === 0) {
+                console.log('📝 Emoji fallback blocked, showing text backup for:', platform);
+                textBackup.style.setProperty('display', 'inline-block', 'important');
+            }
+        }
+    }, 100);
+}
 
 // Nuclear CSS fallback - Pure CSS icons that can't be blocked
 function activateNuclearCSSFallback() {
