@@ -1575,10 +1575,14 @@ function monitorInlineSVGBlocking() {
 
         observer.observe(svg, { attributes: true, attributeFilter: ['style', 'class'] });
 
-        // Initial check
+        // Initial check - be more careful to avoid false positives
         setTimeout(() => {
             const computedStyle = getComputedStyle(svg);
-            if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden' || svg.offsetWidth === 0) {
+            const parentLink = svg.closest('a');
+            const parentVisible = parentLink ? getComputedStyle(parentLink).display !== 'none' : true;
+
+            // Only consider it blocked if the SVG itself is hidden but its parent is visible
+            if (parentVisible && (computedStyle.display === 'none' || computedStyle.visibility === 'hidden' || svg.offsetWidth === 0)) {
                 console.log(`🚫 Icon ${index + 1}: Inline SVG blocked on initial check, activating backup`);
                 activateExternalBackup(svg);
             } else {
@@ -1634,24 +1638,30 @@ function activateTextBackup(element) {
 }
 
 function checkForAdBlockerInterference() {
-    // Check all icon types for blocking
-    const allIcons = document.querySelectorAll('.nav-icon, .nav-icon-backup, .social-icon');
+    // Check only primary icons (SVG) for blocking, not backup icons which are intentionally hidden
+    const primaryIcons = document.querySelectorAll('.nav-icon:not(.nav-icon-backup), .social-icon:not(.nav-icon-backup)');
     let blockedCount = 0;
 
-    allIcons.forEach(icon => {
+    primaryIcons.forEach(icon => {
         const computedStyle = getComputedStyle(icon);
         const isBlocked = computedStyle.display === 'none' ||
                          computedStyle.visibility === 'hidden' ||
-                         icon.offsetWidth === 0 ||
-                         (icon.tagName === 'IMG' && (!icon.complete || icon.naturalWidth === 0));
+                         icon.offsetWidth === 0;
 
         if (isBlocked) {
             blockedCount++;
             if (icon.tagName === 'svg') {
                 activateExternalBackup(icon);
-            } else if (icon.tagName === 'IMG') {
-                activateTextBackup(icon);
             }
+        }
+    });
+
+    // Also check backup images that should be active but failing to load
+    const activeBackups = document.querySelectorAll('.nav-icon-backup.backup-active');
+    activeBackups.forEach(img => {
+        if (img.tagName === 'IMG' && (!img.complete || img.naturalWidth === 0)) {
+            blockedCount++;
+            activateTextBackup(img);
         }
     });
 
