@@ -3114,10 +3114,16 @@ function initMobileAccordion() {
     initAccordionHandlers();
     initButtonHandlers();
 
-    // Open the first accordion by default on mobile
+    // Open the first accordion by default on mobile (without scrolling)
     if (isMobile()) {
         setTimeout(() => {
-            openAccordion('about-content');
+            const firstHeader = document.querySelector('[data-target="about-content"]');
+            const firstContent = document.getElementById('about-content');
+            if (firstHeader && firstContent) {
+                firstHeader.classList.add('active');
+                firstContent.classList.add('active');
+                // No scrolling - let user stay at top
+            }
         }, 100);
     }
 
@@ -3128,11 +3134,17 @@ function initMobileAccordion() {
         } else {
             // Re-initialize button handlers for mobile
             initButtonHandlers();
-            // Open first accordion if none are open
+            // Open first accordion if none are open (without scrolling)
             const hasActiveAccordion = document.querySelector('.accordion-header.active');
             if (!hasActiveAccordion) {
                 setTimeout(() => {
-                    openAccordion('about-content');
+                    const firstHeader = document.querySelector('[data-target="about-content"]');
+                    const firstContent = document.getElementById('about-content');
+                    if (firstHeader && firstContent) {
+                        firstHeader.classList.add('active');
+                        firstContent.classList.add('active');
+                        // No scrolling on resize
+                    }
                 }, 100);
             }
         }
