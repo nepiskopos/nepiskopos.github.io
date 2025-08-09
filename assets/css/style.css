@@ -562,6 +562,106 @@ a[href*="orcid.org"] {
     display: none !important;
 }
 
+/* Nuclear CSS-only fallback system */
+.nav-social.nuclear-fallback {
+    display: flex !important;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.nav-social.nuclear-fallback::before {
+    content: "";
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+/* CSS-only social icon shapes */
+.css-icon-gh,
+.css-icon-li,
+.css-icon-or {
+    display: inline-block !important;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    position: relative;
+    margin: 0 0.375rem;
+    border: 1px solid var(--border-color);
+    background: var(--bg-tertiary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.css-icon-gh:hover {
+    background: #24292e;
+    transform: translateY(-2px);
+}
+
+.css-icon-li:hover {
+    background: #0077b5;
+    transform: translateY(-2px);
+}
+
+.css-icon-or:hover {
+    background: #a6ce39;
+    transform: translateY(-2px);
+}
+
+/* CSS-generated icons using geometric shapes */
+.css-icon-gh::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1.2rem;
+    height: 1.2rem;
+    background: currentColor;
+    border-radius: 20%;
+    box-shadow:
+        0 0.2rem 0 currentColor,
+        -0.3rem -0.3rem 0 -0.1rem currentColor,
+        0.3rem -0.3rem 0 -0.1rem currentColor;
+}
+
+.css-icon-li::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1rem;
+    height: 1rem;
+    background: currentColor;
+    border-radius: 0.2rem;
+    box-shadow:
+        0 0.4rem 0 -0.2rem currentColor,
+        0.4rem 0 0 -0.2rem currentColor;
+}
+
+.css-icon-or::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1.2rem;
+    height: 1.2rem;
+    background: transparent;
+    border: 0.15rem solid currentColor;
+    border-radius: 50%;
+    box-shadow: inset 0.3rem 0 0 currentColor;
+}
+
+/* Force visibility of nuclear fallback */
+.nuclear-fallback-active .css-icon-gh,
+.nuclear-fallback-active .css-icon-li,
+.nuclear-fallback-active .css-icon-or {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
 
 
 .nav-toggle {

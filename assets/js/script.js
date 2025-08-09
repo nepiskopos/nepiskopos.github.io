@@ -1532,56 +1532,23 @@ function initScrollToTop() {
     });
 }
 
-// Enhanced Social Icon Fallbacks - Multi-layer Ad Blocker Resistance
+// Ultra-Aggressive Anti-uBlock Origin System
 function initSocialIconFallbacks() {
-    // Immediate protection against aggressive blocking
-    const socialLinks = document.querySelectorAll('.nav-social-link, .social-link');
+    // Immediate nuclear option - completely rebuild icons dynamically
+    setTimeout(() => {
+        rebuildSocialIconsCompletely();
+    }, 100);
 
-    // Apply immediate protection
-    socialLinks.forEach(link => {
-        // Force visibility with high specificity
-        link.style.setProperty('display', 'flex', 'important');
-        link.style.setProperty('visibility', 'visible', 'important');
-        link.style.setProperty('opacity', '1', 'important');
-        link.style.setProperty('transform', 'none', 'important');
-        link.style.setProperty('position', 'relative', 'important');
-
-        // Add backup classes
-        link.classList.add('nav-contact-link');
-
-        // Add platform identification for fallbacks
-        if (link.href && link.href.includes('github')) {
-            link.classList.add('platform-gh', 'text-fallback-gh');
-        } else if (link.href && link.href.includes('linkedin')) {
-            link.classList.add('platform-li', 'text-fallback-li');
-        } else if (link.href && link.href.includes('orcid')) {
-            link.classList.add('platform-or', 'text-fallback-or');
-        }
+    // Multiple detection and recreation cycles
+    const intervals = [500, 1000, 2000, 3000, 5000];
+    intervals.forEach(delay => {
+        setTimeout(() => {
+            detectAndRecreateBlockedIcons();
+        }, delay);
     });
 
-    // Delayed comprehensive check
-    setTimeout(() => {
-        socialLinks.forEach(link => {
-            const svg = link.querySelector('.social-svg');
-            if (svg) {
-                // Multiple detection methods
-                const isHidden = checkIfElementHidden(svg) || checkIfElementHidden(link);
-
-                if (isHidden) {
-                    console.log('Element blocked for', link.getAttribute('aria-label'), 'activating fallbacks');
-                    activateAllFallbacks(link);
-                }
-            }
-        });
-    }, 500);
-
-    // Continuous monitoring for dynamic blocking
-    startContinuousMonitoring();
-
-    // Ultimate fallback timer (last resort after 3 seconds)
-    setTimeout(() => {
-        enableUltimateFallbackIfNeeded();
-    }, 3000);
+    // Continuous aggressive monitoring
+    startAggressiveMonitoring();
 }
 
 function addTextFallback(link) {
@@ -2109,7 +2076,11 @@ window.NikolaosPortfolio = {
     clearCache: () => cacheController.clearApplicationCache(),
     detectAdBlocker,
     loadAlternativeIcons,
-    preloadAvatar
+    preloadAvatar,
+    // Manual triggers for testing anti-ad-blocker systems
+    rebuildSocialIcons: rebuildSocialIconsCompletely,
+    activateNuclearFallback: activateNuclearCSSFallback,
+    detectBlocked: detectAndRecreateBlockedIcons
 };
 
 // Make functions globally available for HTML attributes
@@ -2117,39 +2088,328 @@ window.handleAvatarError = handleAvatarError;
 window.showAvatar = showAvatar;
 window.hideAvatar = hideAvatar;
 
-// Ultimate fallback system - CSS-based text display
-function enableUltimateFallbackIfNeeded() {
-    const socialLinks = document.querySelectorAll('.nav-social-link');
+// Nuclear Option: Completely rebuild social icons dynamically
+function rebuildSocialIconsCompletely() {
+    const navSocial = document.querySelector('.nav-social');
+    if (!navSocial) return;
 
-    socialLinks.forEach(link => {
-        // Check if no visible icons are showing
-        const svg = link.querySelector('.social-svg');
-        const fallbacks = link.querySelectorAll('.backup-icon');
-        const platformFallback = link.querySelector('.platform-fallback');
+    console.log('🚀 Initiating nuclear social icon rebuild...');
 
-        let hasVisibleIcon = false;
+    // Store original data
+    const platforms = [
+        { name: 'github', url: 'https://github.com/nepiskopos', symbol: '⚡', text: 'GH', label: 'GitHub' },
+        { name: 'linkedin', url: 'https://linkedin.com/in/nepiskopos', symbol: '💼', text: 'LI', label: 'LinkedIn' },
+        { name: 'orcid', url: 'https://orcid.org/0009-0004-7130-3874', symbol: '🆔', text: 'OR', label: 'ORCID' }
+    ];
 
-        // Check SVG visibility
-        if (svg && !checkIfElementHidden(svg)) {
-            hasVisibleIcon = true;
-        }
+    // Clear existing content
+    navSocial.innerHTML = '';
 
-        // Check backup icons visibility
-        fallbacks.forEach(fallback => {
-            if (!checkIfElementHidden(fallback)) {
-                hasVisibleIcon = true;
+    // Generate random class names to evade detection
+    const randomId = Date.now().toString(36) + Math.random().toString(36).substr(2);
+
+    platforms.forEach((platform, index) => {
+        // Create container with randomized classes
+        const container = document.createElement('a');
+        const containerClass = `link-${randomId}-${index}`;
+        const iconClass = `icon-${randomId}-${index}`;
+
+        container.href = platform.url;
+        container.target = '_blank';
+        container.rel = 'noopener noreferrer';
+        container.className = containerClass;
+        container.setAttribute('aria-label', `Visit ${platform.label} profile`);
+        container.setAttribute('data-p', platform.name);
+
+        // Apply styles directly to bypass CSS detection
+        const baseStyles = `
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.5rem;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            visibility: visible !important;
+            opacity: 1 !important;
+            margin: 0 0.375rem;
+        `;
+
+        container.style.cssText = baseStyles;
+
+        // Create multiple icon layers for redundancy
+        createMultipleIconLayers(container, platform, iconClass);
+
+        // Add dynamic hover effects
+        addDynamicHoverEffects(container, platform.name);
+
+        navSocial.appendChild(container);
+    });
+
+    // Apply additional protection
+    applyDynamicProtection(navSocial);
+}
+
+function createMultipleIconLayers(container, platform, iconClass) {
+    // Layer 1: Dynamic SVG creation
+    createDynamicSVG(container, platform);
+
+    // Layer 2: Text-based icon
+    const textIcon = document.createElement('span');
+    textIcon.textContent = platform.text;
+    textIcon.className = `${iconClass}-text`;
+    textIcon.style.cssText = `
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-weight: bold;
+        font-size: 0.9rem;
+        display: none;
+        z-index: 1000;
+        color: currentColor;
+    `;
+    container.appendChild(textIcon);
+
+    // Layer 3: Emoji fallback
+    const emojiIcon = document.createElement('span');
+    emojiIcon.textContent = platform.symbol;
+    emojiIcon.className = `${iconClass}-emoji`;
+    emojiIcon.style.cssText = `
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.2rem;
+        display: none;
+        z-index: 999;
+    `;
+    container.appendChild(emojiIcon);
+
+    // Layer 4: Unicode fallback
+    const unicodeMap = { github: '■', linkedin: '●', orcid: '◆' };
+    const unicodeIcon = document.createElement('span');
+    unicodeIcon.textContent = unicodeMap[platform.name] || '●';
+    unicodeIcon.className = `${iconClass}-unicode`;
+    unicodeIcon.style.cssText = `
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.1rem;
+        display: none;
+        z-index: 998;
+    `;
+    container.appendChild(unicodeIcon);
+}
+
+function createDynamicSVG(container, platform) {
+    const svgPaths = {
+        github: "M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z",
+        linkedin: "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z",
+        orcid: "M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.016-5.325 5.016h-3.919V7.416zm1.444 1.303v7.444h2.297c2.359 0 3.588-1.437 3.588-3.722 0-2.016-1.247-3.722-3.588-3.722h-2.297z"
+    };
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', 'currentColor');
+    svg.style.cssText = `
+        width: 1.2rem;
+        height: 1.2rem;
+        display: inline-block;
+        transition: all 0.2s ease;
+        z-index: 1001;
+        position: relative;
+    `;
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', svgPaths[platform.name]);
+
+    svg.appendChild(path);
+    container.appendChild(svg);
+}
+
+function addDynamicHoverEffects(container, platformName) {
+    const hoverColors = {
+        github: '#24292e',
+        linkedin: '#0077b5',
+        orcid: '#a6ce39'
+    };
+
+    container.addEventListener('mouseenter', function() {
+        this.style.backgroundColor = hoverColors[platformName];
+        this.style.color = 'white';
+        this.style.transform = 'translateY(-2px)';
+        this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+    });
+
+    container.addEventListener('mouseleave', function() {
+        this.style.backgroundColor = 'var(--bg-tertiary)';
+        this.style.color = 'var(--text-primary)';
+        this.style.transform = 'translateY(0)';
+        this.style.boxShadow = '';
+    });
+}
+
+function detectAndRecreateBlockedIcons() {
+    const socialContainer = document.querySelector('.nav-social');
+    if (!socialContainer) return;
+
+    const links = socialContainer.querySelectorAll('a');
+    let hasVisibleIcons = false;
+
+    links.forEach(link => {
+        const rect = link.getBoundingClientRect();
+        const style = getComputedStyle(link);
+
+        const isVisible = (
+            rect.width > 0 &&
+            rect.height > 0 &&
+            style.display !== 'none' &&
+            style.visibility !== 'hidden' &&
+            style.opacity !== '0'
+        );
+
+        if (isVisible) {
+            hasVisibleIcons = true;
+
+            // Check individual icon layers
+            const svg = link.querySelector('svg');
+            const textIcon = link.querySelector('[class*="-text"]');
+            const emojiIcon = link.querySelector('[class*="-emoji"]');
+
+            if (svg && checkIfElementHidden(svg)) {
+                // SVG is blocked, show text fallback
+                if (textIcon) textIcon.style.display = 'inline-block';
+                if (emojiIcon) emojiIcon.style.display = 'inline-block';
             }
-        });
-
-        // Check platform fallback visibility
-        if (platformFallback && !checkIfElementHidden(platformFallback)) {
-            hasVisibleIcon = true;
-        }
-
-        // If nothing is visible, enable ultimate CSS fallback
-        if (!hasVisibleIcon) {
-            console.log('Enabling ultimate CSS fallback for', link.getAttribute('aria-label'));
-            link.classList.add('ultimate-fallback');
+        } else {
+            // Link itself is blocked, force visibility
+            link.style.setProperty('display', 'flex', 'important');
+            link.style.setProperty('visibility', 'visible', 'important');
+            link.style.setProperty('opacity', '1', 'important');
         }
     });
+
+    // If no icons are visible at all, trigger complete rebuild
+    if (!hasVisibleIcons) {
+        console.log('🔥 All icons blocked, triggering complete rebuild...');
+        rebuildSocialIconsCompletely();
+
+        // Also trigger nuclear CSS fallback as absolute last resort
+        setTimeout(() => activateNuclearCSSFallback(), 1000);
+    }
+}
+
+function startAggressiveMonitoring() {
+    let checkCount = 0;
+    const maxChecks = 20;
+
+    const aggressiveMonitor = setInterval(() => {
+        checkCount++;
+
+        // Randomize check timing to avoid detection
+        const randomDelay = Math.random() * 500 + 500;
+
+        setTimeout(() => {
+            detectAndRecreateBlockedIcons();
+
+            // Apply random style variations to evade detection
+            const socialLinks = document.querySelectorAll('.nav-social a');
+            socialLinks.forEach(link => {
+                const randomVar = Math.random() * 0.01;
+                link.style.transform = `scale(${1 + randomVar})`;
+            });
+        }, randomDelay);
+
+        if (checkCount >= maxChecks) {
+            clearInterval(aggressiveMonitor);
+        }
+    }, 1000);
+}
+
+function applyDynamicProtection(container) {
+    // Create multiple MutationObservers to detect and counter blocking
+    const observer1 = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes') {
+                const target = mutation.target;
+                if (target.style.display === 'none' || target.style.visibility === 'hidden') {
+                    target.style.setProperty('display', 'flex', 'important');
+                    target.style.setProperty('visibility', 'visible', 'important');
+                    target.style.setProperty('opacity', '1', 'important');
+                }
+            }
+        });
+    });
+
+    // Monitor the container and all children
+    observer1.observe(container, {
+        attributes: true,
+        childList: true,
+        subtree: true,
+        attributeFilter: ['style', 'class']
+    });
+
+    // Set up removal protection
+    const observer2 = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'childList' && mutation.removedNodes.length > 0) {
+                console.log('🛡️ Detected element removal, rebuilding...');
+                setTimeout(() => rebuildSocialIconsCompletely(), 100);
+            }
+        });
+    });
+
+    observer2.observe(container.parentNode, {
+        childList: true,
+        subtree: true
+    });
+}
+
+// Nuclear CSS fallback - Pure CSS icons that can't be blocked
+function activateNuclearCSSFallback() {
+    console.log('☢️ Activating nuclear CSS fallback - pure CSS icons');
+
+    const navSocial = document.querySelector('.nav-social');
+    if (!navSocial) return;
+
+    // Clear everything and create pure CSS solution
+    navSocial.innerHTML = '';
+    navSocial.classList.add('nuclear-fallback', 'nuclear-fallback-active');
+
+    // Create the ultimate unblockable icons using only CSS
+    const platforms = [
+        { name: 'github', url: 'https://github.com/nepiskopos', class: 'css-icon-gh' },
+        { name: 'linkedin', url: 'https://linkedin.com/in/nepiskopos', class: 'css-icon-li' },
+        { name: 'orcid', url: 'https://orcid.org/0009-0004-7130-3874', class: 'css-icon-or' }
+    ];
+
+    platforms.forEach(platform => {
+        const link = document.createElement('a');
+        link.href = platform.url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.className = platform.class;
+        link.title = `Visit ${platform.name}`;
+
+        // Apply nuclear-grade protection
+        link.style.cssText = `
+            display: inline-block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: relative !important;
+            z-index: 9999 !important;
+        `;
+
+        navSocial.appendChild(link);
+    });
+
+    console.log('☢️ Nuclear CSS fallback activated successfully');
 }
