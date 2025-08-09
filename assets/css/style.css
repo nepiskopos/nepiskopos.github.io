@@ -203,7 +203,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .logo-text {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     font-weight: 700;
     background: var(--gradient-primary);
     -webkit-background-clip: text;
@@ -213,7 +213,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .nav-menu {
     display: flex;
-    gap: 2rem;
+    gap: 1.5rem;
     align-items: center;
     flex-wrap: nowrap;
     overflow: visible;
@@ -225,9 +225,10 @@ h1, h2, h3, h4, h5, h6 {
     text-decoration: none;
     color: var(--text-primary);
     font-weight: 500;
+    font-size: 1.1rem;
     transition: color var(--transition-fast);
     position: relative;
-    padding: 0.5rem 0;
+    padding: 0.75rem 1rem;
 }
 
 .nav-link:hover {
@@ -995,14 +996,14 @@ a[href*="orcid.org"].nav-social-link {
     display: none;
     flex-direction: column;
     cursor: pointer;
-    padding: 0.5rem;
+    padding: 0.75rem;
 }
 
 .bar {
-    width: 25px;
+    width: 28px;
     height: 3px;
     background: var(--text-primary);
-    margin: 3px 0;
+    margin: 4px 0;
     transition: var(--transition-fast);
     border-radius: 2px;
 }
@@ -1012,9 +1013,9 @@ a[href*="orcid.org"].nav-social-link {
     background: none;
     border: none;
     color: var(--text-primary);
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     cursor: pointer;
-    padding: 0.5rem;
+    padding: 0.75rem;
     border-radius: 0.5rem;
     transition: all var(--transition-fast);
     margin-left: 1rem;

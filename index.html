@@ -73,11 +73,12 @@
     </div>
 
         <!-- Navigation -->
-    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <nav class="navbar" role="navigation" aria-label="Main navigation">
         <div class="nav-container">
             <div class="nav-logo">
                 <span class="logo-text">NE</span>
             </div>
+
             <div class="nav-menu" role="menubar">
                 <a href="#home" class="nav-link" role="menuitem">Home</a>
                 <a href="#about" class="nav-link" role="menuitem">About</a>
@@ -87,7 +88,8 @@
                 <a href="#contact" class="nav-link" role="menuitem">Contact</a>
             </div>
 
-            <div class="nav-links-external" role="navigation" aria-label="External profiles" data-contact="external-profiles">
+            <div class="nav-controls">
+                <div class="nav-links-external" role="navigation" aria-label="External profiles" data-contact="external-profiles">
                 <a href="https://github.com/nepiskopos" target="_blank" rel="noopener noreferrer"
                    class="nav-ext-link nav-contact-link dev-platform dev-profile"
                    aria-label="Visit GitHub profile"
@@ -126,14 +128,15 @@
                     <img src="assets/img/research-icon.svg" alt="ORCID" class="nav-icon-backup" width="20" height="20">
                     <span class="text-backup" style="display:none;font-size:0.9rem;font-weight:bold">OR</span>
                     <span class="sr-only">ORCID</span>
-                </a>
-            </div>
+                                </a>
+                </div>
 
-            <div class="nav-controls">
                 <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
                     <i class="fas fa-moon"></i>
                 </button>
-                <div class="nav-toggle" aria-label="Toggle mobile menu">
+
+                <!-- Desktop hamburger toggle (hidden by default, only shows on small desktop screens) -->
+                <div class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu">
                     <span class="bar"></span>
                     <span class="bar"></span>
                     <span class="bar"></span>
