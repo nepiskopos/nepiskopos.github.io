@@ -255,16 +255,20 @@ h1, h2, h3, h4, h5, h6 {
     gap: 1rem;
 }
 
-/* Navigation Social Icons */
+/* Navigation Social Icons - Ad Blocker Resistant */
 .nav-social {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     margin-left: 2rem;
+    /* Anti-ad-blocker protection */
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
 }
 
 .nav-social-link {
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
     width: 2.5rem;
@@ -277,6 +281,10 @@ h1, h2, h3, h4, h5, h6 {
     border: 1px solid var(--border-color);
     position: relative;
     overflow: hidden;
+    /* Anti-ad-blocker protection */
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
 }
 
 .nav-social-link::before {
@@ -381,17 +389,177 @@ h1, h2, h3, h4, h5, h6 {
     display: none;
 }
 
-/* Ensure navigation social links are always visible */
+/* Enhanced anti-ad-blocker protection */
 .nav-social-link {
     visibility: visible !important;
     opacity: 1 !important;
-    position: relative;
+    position: relative !important;
+    /* Override common ad blocker hiding techniques */
+    display: flex !important;
+    z-index: 999 !important;
 }
 
 .nav-social-link .social-svg {
     visibility: visible !important;
     display: inline-block !important;
     opacity: 1 !important;
+    /* Prevent SVG-specific blocking */
+    pointer-events: auto !important;
+    filter: none !important;
+}
+
+/* Alternative social link class names to evade detection */
+.nav-contact-link {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Anti-ad-blocker CSS using alternative selectors */
+a[href*="github.com"],
+a[href*="linkedin.com"],
+a[href*="orcid.org"] {
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: flex !important;
+}
+
+/* Multiple backup icon systems */
+.backup-icon {
+    display: inline-block;
+    width: 1.2rem;
+    height: 1.2rem;
+    text-align: center;
+    line-height: 1.2rem;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+/* Platform-specific emoji fallbacks */
+.platform-gh::after { content: "⚡"; }
+.platform-li::after { content: "💼"; }
+.platform-or::after { content: "🆔"; }
+
+/* Text-based fallbacks */
+.text-fallback-gh::after { content: "GH"; }
+.text-fallback-li::after { content: "LI"; }
+.text-fallback-or::after { content: "OR"; }
+
+/* Platform fallback elements */
+.platform-fallback {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1rem;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+/* Show fallbacks when SVG is hidden */
+.nav-social-link.fallback-active .social-svg,
+.nav-social-link.no-svg .social-svg {
+    display: none !important;
+}
+
+.nav-social-link.fallback-active .platform-fallback,
+.nav-social-link.no-svg .platform-fallback {
+    display: inline-block !important;
+}
+
+/* Alternative naming for critical elements */
+.nav-contact-links {
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: flex !important;
+}
+
+.dev-profile,
+.professional-profile,
+.research-profile {
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: flex !important;
+    position: relative !important;
+}
+
+.profile-icon {
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: inline-block !important;
+}
+
+/* Force visibility with different selector patterns */
+[data-platform="github"],
+[data-platform="linkedin"],
+[data-platform="orcid"] {
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: flex !important;
+}
+
+[data-contact="development-portfolio"],
+[data-contact="professional-network"],
+[data-contact="research-identifier"] {
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: flex !important;
+}
+
+/* Backup icon containers */
+.emoji-icon,
+.text-icon,
+.unicode-icon {
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: inline-block !important;
+}
+
+/* Anti-detection patterns */
+.anti-block,
+.social-secure,
+.fallback-active {
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: flex !important;
+    transform: none !important;
+}
+
+/* CSS-based icon generation for ultimate fallback */
+.nav-social-link:not(.fallback-active):after {
+    content: attr(data-text);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.8rem;
+    font-weight: bold;
+    display: none;
+    color: currentColor;
+    z-index: 1000;
+}
+
+/* Show CSS fallback when needed */
+.nav-social-link.ultimate-fallback:after {
+    display: block !important;
+}
+
+.nav-social-link.ultimate-fallback .social-svg,
+.nav-social-link.ultimate-fallback .platform-fallback {
+    display: none !important;
 }
 
 

@@ -1532,33 +1532,56 @@ function initScrollToTop() {
     });
 }
 
-// Social Icon Fallbacks - Ad Blocker Resistant
+// Enhanced Social Icon Fallbacks - Multi-layer Ad Blocker Resistance
 function initSocialIconFallbacks() {
-    // Check if SVG icons are working after a short delay
-    setTimeout(() => {
-        const socialLinks = document.querySelectorAll('.nav-social-link, .social-link');
+    // Immediate protection against aggressive blocking
+    const socialLinks = document.querySelectorAll('.nav-social-link, .social-link');
 
+    // Apply immediate protection
+    socialLinks.forEach(link => {
+        // Force visibility with high specificity
+        link.style.setProperty('display', 'flex', 'important');
+        link.style.setProperty('visibility', 'visible', 'important');
+        link.style.setProperty('opacity', '1', 'important');
+        link.style.setProperty('transform', 'none', 'important');
+        link.style.setProperty('position', 'relative', 'important');
+
+        // Add backup classes
+        link.classList.add('nav-contact-link');
+
+        // Add platform identification for fallbacks
+        if (link.href && link.href.includes('github')) {
+            link.classList.add('platform-gh', 'text-fallback-gh');
+        } else if (link.href && link.href.includes('linkedin')) {
+            link.classList.add('platform-li', 'text-fallback-li');
+        } else if (link.href && link.href.includes('orcid')) {
+            link.classList.add('platform-or', 'text-fallback-or');
+        }
+    });
+
+    // Delayed comprehensive check
+    setTimeout(() => {
         socialLinks.forEach(link => {
             const svg = link.querySelector('.social-svg');
             if (svg) {
-                // Check if SVG is properly rendered
-                const svgRect = svg.getBoundingClientRect();
-                if (svgRect.width === 0 || svgRect.height === 0 ||
-                    getComputedStyle(svg).display === 'none' ||
-                    getComputedStyle(svg).visibility === 'hidden') {
+                // Multiple detection methods
+                const isHidden = checkIfElementHidden(svg) || checkIfElementHidden(link);
 
-                    // SVG is blocked, add fallback
-                    link.classList.add('no-svg');
-                    console.log('SVG blocked for', link.getAttribute('aria-label'), 'adding text fallback');
-
-                    // Add additional text fallback for nav links
-                    if (link.classList.contains('nav-social-link')) {
-                        addTextFallback(link);
-                    }
+                if (isHidden) {
+                    console.log('Element blocked for', link.getAttribute('aria-label'), 'activating fallbacks');
+                    activateAllFallbacks(link);
                 }
             }
         });
     }, 500);
+
+    // Continuous monitoring for dynamic blocking
+    startContinuousMonitoring();
+
+    // Ultimate fallback timer (last resort after 3 seconds)
+    setTimeout(() => {
+        enableUltimateFallbackIfNeeded();
+    }, 3000);
 }
 
 function addTextFallback(link) {
@@ -1613,25 +1636,193 @@ function detectAdBlocker() {
     });
 }
 
+// Enhanced element visibility detection
+function checkIfElementHidden(element) {
+    if (!element) return true;
+
+    const rect = element.getBoundingClientRect();
+    const style = getComputedStyle(element);
+
+    return (
+        rect.width === 0 ||
+        rect.height === 0 ||
+        style.display === 'none' ||
+        style.visibility === 'hidden' ||
+        style.opacity === '0' ||
+        rect.x < -9999 ||
+        rect.y < -9999 ||
+        element.offsetParent === null
+    );
+}
+
+// Activate comprehensive fallback system
+function activateAllFallbacks(link) {
+    // Hide potentially blocked SVG
+    const svg = link.querySelector('.social-svg');
+    if (svg) {
+        svg.style.display = 'none';
+    }
+
+    // Determine platform
+    let platform = '';
+    if (link.href.includes('github')) platform = 'github';
+    else if (link.href.includes('linkedin')) platform = 'linkedin';
+    else if (link.href.includes('orcid')) platform = 'orcid';
+
+    // Create multiple fallback elements
+    createEmojiIcon(link, platform);
+    createTextIcon(link, platform);
+    createUnicodeIcon(link, platform);
+
+    // Add multiple protection classes
+    link.classList.add('fallback-active', 'anti-block', 'social-secure');
+}
+
+// Create emoji-based icon
+function createEmojiIcon(link, platform) {
+    const emojiMap = { github: '⚡', linkedin: '💼', orcid: '🆔' };
+    const emoji = emojiMap[platform];
+
+    if (emoji) {
+        const emojiSpan = document.createElement('span');
+        emojiSpan.textContent = emoji;
+        emojiSpan.className = 'emoji-icon backup-icon';
+        emojiSpan.style.cssText = `
+            display: inline-block;
+            font-size: 1.2rem;
+            position: relative;
+            z-index: 1000;
+        `;
+        link.appendChild(emojiSpan);
+    }
+}
+
+// Create text-based icon
+function createTextIcon(link, platform) {
+    const textMap = { github: 'GH', linkedin: 'LI', orcid: 'OR' };
+    const text = textMap[platform];
+
+    if (text) {
+        const textSpan = document.createElement('span');
+        textSpan.textContent = text;
+        textSpan.className = 'text-icon backup-icon';
+        textSpan.style.cssText = `
+            display: inline-block;
+            font-size: 0.9rem;
+            font-weight: bold;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1001;
+            color: currentColor;
+        `;
+        link.appendChild(textSpan);
+    }
+}
+
+// Create Unicode symbol icon
+function createUnicodeIcon(link, platform) {
+    const unicodeMap = {
+        github: '■', // Solid square
+        linkedin: '●', // Solid circle
+        orcid: '◆' // Diamond
+    };
+    const unicode = unicodeMap[platform];
+
+    if (unicode) {
+        const unicodeSpan = document.createElement('span');
+        unicodeSpan.textContent = unicode;
+        unicodeSpan.className = 'unicode-icon backup-icon';
+        unicodeSpan.style.cssText = `
+            display: inline-block;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 999;
+            color: currentColor;
+        `;
+        link.appendChild(unicodeSpan);
+    }
+}
+
+// Continuous monitoring for dynamic ad blocking
+function startContinuousMonitoring() {
+    let checkCount = 0;
+    const maxChecks = 10;
+
+    const monitor = setInterval(() => {
+        checkCount++;
+
+        const socialLinks = document.querySelectorAll('.nav-social-link, .social-link');
+        socialLinks.forEach(link => {
+            if (checkIfElementHidden(link)) {
+                // Re-apply protection
+                link.style.setProperty('display', 'flex', 'important');
+                link.style.setProperty('visibility', 'visible', 'important');
+                link.style.setProperty('opacity', '1', 'important');
+
+                // Ensure fallbacks are active
+                if (!link.classList.contains('fallback-active')) {
+                    activateAllFallbacks(link);
+                }
+            }
+        });
+
+        if (checkCount >= maxChecks) {
+            clearInterval(monitor);
+        }
+    }, 1000);
+}
+
+// Advanced ad blocker detection
+function detectAdBlocker() {
+    return new Promise((resolve) => {
+        // Create test elements with patterns that ad blockers target
+        const testElements = [
+            { class: 'social-media-icon', content: '<div class="fab fa-facebook"></div>' },
+            { class: 'social-widget', content: '<a href="https://facebook.com">Facebook</a>' },
+            { class: 'social-button', content: '<svg><path d="M12 0"></path></svg>' }
+        ];
+
+        let blockedCount = 0;
+        const totalTests = testElements.length;
+
+        testElements.forEach((test, index) => {
+            const testDiv = document.createElement('div');
+            testDiv.className = test.class;
+            testDiv.innerHTML = test.content;
+            testDiv.style.cssText = 'position:absolute;left:-9999px;width:1px;height:1px;';
+            document.body.appendChild(testDiv);
+
+            setTimeout(() => {
+                const isBlocked = checkIfElementHidden(testDiv);
+                if (isBlocked) blockedCount++;
+
+                document.body.removeChild(testDiv);
+
+                if (index === totalTests - 1) {
+                    resolve(blockedCount > 0);
+                }
+            }, 100);
+        });
+    });
+}
+
 // Alternative icon loading approach
 function loadAlternativeIcons() {
     const links = document.querySelectorAll('.nav-social-link');
-    const iconMap = {
-        'github': '⚡',
-        'linkedin': '💼',
-        'orcid': '🆔'
-    };
 
     links.forEach(link => {
-        const platform = link.className.match(/\b(github|linkedin|orcid)\b/)?.[1];
-        if (platform && iconMap[platform]) {
-            const emojiIcon = document.createElement('span');
-            emojiIcon.textContent = iconMap[platform];
-            emojiIcon.style.fontSize = '1.2rem';
-            emojiIcon.className = 'emoji-fallback';
+        // Add multiple fallback systems simultaneously
+        let platform = '';
+        if (link.href.includes('github')) platform = 'github';
+        else if (link.href.includes('linkedin')) platform = 'linkedin';
+        else if (link.href.includes('orcid')) platform = 'orcid';
 
-            // Add as additional fallback
-            link.appendChild(emojiIcon);
+        if (platform) {
+            createEmojiIcon(link, platform);
+            createTextIcon(link, platform);
+            createUnicodeIcon(link, platform);
         }
     });
 }
@@ -1925,3 +2116,40 @@ window.NikolaosPortfolio = {
 window.handleAvatarError = handleAvatarError;
 window.showAvatar = showAvatar;
 window.hideAvatar = hideAvatar;
+
+// Ultimate fallback system - CSS-based text display
+function enableUltimateFallbackIfNeeded() {
+    const socialLinks = document.querySelectorAll('.nav-social-link');
+
+    socialLinks.forEach(link => {
+        // Check if no visible icons are showing
+        const svg = link.querySelector('.social-svg');
+        const fallbacks = link.querySelectorAll('.backup-icon');
+        const platformFallback = link.querySelector('.platform-fallback');
+
+        let hasVisibleIcon = false;
+
+        // Check SVG visibility
+        if (svg && !checkIfElementHidden(svg)) {
+            hasVisibleIcon = true;
+        }
+
+        // Check backup icons visibility
+        fallbacks.forEach(fallback => {
+            if (!checkIfElementHidden(fallback)) {
+                hasVisibleIcon = true;
+            }
+        });
+
+        // Check platform fallback visibility
+        if (platformFallback && !checkIfElementHidden(platformFallback)) {
+            hasVisibleIcon = true;
+        }
+
+        // If nothing is visible, enable ultimate CSS fallback
+        if (!hasVisibleIcon) {
+            console.log('Enabling ultimate CSS fallback for', link.getAttribute('aria-label'));
+            link.classList.add('ultimate-fallback');
+        }
+    });
+}
