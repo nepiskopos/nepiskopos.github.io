@@ -1078,14 +1078,20 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
                     const newWorker = registration.installing;
                     newWorker.addEventListener('statechange', () => {
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            // New service worker installed, show update notification
+                            // New service worker installed and we have an existing controller
+                            // This means it's an update, not a first install
                             cacheController.showUpdateNotification();
                         }
                     });
                 });
 
-                // Check for updates immediately
-                registration.update();
+                // Check for updates later, not immediately on first load to avoid false positives
+                setTimeout(() => {
+                    if (navigator.serviceWorker.controller) {
+                        // Only check for updates if we already have an active service worker
+                        registration.update().catch(err => console.log('Update check failed:', err));
+                    }
+                }, 30000); // Check after 30 seconds
             })
             .catch(function(registrationError) {
                 console.log('SW registration failed: ', registrationError);
