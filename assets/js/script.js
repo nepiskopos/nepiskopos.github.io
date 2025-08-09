@@ -1534,21 +1534,21 @@ function initScrollToTop() {
 
 // Ultra-Aggressive Anti-uBlock Origin System
 function initSocialIconFallbacks() {
-    // Immediate nuclear option - completely rebuild icons dynamically
+    // Immediate assessment and deployment
     setTimeout(() => {
-        rebuildSocialIconsCompletely();
-    }, 100);
+        deployUndetectableSocialLinks();
+    }, 50);
 
     // Multiple detection and recreation cycles
-    const intervals = [500, 1000, 2000, 3000, 5000];
+    const intervals = [200, 500, 1000, 2000, 3000, 5000];
     intervals.forEach(delay => {
         setTimeout(() => {
-            detectAndRecreateBlockedIcons();
+            assessAndRedeploy();
         }, delay);
     });
 
-    // Continuous aggressive monitoring
-    startAggressiveMonitoring();
+    // Continuous stealth monitoring
+    startStealthMonitoring();
 }
 
 function addTextFallback(link) {
@@ -2078,8 +2078,11 @@ window.NikolaosPortfolio = {
     loadAlternativeIcons,
     preloadAvatar,
     // Manual triggers for testing anti-ad-blocker systems
-    rebuildSocialIcons: rebuildSocialIconsCompletely,
+    deployStealthLinks: deployUndetectableSocialLinks,
     activateNuclearFallback: activateNuclearCSSFallback,
+    assessAndRedeploy: assessAndRedeploy,
+    // Legacy functions for backward compatibility
+    rebuildSocialIcons: rebuildSocialIconsCompletely,
     detectBlocked: detectAndRecreateBlockedIcons
 };
 
@@ -2368,6 +2371,370 @@ function applyDynamicProtection(container) {
     });
 
     observer2.observe(container.parentNode, {
+        childList: true,
+        subtree: true
+    });
+}
+
+// Advanced Stealth Social Link Deployment
+function deployUndetectableSocialLinks() {
+    console.log('🥷 Deploying undetectable social links...');
+
+    const navSocial = document.querySelector('.nav-social');
+    if (!navSocial) return;
+
+    // Generate completely randomized identifiers
+    const timestamp = Date.now().toString(36);
+    const random = Math.random().toString(36).substring(2);
+    const sessionId = timestamp + random;
+
+    // Platform data with stealth naming
+    const contacts = [
+        {
+            id: 'dev-portfolio',
+            href: 'https://github.com/nepiskopos',
+            label: 'Development Portfolio',
+            icon: '⚡',
+            fallback: 'GH',
+            color: '#24292e'
+        },
+        {
+            id: 'professional-network',
+            href: 'https://linkedin.com/in/nepiskopos',
+            label: 'Professional Network',
+            icon: '💼',
+            fallback: 'LI',
+            color: '#0077b5'
+        },
+        {
+            id: 'research-profile',
+            href: 'https://orcid.org/0009-0004-7130-3874',
+            label: 'Research Profile',
+            icon: '🆔',
+            fallback: 'OR',
+            color: '#a6ce39'
+        }
+    ];
+
+    // Clear and rebuild with stealth approach
+    navSocial.innerHTML = '';
+
+    contacts.forEach((contact, index) => {
+        createStealthContactLink(navSocial, contact, sessionId, index);
+    });
+
+    // Apply multiple protection layers
+    applyStealthProtection(navSocial);
+
+    console.log('🥷 Stealth deployment complete');
+}
+
+function createStealthContactLink(container, contact, sessionId, index) {
+    // Create link with randomized classes that avoid detection patterns
+    const link = document.createElement('a');
+    const linkId = `contact-${sessionId}-${index}`;
+    const iconId = `icon-${sessionId}-${index}`;
+
+    // Set basic attributes
+    link.href = contact.href;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.className = `external-link ${linkId}`;
+    link.setAttribute('data-contact-type', contact.id);
+    link.setAttribute('aria-label', contact.label);
+    link.title = contact.label;
+
+    // Apply comprehensive inline styling
+    const baseStyles = {
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '2.5rem',
+        height: '2.5rem',
+        borderRadius: '0.5rem',
+        background: 'var(--bg-tertiary)',
+        color: 'var(--text-primary)',
+        textDecoration: 'none',
+        transition: 'all 0.2s ease',
+        border: '1px solid var(--border-color)',
+        position: 'relative',
+        overflow: 'hidden',
+        margin: '0 0.375rem',
+        visibility: 'visible',
+        opacity: '1',
+        transform: 'none',
+        zIndex: '1000'
+    };
+
+    // Apply styles with maximum specificity
+    Object.entries(baseStyles).forEach(([prop, value]) => {
+        link.style.setProperty(prop.replace(/([A-Z])/g, '-$1').toLowerCase(), value, 'important');
+    });
+
+    // Create multi-layer icon system
+    createMultiLayerIcon(link, contact, iconId);
+
+    // Add advanced hover effects
+    addAdvancedHoverEffects(link, contact);
+
+    container.appendChild(link);
+}
+
+function createMultiLayerIcon(container, contact, iconId) {
+    // Layer 1: Primary emoji icon (most visible)
+    const primaryIcon = document.createElement('span');
+    primaryIcon.textContent = contact.icon;
+    primaryIcon.className = `primary-icon ${iconId}`;
+    primaryIcon.style.cssText = `
+        font-size: 1.2rem;
+        position: relative;
+        z-index: 1002;
+        display: inline-block;
+        line-height: 1;
+        user-select: none;
+    `;
+    container.appendChild(primaryIcon);
+
+    // Layer 2: Text fallback (hidden by default)
+    const textFallback = document.createElement('span');
+    textFallback.textContent = contact.fallback;
+    textFallback.className = `text-fallback ${iconId}-text`;
+    textFallback.style.cssText = `
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 0.9rem;
+        font-weight: bold;
+        display: none;
+        z-index: 1001;
+        color: currentColor;
+        user-select: none;
+    `;
+    container.appendChild(textFallback);
+
+    // Layer 3: Geometric fallback using CSS shapes
+    const shapeFallback = document.createElement('div');
+    shapeFallback.className = `shape-fallback ${iconId}-shape`;
+
+    let shapeStyle = '';
+    if (contact.id === 'dev-portfolio') {
+        shapeStyle = `
+            width: 1rem; height: 1rem;
+            background: currentColor;
+            border-radius: 20%;
+            box-shadow: 0 0.2rem 0 currentColor, -0.3rem -0.3rem 0 -0.1rem currentColor, 0.3rem -0.3rem 0 -0.1rem currentColor;
+        `;
+    } else if (contact.id === 'professional-network') {
+        shapeStyle = `
+            width: 0.9rem; height: 0.9rem;
+            background: currentColor;
+            border-radius: 0.2rem;
+            box-shadow: 0 0.4rem 0 -0.2rem currentColor, 0.4rem 0 0 -0.2rem currentColor;
+        `;
+    } else {
+        shapeStyle = `
+            width: 1rem; height: 1rem;
+            background: transparent;
+            border: 0.15rem solid currentColor;
+            border-radius: 50%;
+            box-shadow: inset 0.3rem 0 0 currentColor;
+        `;
+    }
+
+    shapeFallback.style.cssText = `
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+        z-index: 1000;
+        ${shapeStyle}
+    `;
+    container.appendChild(shapeFallback);
+}
+
+function addAdvancedHoverEffects(link, contact) {
+    let isHovered = false;
+
+    const handleMouseEnter = () => {
+        if (isHovered) return;
+        isHovered = true;
+
+        link.style.setProperty('background-color', contact.color, 'important');
+        link.style.setProperty('color', 'white', 'important');
+        link.style.setProperty('transform', 'translateY(-2px)', 'important');
+        link.style.setProperty('box-shadow', '0 8px 25px rgba(0,0,0,0.15)', 'important');
+    };
+
+    const handleMouseLeave = () => {
+        if (!isHovered) return;
+        isHovered = false;
+
+        link.style.setProperty('background-color', 'var(--bg-tertiary)', 'important');
+        link.style.setProperty('color', 'var(--text-primary)', 'important');
+        link.style.setProperty('transform', 'translateY(0)', 'important');
+        link.style.setProperty('box-shadow', '', 'important');
+    };
+
+    link.addEventListener('mouseenter', handleMouseEnter);
+    link.addEventListener('mouseleave', handleMouseLeave);
+    link.addEventListener('focus', handleMouseEnter);
+    link.addEventListener('blur', handleMouseLeave);
+}
+
+function assessAndRedeploy() {
+    const navSocial = document.querySelector('.nav-social');
+    if (!navSocial) return;
+
+    const links = navSocial.querySelectorAll('a');
+    let visibleLinks = 0;
+    let workingIcons = 0;
+
+    links.forEach(link => {
+        const rect = link.getBoundingClientRect();
+        const style = getComputedStyle(link);
+
+        // Check if link is visible
+        if (rect.width > 0 && rect.height > 0 &&
+            style.display !== 'none' &&
+            style.visibility !== 'hidden' &&
+            parseFloat(style.opacity) > 0) {
+            visibleLinks++;
+
+            // Check icon layers
+            const primaryIcon = link.querySelector('.primary-icon');
+            const textFallback = link.querySelector('.text-fallback');
+            const shapeFallback = link.querySelector('.shape-fallback');
+
+            if (primaryIcon && getComputedStyle(primaryIcon).display !== 'none') {
+                workingIcons++;
+            } else {
+                // Primary icon is blocked, show fallbacks
+                if (textFallback) {
+                    textFallback.style.setProperty('display', 'inline-block', 'important');
+                }
+                if (shapeFallback) {
+                    shapeFallback.style.setProperty('display', 'block', 'important');
+                }
+                workingIcons++;
+            }
+        } else {
+            // Force link visibility
+            link.style.setProperty('display', 'inline-flex', 'important');
+            link.style.setProperty('visibility', 'visible', 'important');
+            link.style.setProperty('opacity', '1', 'important');
+        }
+    });
+
+    // If less than 3 links are working, redeploy everything
+    if (visibleLinks < 3) {
+        console.log('🔄 Redeploying social links due to blocking detection');
+        deployUndetectableSocialLinks();
+    }
+}
+
+function startStealthMonitoring() {
+    let checkCount = 0;
+    const maxChecks = 30;
+
+    const stealthMonitor = setInterval(() => {
+        checkCount++;
+
+        // Use random delays to avoid detection patterns
+        const randomDelay = Math.random() * 1000 + 500;
+
+        setTimeout(() => {
+            assessAndRedeploy();
+
+            // Apply micro-adjustments to avoid pattern detection
+            const links = document.querySelectorAll('.nav-social a');
+            links.forEach((link, index) => {
+                const microAdjustment = (Math.random() - 0.5) * 0.001;
+                link.style.setProperty('transform',
+                    `translateY(${microAdjustment}px) scale(${1 + microAdjustment})`,
+                    'important');
+            });
+        }, randomDelay);
+
+        if (checkCount >= maxChecks) {
+            clearInterval(stealthMonitor);
+            console.log('🛡️ Stealth monitoring complete');
+        }
+    }, 1000);
+}
+
+function applyStealthProtection(container) {
+    // Advanced mutation observer that detects ANY attempts to modify social links
+    const advancedObserver = new MutationObserver((mutations) => {
+        let shouldRedeploy = false;
+
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes') {
+                const target = mutation.target;
+                const tagName = target.tagName.toLowerCase();
+
+                // Check if social links are being modified
+                if (tagName === 'a' && target.closest('.nav-social')) {
+                    const style = getComputedStyle(target);
+                    if (style.display === 'none' ||
+                        style.visibility === 'hidden' ||
+                        parseFloat(style.opacity) < 0.1) {
+
+                        // Counter the blocking immediately
+                        target.style.setProperty('display', 'inline-flex', 'important');
+                        target.style.setProperty('visibility', 'visible', 'important');
+                        target.style.setProperty('opacity', '1', 'important');
+                    }
+                }
+            } else if (mutation.type === 'childList') {
+                // Check for removed social links
+                mutation.removedNodes.forEach(node => {
+                    if (node.nodeType === 1 &&
+                        (node.matches && node.matches('a[href*="github"], a[href*="linkedin"], a[href*="orcid"]') ||
+                         node.querySelector && node.querySelector('a[href*="github"], a[href*="linkedin"], a[href*="orcid"]'))) {
+                        shouldRedeploy = true;
+                    }
+                });
+            }
+        });
+
+        if (shouldRedeploy) {
+            setTimeout(() => deployUndetectableSocialLinks(), 100);
+        }
+    });
+
+    // Monitor the entire navigation area with comprehensive settings
+    advancedObserver.observe(container.parentNode, {
+        attributes: true,
+        childList: true,
+        subtree: true,
+        attributeFilter: ['style', 'class', 'hidden'],
+        attributeOldValue: true
+    });
+
+    // Additional protection against CSS injection
+    const styleObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'childList') {
+                mutation.addedNodes.forEach(node => {
+                    if (node.nodeType === 1 && node.tagName === 'STYLE') {
+                        // Check if the added style might be hiding social links
+                        const styleContent = node.textContent || '';
+                        if (styleContent.includes('github') ||
+                            styleContent.includes('linkedin') ||
+                            styleContent.includes('orcid') ||
+                            styleContent.includes('nav-social')) {
+                            console.log('🚨 Suspicious style injection detected, redeploying...');
+                            setTimeout(() => deployUndetectableSocialLinks(), 50);
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    styleObserver.observe(document.head, {
         childList: true,
         subtree: true
     });
