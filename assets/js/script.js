@@ -1532,25 +1532,49 @@ function initScrollToTop() {
     });
 }
 
-// Lightweight Social Icon Fallback System
+// Simplified Social Icon Fallback System using External SVG Files
 function initSocialIconFallbacks() {
-    // Immediate setup
-    deploySimpleFallbacks();
+    console.log('🔧 Initializing simplified social icon fallback system...');
 
-    // Multiple checks to catch uBlock Origin blocking
-    const checkTimes = [250, 500, 1000, 1500];
-    checkTimes.forEach(delay => {
-        setTimeout(() => {
-            checkAndActivateFallbacks();
-        }, delay);
-    });
+    // Check for blocked images and activate text fallbacks
+    const socialIcons = document.querySelectorAll('.social-icon');
 
-    // Also check when the page becomes visible (handles tab switching)
-    document.addEventListener('visibilitychange', () => {
-        if (!document.hidden) {
-            setTimeout(() => checkAndActivateFallbacks(), 100);
+    socialIcons.forEach(icon => {
+        // Set up additional error handling beyond the inline onerror
+        icon.addEventListener('error', function() {
+            console.log('📷 Icon failed to load:', this.src);
+            this.style.display = 'none';
+            const textFallback = this.nextElementSibling;
+            if (textFallback && textFallback.classList.contains('text-fallback')) {
+                textFallback.style.display = 'inline-block';
+            }
+        });
+
+        // Check if already loaded or failed
+        if (!icon.complete || icon.naturalWidth === 0) {
+            setTimeout(() => {
+                if (!icon.complete || icon.naturalWidth === 0) {
+                    icon.dispatchEvent(new Event('error'));
+                }
+            }, 1000);
         }
     });
+
+    // Monitor for dynamic blocking (less aggressive since we're using external files)
+    setTimeout(() => {
+        socialIcons.forEach(icon => {
+            if (!icon.complete || icon.naturalWidth === 0 || getComputedStyle(icon).display === 'none') {
+                console.log('🚫 Icon appears to be blocked, showing fallback');
+                icon.style.display = 'none';
+                const textFallback = icon.nextElementSibling;
+                if (textFallback && textFallback.classList.contains('text-fallback')) {
+                    textFallback.style.display = 'inline-block';
+                }
+            }
+        });
+    }, 2000);
+
+    console.log('✅ Simplified fallback system initialized');
 }
 
 function addTextFallback(link) {
@@ -2559,4 +2583,214 @@ function activateNuclearCSSFallback() {
     });
 
     console.log('☢️ Nuclear CSS fallback activated successfully');
+}
+
+// New helper functions for enhanced fallback system
+
+function createImmediateTextBackups() {
+    console.log('📝 Creating immediate text backups...');
+    const socialLinks = document.querySelectorAll('.nav-social-link');
+
+    socialLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        let platform = '';
+        let text = '';
+
+        if (href.includes('github')) { platform = 'github'; text = 'GH'; }
+        else if (href.includes('linkedin')) { platform = 'linkedin'; text = 'LI'; }
+        else if (href.includes('orcid')) { platform = 'orcid'; text = 'OR'; }
+
+        if (platform) {
+            // Create immediate visible text backup
+            const textBackup = document.createElement('div');
+            textBackup.className = `immediate-backup-${platform}`;
+            textBackup.textContent = text;
+            textBackup.style.cssText = `
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 0.9rem;
+                font-weight: bold;
+                color: currentColor;
+                z-index: 1000;
+                display: none;
+                pointer-events: none;
+                user-select: none;
+                opacity: 1;
+                visibility: visible;
+            `;
+            link.appendChild(textBackup);
+        }
+    });
+}
+
+function detectAndActivateAdvancedFallbacks() {
+    console.log('🎯 Detecting and activating advanced fallbacks...');
+    const socialLinks = document.querySelectorAll('.nav-social-link');
+
+    socialLinks.forEach(link => {
+        const svg = link.querySelector('.social-svg');
+        const rect = link.getBoundingClientRect();
+
+        // Multiple detection methods for uBlock Origin
+        const isLinkHidden = rect.width === 0 || rect.height === 0 ||
+                           getComputedStyle(link).display === 'none' ||
+                           getComputedStyle(link).visibility === 'hidden';
+
+        const isSvgHidden = svg && (
+            svg.getBoundingClientRect().width === 0 ||
+            getComputedStyle(svg).display === 'none' ||
+            getComputedStyle(svg).visibility === 'hidden'
+        );
+
+        if (isLinkHidden || isSvgHidden) {
+            console.log('🚨 Advanced blocking detected, activating countermeasures...');
+
+            // Force link visibility with maximum priority
+            link.style.setProperty('display', 'flex', 'important');
+            link.style.setProperty('visibility', 'visible', 'important');
+            link.style.setProperty('opacity', '1', 'important');
+
+            // Hide problematic SVG
+            if (svg) svg.style.display = 'none';
+
+            // Show text backup
+            const textBackup = link.querySelector(`[class*="immediate-backup"]`);
+            if (textBackup) {
+                textBackup.style.display = 'block';
+            }
+
+            // Add protective classes
+            link.classList.add('advanced-fallback-active', 'ublock-resistant');
+        }
+    });
+}
+
+function activateEmergencyTextFallbacks() {
+    console.log('🚨 Activating emergency text fallbacks...');
+    const socialLinks = document.querySelectorAll('.nav-social-link');
+
+    socialLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        let text = '●'; // Default fallback
+
+        if (href.includes('github')) text = 'GH';
+        else if (href.includes('linkedin')) text = 'LI';
+        else if (href.includes('orcid')) text = 'OR';
+
+        // Create ultra-simple text-only fallback
+        const emergencyFallback = document.createElement('span');
+        emergencyFallback.className = 'emergency-text-fallback';
+        emergencyFallback.textContent = text;
+        emergencyFallback.style.cssText = `
+            font-size: 0.9rem !important;
+            font-weight: bold !important;
+            color: currentColor !important;
+            display: inline-block !important;
+            text-decoration: none !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: relative !important;
+            z-index: 9999 !important;
+        `;
+
+        // Clear existing content and add emergency fallback
+        const svg = link.querySelector('.social-svg');
+        if (svg) svg.style.display = 'none';
+
+        // Only add if not already present
+        if (!link.querySelector('.emergency-text-fallback')) {
+            link.appendChild(emergencyFallback);
+        }
+    });
+}
+
+function startDynamicBlockingMonitor() {
+    console.log('👁️ Starting dynamic blocking monitor...');
+
+    let checkCount = 0;
+    const maxChecks = 30;
+
+    const monitor = setInterval(() => {
+        checkCount++;
+
+        const socialContainer = document.querySelector('.nav-social');
+        if (socialContainer) {
+            const links = socialContainer.querySelectorAll('.nav-social-link');
+
+            links.forEach(link => {
+                const rect = link.getBoundingClientRect();
+                const style = getComputedStyle(link);
+
+                // Check if suddenly hidden by dynamic blocking
+                if (rect.width === 0 || style.display === 'none' || style.visibility === 'hidden') {
+                    console.log('⚡ Dynamic blocking detected - reactivating link');
+
+                    // Force visibility
+                    link.style.setProperty('display', 'flex', 'important');
+                    link.style.setProperty('visibility', 'visible', 'important');
+                    link.style.setProperty('opacity', '1', 'important');
+
+                    // Ensure fallback is active
+                    activateEmergencyTextFallbacks();
+                }
+            });
+        }
+
+        if (checkCount >= maxChecks) {
+            clearInterval(monitor);
+            console.log('🏁 Dynamic monitoring completed');
+        }
+    }, 1000);
+}
+
+function startContinuousAntiBlockingSystem() {
+    console.log('🛡️ Starting continuous anti-blocking system...');
+
+    // Create a MutationObserver to watch for style changes
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                const target = mutation.target;
+
+                // If a social link is being hidden, counter it
+                if (target.classList.contains('nav-social-link')) {
+                    const style = getComputedStyle(target);
+                    if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') {
+                        console.log('🔄 Countering real-time blocking attempt');
+
+                        // Override the blocking
+                        target.style.setProperty('display', 'flex', 'important');
+                        target.style.setProperty('visibility', 'visible', 'important');
+                        target.style.setProperty('opacity', '1', 'important');
+
+                        // Ensure text fallback is active
+                        const textFallback = target.querySelector('.emergency-text-fallback');
+                        if (textFallback) {
+                            textFallback.style.display = 'inline-block';
+                        }
+                    }
+                }
+            }
+        });
+    });
+
+    // Observe all social links
+    const socialLinks = document.querySelectorAll('.nav-social-link');
+    socialLinks.forEach(link => {
+        observer.observe(link, {
+            attributes: true,
+            attributeFilter: ['style', 'class']
+        });
+    });
+
+    // Also observe the container for removal attempts
+    const socialContainer = document.querySelector('.nav-social');
+    if (socialContainer) {
+        observer.observe(socialContainer, {
+            childList: true,
+            subtree: true
+        });
+    }
 }
