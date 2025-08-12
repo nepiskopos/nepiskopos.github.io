@@ -49,12 +49,12 @@
     <link rel="manifest" href="manifest.json">
 
     <!-- Preload critical resources -->
-    <link rel="preload" href="assets/css/style.css?v=1.2.0" as="style">
-    <link rel="preload" href="assets/css/fontawesome.css?v=1.2.0" as="style">
+    <link rel="preload" href="assets/css/style.css" as="style">
+    <link rel="preload" href="assets/css/fontawesome.css" as="style">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="assets/css/style.css?v=1.2.0">
-    <link rel="stylesheet" href="assets/css/fontawesome.css?v=1.2.0">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/fontawesome.css">
 
     <!-- Web Fonts - Local with system font fallbacks -->
     <style>
@@ -577,36 +577,8 @@
     </script>
 
     <!-- JavaScript -->
-    <script src="assets/js/script.js?v=1.2.0"></script>
+    <script src="assets/js/script.js"></script>
 
-        <!-- Service Worker Registration - TEMPORARILY DISABLED -->
-    <script>
-        // Service Worker Registration - DISABLED to prevent infinite reload loop
-        console.log('Service Worker registration disabled to prevent infinite reload loop');
-        /*
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(function(registration) {
-                        console.log('SW registered: ', registration);
-                        
-                        // Check for updates but don't auto-reload
-                        registration.addEventListener('updatefound', function() {
-                            const newWorker = registration.installing;
-                            newWorker.addEventListener('statechange', function() {
-                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    console.log('New service worker available');
-                                    // Don't auto-reload - let user decide
-                                }
-                            });
-                        });
-                    })
-                    .catch(function(registrationError) {
-                        console.log('SW registration failed: ', registrationError);
-                    });
-            });
-        }
-        */
-    </script>
+
 </body>
 </html>
