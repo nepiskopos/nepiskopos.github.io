@@ -5,9 +5,9 @@ const DYNAMIC_CACHE = 'dynamic-v1.2.0';
 const urlsToCache = [
   './',
   './index.html',
-  './assets/css/style.css?v=1.2.0',
-  './assets/css/fontawesome.css?v=1.2.0',
-  './assets/js/script.js?v=1.2.0',
+  './assets/css/style.css',
+  './assets/css/fontawesome.css',
+  './assets/js/script.js',
   './assets/img/favicon.svg',
   './assets/img/favicon.ico',
   './manifest.json',
@@ -17,10 +17,10 @@ const urlsToCache = [
 // Network-first strategies for these resources (always try network first)
 const networkFirstResources = [
   './index.html',
-  './assets/js/script.js?v=1.2.0',
+  './assets/js/script.js',
   './manifest.json',
-  './assets/css/style.css?v=1.2.0', // Add CSS to network-first for immediate updates
-  './assets/css/fontawesome.css?v=1.2.0'
+  './assets/css/style.css', // Add CSS to network-first for immediate updates
+  './assets/css/fontawesome.css'
 ];
 
 // Cache-first strategies for these resources
