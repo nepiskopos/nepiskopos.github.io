@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <!-- Complete Cache Prevention -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, no-transform, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Expires" content="-1">
+    <meta http-equiv="Last-Modified" content="0">
+    <meta http-equiv="ETag" content="">
     <title>Nikolaos Episkopos - AI & Software Engineering Expert | IBM AI Engineer</title>
     <meta name="description" content="Nikolaos Episkopos - Expert AI Engineer & Software Engineer specializing in Machine Learning, Large Language Models, and AI-driven business transformation. IBM and EETAA professional with extensive EU research experience. Transform your business with cutting-edge AI solutions.">
     <meta name="keywords" content="AI Engineer, Software Engineer, Machine Learning, Artificial Intelligence, R&D, Greece, IBM, EETAA, LangGraph, Azure OpenAI, Deep Learning, NLP, Computer Vision, Federated Learning, AI Agents, Business AI, AI Transformation, Enterprise AI, Machine Learning Solutions, AI Consulting, Nikolaos Episkopos">
@@ -45,16 +48,11 @@
     <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
     <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
 
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
+    <!-- PWA Manifest - REMOVED to prevent caching -->
 
-    <!-- Preload critical resources -->
-    <link rel="preload" href="assets/css/style.css" as="style">
-    <link rel="preload" href="assets/css/fontawesome.css" as="style">
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/fontawesome.css">
+    <!-- CSS - No preloading to prevent caching -->
+    <link rel="stylesheet" href="assets/css/style.css" type="text/css">
+    <link rel="stylesheet" href="assets/css/fontawesome.css" type="text/css">
 
     <!-- Web Fonts - Local with system font fallbacks -->
     <style>
@@ -431,7 +429,7 @@
                             <span class="contact-label">Current Roles</span>
                             <ul class="contact-value-list">
                                 <li>AI Engineer & Consultant  @  IBM</li>
-                                <li>Software Engineer & Consultant  @  EETAA</li>
+                                <li>Software Engineer  @  EETAA</li>
                             </ul>
                         </div>
                     </div>
@@ -576,9 +574,74 @@
     }
     </script>
 
-    <!-- JavaScript -->
-    <script src="assets/js/script.js"></script>
+            <!-- JavaScript - No caching -->
+    <script src="assets/js/script.js" type="text/javascript"></script>
 
+        <!-- Complete Cache Prevention Script -->
+    <script>
+        // Prevent all forms of caching
+        if ('serviceWorker' in navigator) {
+            // Unregister any existing service workers
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister();
+                    console.log('Unregistered service worker:', registration);
+                }
+            });
+
+            // Register the emergency service worker that will unregister itself
+            navigator.serviceWorker.register('./sw.js').then(function(registration) {
+                console.log('Emergency service worker registered');
+                // Force the service worker to activate and unregister itself
+                setTimeout(function() {
+                    registration.unregister().then(function() {
+                        console.log('Emergency service worker unregistered');
+                        // Service worker is now disabled - no need to delete file
+                    });
+                }, 1000);
+            }).catch(function(error) {
+                console.log('Emergency service worker registration failed:', error);
+            });
+        }
+
+        // Clear all caches
+        if ('caches' in window) {
+            caches.keys().then(function(names) {
+                for (let name of names) {
+                    caches.delete(name);
+                    console.log('Deleted cache:', name);
+                }
+            });
+        }
+
+        // Clear all storage
+        localStorage.clear();
+        sessionStorage.clear();
+
+        // Clear IndexedDB
+        if ('indexedDB' in window) {
+            indexedDB.databases().then(function(databases) {
+                for (let db of databases) {
+                    indexedDB.deleteDatabase(db.name);
+                    console.log('Deleted IndexedDB:', db.name);
+                }
+            });
+        }
+
+        // Force reload on back/forward
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+
+        // Prevent browser back/forward cache
+        window.addEventListener('beforeunload', function() {
+            // Clear everything before leaving
+            localStorage.clear();
+            sessionStorage.clear();
+        });
+    </script>
 
 </body>
 </html>
