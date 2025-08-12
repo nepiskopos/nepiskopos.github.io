@@ -1,30 +1,30 @@
-const CACHE_NAME = 'nikolaos-portfolio-v1.1.0'; // Increment version for updates
-const STATIC_CACHE = 'static-v1.1.0';
-const DYNAMIC_CACHE = 'dynamic-v1.1.0';
+const CACHE_NAME = 'nikolaos-portfolio-v1.2.0'; // Increment version for updates
+const STATIC_CACHE = 'static-v1.2.0';
+const DYNAMIC_CACHE = 'dynamic-v1.2.0';
 
 const urlsToCache = [
   './',
   './index.html',
-  './assets/css/style.css',
-  './assets/css/fontawesome.css',
-  './assets/js/script.js',
+  './assets/css/style.css?v=1.2.0',
+  './assets/css/fontawesome.css?v=1.2.0',
+  './assets/js/script.js?v=1.2.0',
   './assets/img/favicon.svg',
   './assets/img/favicon.ico',
   './manifest.json',
   'https://avatars.githubusercontent.com/u/58558195?v=4'
 ];
 
-// Network-first strategies for these resources
+// Network-first strategies for these resources (always try network first)
 const networkFirstResources = [
   './index.html',
-  './assets/js/script.js',
-  './manifest.json'
+  './assets/js/script.js?v=1.2.0',
+  './manifest.json',
+  './assets/css/style.css?v=1.2.0', // Add CSS to network-first for immediate updates
+  './assets/css/fontawesome.css?v=1.2.0'
 ];
 
 // Cache-first strategies for these resources
 const cacheFirstResources = [
-  './assets/css/style.css',
-  './assets/css/fontawesome.css',
   './assets/img/favicon.svg',
   './assets/img/favicon.ico'
 ];
@@ -41,6 +41,8 @@ self.addEventListener('install', event => {
         console.log('Cache installation failed:', error);
       })
   );
+  // Force activation of new service worker
+  self.skipWaiting();
 });
 
 // Enhanced fetch event with smart caching strategies
@@ -84,7 +86,8 @@ async function handleFetchRequest(request, requestPath) {
 function shouldUseNetworkFirst(path) {
   return networkFirstResources.some(resource => path.includes(resource.replace('./', ''))) ||
          path.includes('?v=') || // Cache-busting queries
-         path.includes('_t='); // Timestamp queries
+         path.includes('_t=') || // Timestamp queries
+         path.includes('?t='); // Time-based cache busting
 }
 
 // Check if resource should use cache-first strategy

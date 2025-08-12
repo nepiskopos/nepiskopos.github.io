@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Nikolaos Episkopos - AI & Software Engineering Expert | IBM AI Engineer</title>
     <meta name="description" content="Nikolaos Episkopos - Expert AI Engineer & Software Engineer specializing in Machine Learning, Large Language Models, and AI-driven business transformation. IBM and EETAA professional with extensive EU research experience. Transform your business with cutting-edge AI solutions.">
     <meta name="keywords" content="AI Engineer, Software Engineer, Machine Learning, Artificial Intelligence, R&D, Greece, IBM, EETAA, LangGraph, Azure OpenAI, Deep Learning, NLP, Computer Vision, Federated Learning, AI Agents, Business AI, AI Transformation, Enterprise AI, Machine Learning Solutions, AI Consulting, Nikolaos Episkopos">
@@ -46,12 +49,12 @@
     <link rel="manifest" href="manifest.json">
 
     <!-- Preload critical resources -->
-    <link rel="preload" href="assets/css/style.css" as="style">
-    <link rel="preload" href="assets/css/fontawesome.css" as="style">
+    <link rel="preload" href="assets/css/style.css?v=1.2.0" as="style">
+    <link rel="preload" href="assets/css/fontawesome.css?v=1.2.0" as="style">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/fontawesome.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=1.2.0">
+    <link rel="stylesheet" href="assets/css/fontawesome.css?v=1.2.0">
 
     <!-- Web Fonts - Local with system font fallbacks -->
     <style>
@@ -427,8 +430,8 @@
                         <div class="contact-details">
                             <span class="contact-label">Current Roles</span>
                             <ul class="contact-value-list">
-                                <li>AI Engineer at IBM</li>
-                                <li>Software Engineer at EETAA</li>
+                                <li>AI Engineer & Consultant  @  IBM</li>
+                                <li>Software Engineer & Consultant  @  EETAA</li>
                             </ul>
                         </div>
                     </div>
@@ -574,6 +577,40 @@
     </script>
 
     <!-- JavaScript -->
-    <script src="assets/js/script.js"></script>
+    <script src="assets/js/script.js?v=1.2.0"></script>
+
+    <!-- Service Worker Registration with Cache Busting -->
+    <script>
+        // Service Worker Registration with Cache Busting
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('./sw.js?v=1.2.0')
+                    .then(function(registration) {
+                        console.log('SW registered: ', registration);
+
+                        // Check for updates
+                        registration.addEventListener('updatefound', function() {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', function() {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New content is available, reload the page
+                                    window.location.reload();
+                                }
+                            });
+                        });
+                    })
+                    .catch(function(registrationError) {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+
+        // Force reload if service worker is updated
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('controllerchange', function() {
+                window.location.reload();
+            });
+        }
+    </script>
 </body>
 </html>
