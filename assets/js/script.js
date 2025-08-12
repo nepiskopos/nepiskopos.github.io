@@ -983,8 +983,7 @@ class CacheController {
     refreshCriticalAssets() {
         const criticalAssets = [
             'assets/css/style.css',
-            'assets/js/script.js',
-            'manifest.json'
+            'assets/js/script.js'
         ];
 
         criticalAssets.forEach(asset => {
@@ -2087,8 +2086,8 @@ function handleAvatarError(img) {
         };
 
     } else if (img.src.includes('avatar-fallback.svg')) {
-        console.log('Trying PNG fallback...');
-        img.src = 'assets/img/avatar-fallback.png';
+        console.log('SVG fallback failed, using CSS fallback...');
+        createCSSAvatar(img);
 
         let errorHandled = false;
         const errorTimeout = setTimeout(() => {
@@ -2194,8 +2193,7 @@ function createCSSAvatar(img) {
 function preloadAvatar() {
     const avatarSources = [
         'https://avatars.githubusercontent.com/u/58558195?v=4',
-        'assets/img/avatar-fallback.svg',
-        'assets/img/avatar-fallback.png'
+        'assets/img/avatar-fallback.svg'
     ];
 
     avatarSources.forEach((src, index) => {

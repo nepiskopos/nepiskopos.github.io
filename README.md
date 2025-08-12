@@ -45,7 +45,6 @@ A professional, responsive portfolio website showcasing expertise in Artificial 
 ```
 site/
 ├── index.html                 # Main HTML file
-├── manifest.json             # PWA manifest
 ├── sw.js                     # Service worker
 ├── sitemap.xml              # SEO sitemap
 ├── robots.txt               # Search engine directives
@@ -57,7 +56,8 @@ site/
 │   │   └── script.js        # Main JavaScript file
 │   └── img/
 │       ├── favicon.ico      # Site favicon (ICO format)
-│       └── favicon.svg      # Site favicon (SVG format)
+│       ├── favicon.svg      # Site favicon (SVG format)
+│       └── avatar-fallback.svg # Avatar fallback image
 └── README.md               # Project documentation
 ```
 
@@ -135,8 +135,8 @@ Enhance functionality in `assets/js/script.js`:
 
 ## 🔧 Configuration
 
-### PWA Settings
-Update `manifest.json` for PWA features:
+### Service Worker Settings
+Update `sw.js` for caching and offline functionality:
 - App name and description
 - Icons and splash screens
 - Theme colors

@@ -1045,7 +1045,7 @@ a[href*="orcid.org"].nav-social-link {
 }
 
 .hero-container {
-    max-width: 1600px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 2rem;
     display: flex;
@@ -1061,7 +1061,7 @@ a[href*="orcid.org"].nav-social-link {
     justify-content: center;
     gap: 4rem;
     width: 100%;
-    max-width: 1400px;
+    max-width: 1000px;
 }
 
 .hero-text {

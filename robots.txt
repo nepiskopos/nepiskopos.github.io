@@ -27,7 +27,6 @@ User-agent: YandexBot
 Allow: /
 
 # Block access to sensitive files
-Disallow: /manifest.json
 Disallow: /sw.js
 Disallow: /*.txt$
 Disallow: /*.pdf$
