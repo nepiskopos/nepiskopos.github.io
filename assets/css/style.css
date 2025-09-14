@@ -36,6 +36,7 @@
     --transition-fast: 0.2s ease;
     --transition-normal: 0.3s ease;
     --transition-slow: 0.5s ease;
+    --contact-link-color: #0072c6;
 }
 
 /* Dark Theme Colors */
@@ -73,6 +74,7 @@
     --ai-pulse: rgba(96, 165, 250, 0.4);
     --glass-bg: rgba(30, 41, 59, 0.8);
     --glass-border: rgba(51, 65, 85, 0.3);
+    --contact-link-color: #4da3ff;
 }
 
 /* Base Styles */
@@ -2379,7 +2381,7 @@ a[href*="orcid.org"].nav-social-link {
 
 .contact-content {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 1fr 1.9fr;
     gap: 4rem;
     align-items: start;
 }
@@ -2469,6 +2471,12 @@ a[href*="orcid.org"].nav-social-link {
 
 .contact-value-list li:last-child {
     margin-bottom: 0;
+}
+
+.contact-value-list a {
+  color: var(--contact-link-color);
+  text-decoration: underline;
+  transition: color 0.2s;
 }
 
 .contact-value:hover {
