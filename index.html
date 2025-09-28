@@ -65,6 +65,9 @@
     </style>
 </head>
 <body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#home" class="skip-link" style="position:absolute;left:-999px;top:auto;width:1px;height:1px;overflow:hidden;z-index:100;" onfocus="this.style.left='0';this.style.width='auto';this.style.height='auto';">Skip to main content</a>
+
     <!-- Loading Screen -->
     <div class="loading-screen" id="loading-screen" aria-hidden="true">
         <div class="loading-animation">
@@ -73,8 +76,8 @@
         </div>
     </div>
 
-        <!-- Navigation -->
-        <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <!-- Navigation -->
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
         <div class="nav-container">
             <div class="nav-logo">
                 <span class="logo-text">NE</span>
@@ -188,8 +191,9 @@
         </div>
     </div>
 
+    <main id="main-content" tabindex="-1">
     <!-- Hero Section -->
-    <section id="home" class="hero">
+    <section id="home" class="hero" aria-label="Homepage Hero">
         <div class="hero-container">
             <div class="hero-content">
                 <div class="hero-text">
@@ -285,7 +289,7 @@
     </section>
 
     <!-- About Section -->
-    <section id="about" class="about accordion-section">
+    <section id="about" class="about accordion-section" aria-label="About Me">
         <div class="container">
             <!-- Desktop title (always visible) -->
             <h2 class="section-title desktop-title">About Me</h2>
@@ -323,7 +327,7 @@
     </section>
 
     <!-- Projects Section -->
-    <section id="projects" class="projects accordion-section">
+    <section id="projects" class="projects accordion-section" aria-label="Featured Projects">
         <div class="container">
             <!-- Desktop title (always visible) -->
             <h2 class="section-title desktop-title">Featured Projects</h2>
@@ -346,7 +350,7 @@
     </section>
 
     <!-- Experience Section -->
-    <section id="experience" class="experience accordion-section">
+    <section id="experience" class="experience accordion-section" aria-label="Professional Experience">
         <div class="container">
             <!-- Desktop title (always visible) -->
             <h2 class="section-title desktop-title">Professional Experience</h2>
@@ -369,7 +373,7 @@
     </section>
 
     <!-- Publications Section -->
-    <section id="publications" class="publications accordion-section">
+    <section id="publications" class="publications accordion-section" aria-label="Research Publications">
         <div class="container">
             <!-- Desktop title (always visible) -->
             <h2 class="section-title desktop-title">Research Publications</h2>
@@ -392,7 +396,7 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="contact accordion-section">
+    <section id="contact" class="contact accordion-section" aria-label="Contact">
         <div class="container">
             <!-- Desktop title (always visible) -->
             <h2 class="section-title desktop-title">Ready to unlock AI's trillion-dollar potential?<br>Let's build your competitive advantage.</h2>
@@ -471,11 +475,22 @@
         </div>
     </section>
 
+    <!-- Internal navigation links for SEO and crawlability -->
+    <nav class="internal-nav" aria-label="Section navigation" style="text-align:center;margin:2rem 0;">
+        <a href="#home">Home</a> |
+        <a href="#about">About</a> |
+        <a href="#projects">Projects</a> |
+        <a href="#experience">Experience</a> |
+        <a href="#publications">Publications</a> |
+        <a href="#contact">Contact</a>
+    </nav>
+
     <!-- Scroll to Top Button -->
     <button id="scroll-to-top" class="scroll-to-top" aria-label="Scroll to top">
         <i class="fas fa-chevron-up" aria-hidden="true"></i>
     </button>
 
+    </main>
     <!-- Footer -->
     <footer class="footer" role="contentinfo">
         <div class="container">
