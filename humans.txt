@@ -1,0 +1,35 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Developer/Designer: Nikolaos Episkopos
+    Site: https://nepiskopos.github.io
+    Location: Greece
+    LinkedIn: https://linkedin.com/in/nepiskopos
+    GitHub: https://github.com/nepiskopos
+    ORCID: https://orcid.org/0009-0004-7130-3874
+
+# THANKS
+
+    To the open-source community for amazing tools and resources
+    To all collaborators on EU research projects
+    To GitHub for providing excellent hosting
+
+# TECHNOLOGY COLOPHON
+
+    Standards: HTML5, CSS3, JavaScript ES6+
+    Components: Vanilla JavaScript (no frameworks)
+    Icons: Font Awesome
+    Fonts: System font stack (-apple-system, BlinkMacSystemFont, Segoe UI, Roboto)
+    Hosting: GitHub Pages
+    Version Control: Git
+    IDE: Visual Studio Code
+
+# SITE
+
+    Last update: 2026/01/13
+    Language: English
+    Doctype: HTML5
+    Accessibility: WCAG 2.1 AA Compliant
+    SEO: Optimized for Google, Bing, DuckDuckGo

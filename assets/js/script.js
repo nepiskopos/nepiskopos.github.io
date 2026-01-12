@@ -250,7 +250,7 @@ function initEmailProtection() {
                 // Email stays revealed until page refresh - no timer
 
             } catch (error) {
-                console.error('Email reveal error:', error);
+                
                 this.textContent = 'Error revealing email. Please try again.';
             setTimeout(() => {
                 this.textContent = 'Click to reveal';
@@ -620,54 +620,7 @@ function initTimelineAnimation() {
 // Initialize timeline animation
 initTimelineAnimation();
 
-// Add contact form validation (if needed in the future)
-function validateContactForm(form) {
-    const email = form.querySelector('input[type="email"]');
-    const message = form.querySelector('textarea');
-
-    if (email && !isValidEmail(email.value)) {
-        showError('Please enter a valid email address');
-        return false;
-    }
-
-    if (message && message.value.trim().length < 10) {
-        showError('Message must be at least 10 characters long');
-        return false;
-    }
-
-    return true;
-}
-
-function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-}
-
-function showError(message) {
-    // Create error notification
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-notification';
-    errorDiv.textContent = message;
-    errorDiv.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: #ef4444;
-        color: white;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        z-index: 10000;
-        animation: slideIn 0.3s ease;
-    `;
-
-    document.body.appendChild(errorDiv);
-
-    setTimeout(() => {
-        errorDiv.remove();
-    }, 3000);
-}
-
-// Add error notification styles
+// Contact section functionality
 const errorStyles = document.createElement('style');
 errorStyles.textContent = `
     @keyframes slideIn {
@@ -802,406 +755,6 @@ window.addEventListener('beforeprint', function() {
 
 window.addEventListener('afterprint', function() {
     document.body.classList.remove('printing');
-});
-
-// Cache Control and Update Management System
-class CacheController {
-    constructor() {
-        this.version = '1.0.0';
-        this.lastUpdateCheck = 'cache_last_update_check';
-        this.versionKey = 'site_version';
-        this.checkInterval = 30 * 60 * 1000; // Check every 30 minutes
-        this.forceRefreshKey = 'force_refresh_assets';
-    }
-
-    // Initialize cache control system
-    init() {
-        this.checkForUpdates();
-        this.setupPeriodicChecks();
-        this.handleVisibilityChange();
-    }
-
-    // Check if site has been updated
-    async checkForUpdates() {
-        try {
-            const lastCheck = localStorage.getItem(this.lastUpdateCheck);
-            const currentTime = Date.now();
-
-            // Only check if enough time has passed or no previous check
-            if (!lastCheck || (currentTime - parseInt(lastCheck)) > this.checkInterval) {
-                await this.performUpdateCheck();
-                localStorage.setItem(this.lastUpdateCheck, currentTime.toString());
-            }
-        } catch (error) {
-            console.warn('Cache update check failed:', error);
-        }
-    }
-
-    // Perform actual update check using cache-busting
-    async performUpdateCheck() {
-        try {
-            // Check main HTML file with cache-busting
-            const response = await fetch(`${window.location.href}?v=${Date.now()}`, {
-                method: 'HEAD',
-                cache: 'no-cache',
-                headers: {
-                    'Cache-Control': 'no-cache, no-store, must-revalidate',
-                    'Pragma': 'no-cache',
-                    'Expires': '0'
-                }
-            });
-
-            if (response.ok) {
-                const lastModified = response.headers.get('Last-Modified');
-                const etag = response.headers.get('ETag');
-
-                if (this.hasContentChanged(lastModified, etag)) {
-                    this.handleContentUpdate();
-                }
-            }
-        } catch (error) {
-            console.warn('Update check request failed:', error);
-        }
-    }
-
-    // Check if content has changed based on headers
-    hasContentChanged(lastModified, etag) {
-        const storedLastModified = localStorage.getItem('last_modified');
-        const storedEtag = localStorage.getItem('stored_etag');
-        const isFirstVisit = !localStorage.getItem('has_visited_before');
-
-        // On first visit, just store the values but don't consider it a change
-        if (isFirstVisit) {
-            if (lastModified) localStorage.setItem('last_modified', lastModified);
-            if (etag) localStorage.setItem('stored_etag', etag);
-            return false; // No change on first visit
-        }
-
-        // Check for actual changes on subsequent visits
-        if (lastModified && lastModified !== storedLastModified) {
-            localStorage.setItem('last_modified', lastModified);
-            return true;
-        }
-
-        if (etag && etag !== storedEtag) {
-            localStorage.setItem('stored_etag', etag);
-            return true;
-        }
-
-        return false;
-    }
-
-    // Handle content update detection
-    handleContentUpdate() {
-        console.log('Site update detected');
-
-        // Clear relevant caches
-        this.clearApplicationCache();
-
-        // Show update notification to user
-        this.showUpdateNotification();
-
-        // Force refresh critical assets
-        this.refreshCriticalAssets();
-    }
-
-    // Clear application caches
-    async clearApplicationCache() {
-        try {
-            // Clear service worker caches
-            if ('caches' in window) {
-                const cacheNames = await caches.keys();
-                await Promise.all(
-                    cacheNames.map(cacheName => caches.delete(cacheName))
-                );
-                console.log('Service Worker caches cleared');
-            }
-
-            // Clear localStorage cache flags
-            localStorage.removeItem(this.forceRefreshKey);
-
-            // Clear session storage
-            sessionStorage.clear();
-
-        } catch (error) {
-            console.warn('Cache clearing failed:', error);
-        }
-    }
-
-    // Show update notification to user
-    showUpdateNotification() {
-        // Check if this is the first visit - don't show notification if so
-        const isFirstVisit = !localStorage.getItem('has_visited_before');
-
-        if (isFirstVisit) {
-            // Mark that user has visited the site
-            localStorage.setItem('has_visited_before', 'true');
-            console.log('First visit detected, skipping update notification');
-            return;
-        }
-
-        // Create notification element
-        const notification = document.createElement('div');
-        notification.className = 'update-notification';
-        notification.innerHTML = `
-            <div class="update-content">
-                <i class="fas fa-sync-alt"></i>
-                <span>Site updated! Refresh for latest version.</span>
-                <button onclick="window.location.reload(true)" class="update-btn">Refresh</button>
-                <button onclick="this.parentElement.parentElement.remove()" class="dismiss-btn">×</button>
-            </div>
-        `;
-
-        // Add styles
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 10001;
-            animation: slideInFromRight 0.3s ease;
-            max-width: 300px;
-            font-family: inherit;
-        `;
-
-        // Add to page
-        document.body.appendChild(notification);
-
-        // Auto-remove after 10 seconds
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.remove();
-            }
-        }, 10000);
-    }
-
-    // Refresh critical assets with cache-busting
-    refreshCriticalAssets() {
-        const criticalAssets = [
-            'assets/css/style.css',
-            'assets/js/script.js'
-        ];
-
-        criticalAssets.forEach(asset => {
-            this.preloadAsset(asset);
-        });
-    }
-
-    // Preload asset with cache-busting
-    preloadAsset(assetPath) {
-        const link = document.createElement('link');
-        link.rel = 'preload';
-        link.href = `${assetPath}?v=${Date.now()}`;
-
-        if (assetPath.endsWith('.css')) {
-            link.as = 'style';
-        } else if (assetPath.endsWith('.js')) {
-            link.as = 'script';
-        }
-
-        document.head.appendChild(link);
-    }
-
-    // Setup periodic update checks
-    setupPeriodicChecks() {
-        setInterval(() => {
-            this.checkForUpdates();
-        }, this.checkInterval);
-    }
-
-    // Handle page visibility changes for immediate checks
-    handleVisibilityChange() {
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden) {
-                // Page became visible, check for updates
-                setTimeout(() => {
-                    this.checkForUpdates();
-                }, 1000);
-            }
-        });
-    }
-
-    // Force reload with cache clearing
-    static forceReload() {
-        // Clear all possible caches
-        if ('caches' in window) {
-            caches.keys().then(names => {
-                names.forEach(name => caches.delete(name));
-            });
-        }
-
-        // Hard reload
-        window.location.reload(true);
-    }
-}
-
-// Add notification animation styles
-const updateStyles = document.createElement('style');
-updateStyles.textContent = `
-    @keyframes slideInFromRight {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-
-    .update-notification .update-content {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        font-size: 0.9rem;
-    }
-
-    .update-notification .update-btn {
-        background: rgba(255,255,255,0.2);
-        border: 1px solid rgba(255,255,255,0.3);
-        color: white;
-        padding: 0.4rem 0.8rem;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 0.8rem;
-        transition: background 0.2s ease;
-    }
-
-    .update-notification .update-btn:hover {
-        background: rgba(255,255,255,0.3);
-    }
-
-    .update-notification .dismiss-btn {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.2rem;
-        cursor: pointer;
-        padding: 0;
-        margin-left: 0.5rem;
-        opacity: 0.7;
-        transition: opacity 0.2s ease;
-    }
-
-    .update-notification .dismiss-btn:hover {
-        opacity: 1;
-    }
-`;
-document.head.appendChild(updateStyles);
-
-// Initialize cache controller
-const cacheController = new CacheController();
-
-// Debug cache panel (for development/testing - remove in production)
-function addCacheDebugPanel() {
-    // Only show in development or when manually enabled
-    if (location.hostname === 'localhost' || location.search.includes('debug=cache')) {
-        const debugPanel = document.createElement('div');
-        debugPanel.id = 'cache-debug-panel';
-        debugPanel.innerHTML = `
-            <div style="position: fixed; bottom: 20px; left: 20px; background: rgba(0,0,0,0.8); color: white; padding: 1rem; border-radius: 8px; z-index: 10002; font-size: 12px; font-family: monospace;">
-                <div style="margin-bottom: 0.5rem; font-weight: bold;">Cache Debug Panel</div>
-                <button onclick="window.NikolaosPortfolio.checkForUpdates()" style="margin: 2px; padding: 4px 8px; font-size: 10px;">Check Updates</button>
-                <button onclick="window.NikolaosPortfolio.clearCache()" style="margin: 2px; padding: 4px 8px; font-size: 10px;">Clear Cache</button>
-                <button onclick="window.NikolaosPortfolio.forceRefresh()" style="margin: 2px; padding: 4px 8px; font-size: 10px;">Force Refresh</button>
-                <button onclick="this.parentElement.parentElement.remove()" style="margin: 2px; padding: 4px 8px; font-size: 10px;">Close</button>
-                <div style="margin-top: 0.5rem; font-size: 10px; opacity: 0.7;">Version: ${cacheController.version}</div>
-            </div>
-        `;
-        document.body.appendChild(debugPanel);
-    }
-}
-
-// Add debug panel after DOM load
-document.addEventListener('DOMContentLoaded', addCacheDebugPanel);
-
-// Enhanced Service Worker registration with update handling
-if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.protocol === 'file:')) {
-    window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js')
-            .then(function(registration) {
-                console.log('SW registered: ', registration);
-
-                // Initialize cache controller after SW registration
-                cacheController.init();
-
-                // Listen for service worker updates
-                registration.addEventListener('updatefound', () => {
-                    console.log('Service worker update found');
-                    const newWorker = registration.installing;
-                    newWorker.addEventListener('statechange', () => {
-                        console.log('Service worker state changed to:', newWorker.state);
-                        console.log('Has existing controller:', !!navigator.serviceWorker.controller);
-
-                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            // New service worker installed and we have an existing controller
-                            // This means it's an update, not a first install
-                            console.log('Triggering update notification from service worker');
-                            cacheController.showUpdateNotification();
-                        }
-                    });
-                });
-
-                // Check for updates later, not immediately on first load to avoid false positives
-                setTimeout(() => {
-                    if (navigator.serviceWorker.controller) {
-                        // Only check for updates if we already have an active service worker
-                        registration.update().catch(err => console.log('Update check failed:', err));
-                    }
-                }, 30000); // Check after 30 seconds
-            })
-            .catch(function(registrationError) {
-                console.log('SW registration failed: ', registrationError);
-                // Initialize cache controller even if SW fails
-                cacheController.init();
-            });
-    });
-} else {
-    // Initialize cache controller even without service worker
-    window.addEventListener('load', () => cacheController.init());
-}
-
-// Add analytics tracking (if needed)
-function trackEvent(eventName, eventData) {
-    // Google Analytics or other analytics tracking
-    if (typeof gtag !== 'undefined') {
-        gtag('event', eventName, eventData);
-    }
-}
-
-// Track page views and interactions
-document.addEventListener('click', function(e) {
-    if (e.target.matches('a[href^="http"]')) {
-        trackEvent('external_link_click', {
-            link_url: e.target.href,
-            link_text: e.target.textContent
-        });
-    }
-
-    if (e.target.matches('.social-link')) {
-        trackEvent('social_link_click', {
-            platform: e.target.classList.contains('github') ? 'github' :
-                     e.target.classList.contains('linkedin') ? 'linkedin' : 'orcid'
-        });
-    }
-});
-
-// Add error tracking
-window.addEventListener('error', function(e) {
-    console.error('JavaScript error:', e.error);
-    // Send to error tracking service if needed
-});
-
-// Add performance monitoring
-window.addEventListener('load', function() {
-    if ('performance' in window) {
-        const perfData = performance.getEntriesByType('navigation')[0];
-        console.log('Page load time:', perfData.loadEventEnd - perfData.loadEventStart, 'ms');
-    }
 });
 
 // Performance optimizations
@@ -1362,6 +915,13 @@ function loadExperience() {
 
     const experiences = [
         {
+            title: 'AI Consultant & AI Engineer',
+            company: 'Grant Thornton',
+            period: 'Jan 2026 - Present',
+            type: 'In-house Project',
+            description: 'Leading enterprise AI transformation initiatives and developing cutting-edge artificial intelligence solutions for diverse client portfolios. Architecting and implementing custom AI agents, machine learning models, and intelligent automation systems that drive business value and operational excellence across multiple industries.'
+        },
+        {
             title: 'Public Sector Digital Transformation Leader',
             company: 'EETAA',
             period: 'Feb 2025 - Present',
@@ -1371,7 +931,7 @@ function loadExperience() {
         {
             title: 'Enterprise AI Banking Solutions Architect',
             company: 'IBM',
-            period: 'Jan 2025 - Present',
+            period: 'Jan 2025 - Dec 2025',
             type: 'In-house Project',
             description: 'Lead the National Bank of Greece\'s comprehensive AI transformation by architecting and deploying intelligent automation agents that revolutionize critical banking operations. Implemented state-of-the-art AI solutions that dramatically reduce processing times, eliminate manual errors, and enhance customer experience while ensuring strict regulatory compliance and security standards.'
         },
@@ -1507,8 +1067,8 @@ function loadPublications() {
     const publications = [
         {
             title: 'SIAP: Synthetic Dataset for Maritime Vessel Risk Profiling',
-            date: 'July 2025',
-            venue: 'Zenodo',
+            date: 'December 2025',
+            venue: 'Data in Brief',
             description: 'Comprehensive dataset with 100,000 synthetically generated vessel profiles for training machine learning models to identify vessels with high likelihood of engaging in illegal maritime activities. Features crew criminal records, abnormal routing, inspection history, and cargo characteristics.'
         },
         {
@@ -1601,7 +1161,7 @@ function initScrollToTop() {
 
 // Advanced Icon Fallback System: Inline SVG → External SVG → Text
 function initSocialIconFallbacks() {
-    console.log('🔧 Initializing advanced multi-layer icon fallback system...');
+    // Initialize multi-layer icon fallback system
 
     // Monitor for potential SVG blocking (inline SVGs can be blocked too)
     monitorInlineSVGBlocking();
@@ -1614,18 +1174,18 @@ function initSocialIconFallbacks() {
         checkForAdBlockerInterference();
     }, 1500);
 
-    console.log('✅ Multi-layer fallback system initialized');
+
 }
 
 function monitorInlineSVGBlocking() {
     // Check if inline SVGs are being hidden or blocked
     const inlineSVGs = document.querySelectorAll('.nav-icon, .nav-icon.large');
 
-    console.log(`🔍 Monitoring ${inlineSVGs.length} inline SVG icons for blocking...`);
+
 
     inlineSVGs.forEach((svg, index) => {
         // Backups are hidden by default via CSS, no need to manually hide them
-        console.log(`🔧 Icon ${index + 1}: Monitoring for blocking`);
+
 
         // Monitor for style changes that might indicate blocking
         const observer = new MutationObserver((mutations) => {
@@ -1633,7 +1193,7 @@ function monitorInlineSVGBlocking() {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
                     const computedStyle = getComputedStyle(svg);
                     if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden') {
-                        console.log(`🚫 Icon ${index + 1}: Inline SVG appears blocked, activating external backup`);
+
                         activateExternalBackup(svg);
                     }
                 }
@@ -1650,10 +1210,10 @@ function monitorInlineSVGBlocking() {
 
             // Only consider it blocked if the SVG itself is hidden but its parent is visible
             if (parentVisible && (computedStyle.display === 'none' || computedStyle.visibility === 'hidden' || svg.offsetWidth === 0)) {
-                console.log(`🚫 Icon ${index + 1}: Inline SVG blocked on initial check, activating backup`);
+
                 activateExternalBackup(svg);
             } else {
-                console.log(`✅ Icon ${index + 1}: Inline SVG is visible and working`);
+
             }
         }, 500);
     });
@@ -1664,7 +1224,7 @@ function activateExternalBackup(inlineSvg) {
     if (backupImg && backupImg.classList.contains('nav-icon-backup')) {
         inlineSvg.style.display = 'none';
         backupImg.classList.add('backup-active');
-        console.log('🔄 Switched to external SVG backup');
+
     }
 }
 
@@ -1673,7 +1233,7 @@ function monitorExternalBackupImages() {
 
     backupImages.forEach(img => {
         img.addEventListener('error', function() {
-            console.log('📷 External backup failed:', this.src);
+
             activateTextBackup(this);
         });
 
@@ -1689,7 +1249,7 @@ function monitorExternalBackupImages() {
 }
 
 function activateTextBackup(element) {
-    console.log('🔤 Activating text backup fallback');
+
     element.style.display = 'none';
 
     // Find the text backup (could be next sibling or a few siblings away)
@@ -1697,7 +1257,7 @@ function activateTextBackup(element) {
     while (sibling) {
         if (sibling.classList && (sibling.classList.contains('text-backup') || sibling.classList.contains('text-fallback'))) {
             sibling.style.display = 'inline-block';
-            console.log('✅ Text backup activated');
+
             break;
         }
         sibling = sibling.nextElementSibling;
@@ -1733,9 +1293,9 @@ function checkForAdBlockerInterference() {
     });
 
     if (blockedCount > 0) {
-        console.log(`🛡️ Detected ${blockedCount} blocked icons, fallbacks activated`);
+
     } else {
-        console.log('✅ All icons loading successfully');
+
     }
 }
 
@@ -1999,7 +1559,7 @@ function initAvatarFallbacks() {
     // Set up a simple timeout fallback (5 seconds)
     const loadingTimeout = setTimeout(() => {
         if (!fallbackTriggered && !isImageLoaded(avatarImg)) {
-            console.log('Avatar loading timeout - triggering fallback');
+
             fallbackTriggered = true;
             handleAvatarError(avatarImg);
         }
@@ -2007,7 +1567,7 @@ function initAvatarFallbacks() {
 
     // Monitor successful loading
     avatarImg.addEventListener('load', function() {
-        console.log('Avatar load event fired');
+
         clearTimeout(loadingTimeout);
         if (isImageLoaded(this)) {
             fallbackTriggered = false;
@@ -2017,7 +1577,7 @@ function initAvatarFallbacks() {
 
     // Monitor errors
     avatarImg.addEventListener('error', function() {
-        console.log('Avatar error event fired');
+
         clearTimeout(loadingTimeout);
         if (!fallbackTriggered) {
             fallbackTriggered = true;
@@ -2027,7 +1587,7 @@ function initAvatarFallbacks() {
 
     // Initial check if image is already loaded
     if (isImageLoaded(avatarImg)) {
-        console.log('Avatar already loaded');
+
         clearTimeout(loadingTimeout);
         showAvatar(avatarImg);
     }
@@ -2035,7 +1595,7 @@ function initAvatarFallbacks() {
 
 // Enhanced Global avatar error handler function
 function handleAvatarError(img) {
-    console.log('Avatar error handler called for:', img.src);
+
 
     // Prevent infinite loops by tracking attempts
     if (!img.dataset.fallbackAttempts) {
@@ -2047,7 +1607,7 @@ function handleAvatarError(img) {
 
     // If too many attempts, go straight to CSS fallback
     if (attempts >= 3) {
-        console.log('Too many fallback attempts, using CSS fallback');
+
         createCSSAvatar(img);
         return;
     }
@@ -2057,7 +1617,7 @@ function handleAvatarError(img) {
 
     // Determine next fallback based on current src
     if (img.src.includes('avatars.githubusercontent.com') || (!img.src.includes('avatar-fallback'))) {
-        console.log('Trying SVG fallback...');
+
         img.src = 'assets/img/avatar-fallback.svg';
 
         // Set up new error handler with timeout
@@ -2073,7 +1633,7 @@ function handleAvatarError(img) {
             if (!errorHandled) {
                 errorHandled = true;
                 clearTimeout(errorTimeout);
-                console.log('SVG fallback failed');
+
                 handleAvatarError(this);
             }
         };
@@ -2081,12 +1641,12 @@ function handleAvatarError(img) {
         img.onload = function() {
             errorHandled = true;
             clearTimeout(errorTimeout);
-            console.log('SVG fallback loaded successfully');
+
             showAvatar(this);
         };
 
     } else if (img.src.includes('avatar-fallback.svg')) {
-        console.log('SVG fallback failed, using CSS fallback...');
+
         createCSSAvatar(img);
 
         let errorHandled = false;
@@ -2101,7 +1661,7 @@ function handleAvatarError(img) {
             if (!errorHandled) {
                 errorHandled = true;
                 clearTimeout(errorTimeout);
-                console.log('PNG fallback failed, using CSS fallback');
+
                 createCSSAvatar(this);
             }
         };
@@ -2109,13 +1669,13 @@ function handleAvatarError(img) {
         img.onload = function() {
             errorHandled = true;
             clearTimeout(errorTimeout);
-            console.log('PNG fallback loaded successfully');
+
             showAvatar(this);
         };
 
     } else {
         // Final fallback - CSS-based avatar
-        console.log('Using CSS fallback as final option');
+
         createCSSAvatar(img);
     }
 }
@@ -2135,7 +1695,7 @@ function createCSSAvatar(img) {
 
     // Check if CSS avatar already exists
     if (container.querySelector('.css-avatar-fallback')) {
-        console.log('CSS avatar already exists');
+
         return;
     }
 
@@ -2186,7 +1746,7 @@ function createCSSAvatar(img) {
         cssAvatar.style.opacity = '1';
     }, 100);
 
-    console.log('CSS avatar fallback created successfully');
+
 }
 
 // Enhanced avatar preloading with multiple sources
@@ -2199,10 +1759,10 @@ function preloadAvatar() {
     avatarSources.forEach((src, index) => {
         const img = new Image();
         img.onload = function() {
-            console.log(`Avatar source ${index + 1} preloaded successfully: ${src}`);
+
         };
         img.onerror = function() {
-            console.log(`Avatar source ${index + 1} failed to preload: ${src}`);
+
         };
         img.src = src;
     });
@@ -2210,7 +1770,7 @@ function preloadAvatar() {
 
 // Avatar visibility management
 function showAvatar(img) {
-    console.log('Avatar loaded successfully, hiding loading indicator');
+
     const loadingIndicator = document.getElementById('avatar-loading');
 
     // Ensure image is visible
@@ -2228,7 +1788,7 @@ function showAvatar(img) {
 }
 
 function hideAvatar(img) {
-    console.log('Hiding avatar, showing loading indicator');
+
     const loadingIndicator = document.getElementById('avatar-loading');
 
     // Show loading indicator
@@ -2251,16 +1811,10 @@ window.NikolaosPortfolio = {
     initSocialIconFallbacks,
     initAvatarFallbacks,
     handleAvatarError,
-    trackEvent,
-    validateContactForm,
     loadSkills,
     loadProjects,
     loadExperience,
     loadPublications,
-    cacheController,
-    forceRefresh: () => CacheController.forceReload(),
-    checkForUpdates: () => cacheController.checkForUpdates(),
-    clearCache: () => cacheController.clearApplicationCache(),
     detectAdBlocker,
     loadAlternativeIcons,
     preloadAvatar,
@@ -2293,7 +1847,7 @@ function rebuildSocialIconsCompletely() {
     const navSocial = document.querySelector('.nav-social');
     if (!navSocial) return;
 
-    console.log('🚀 Initiating nuclear social icon rebuild...');
+
 
     // Store original data
     const platforms = [
@@ -2499,7 +2053,7 @@ function detectAndRecreateBlockedIcons() {
 
     // If no icons are visible at all, trigger complete rebuild
     if (!hasVisibleIcons) {
-        console.log('🔥 All icons blocked, triggering complete rebuild...');
+
         rebuildSocialIconsCompletely();
 
         // Also trigger nuclear CSS fallback as absolute last resort
@@ -2561,7 +2115,7 @@ function applyDynamicProtection(container) {
     const observer2 = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             if (mutation.type === 'childList' && mutation.removedNodes.length > 0) {
-                console.log('🛡️ Detected element removal, rebuilding...');
+
                 setTimeout(() => rebuildSocialIconsCompletely(), 100);
             }
         });
@@ -2635,8 +2189,6 @@ function checkAndActivateFallbacks() {
             );
 
             if (svgBlocked || linkBlocked) {
-                console.log('🚫 Detected blocked social icon, activating fallback for:', link.getAttribute('aria-label'));
-
                 // Force link visibility first
                 link.style.setProperty('display', 'flex', 'important');
                 link.style.setProperty('visibility', 'visible', 'important');
@@ -2656,7 +2208,7 @@ function checkAndActivateFallbacks() {
                 // Create additional backup if emoji fallback might also be blocked
                 createBackupFallback(link);
 
-                console.log('✅ Fallback activated successfully');
+
             }
         }
     });
@@ -2698,7 +2250,7 @@ function createBackupFallback(link) {
         if (fallback) {
             const fallbackRect = fallback.getBoundingClientRect();
             if (fallbackRect.width === 0 || fallbackRect.height === 0) {
-                console.log('📝 Emoji fallback blocked, showing text backup for:', platform);
+
                 textBackup.style.setProperty('display', 'inline-block', 'important');
             }
         }
@@ -2707,7 +2259,7 @@ function createBackupFallback(link) {
 
 // Nuclear CSS fallback - Pure CSS icons that can't be blocked
 function activateNuclearCSSFallback() {
-    console.log('☢️ Activating nuclear CSS fallback - pure CSS icons');
+
 
     const navSocial = document.querySelector('.nav-social');
     if (!navSocial) return;
@@ -2743,13 +2295,13 @@ function activateNuclearCSSFallback() {
         navSocial.appendChild(link);
     });
 
-    console.log('☢️ Nuclear CSS fallback activated successfully');
+
 }
 
 // New helper functions for enhanced fallback system
 
 function createImmediateTextBackups() {
-    console.log('📝 Creating immediate text backups...');
+
     const socialLinks = document.querySelectorAll('.nav-social-link');
 
     socialLinks.forEach(link => {
@@ -2787,7 +2339,7 @@ function createImmediateTextBackups() {
 }
 
 function detectAndActivateAdvancedFallbacks() {
-    console.log('🎯 Detecting and activating advanced fallbacks...');
+
     const socialLinks = document.querySelectorAll('.nav-social-link');
 
     socialLinks.forEach(link => {
@@ -2806,7 +2358,7 @@ function detectAndActivateAdvancedFallbacks() {
         );
 
         if (isLinkHidden || isSvgHidden) {
-            console.log('🚨 Advanced blocking detected, activating countermeasures...');
+
 
             // Force link visibility with maximum priority
             link.style.setProperty('display', 'flex', 'important');
@@ -2829,7 +2381,7 @@ function detectAndActivateAdvancedFallbacks() {
 }
 
 function activateEmergencyTextFallbacks() {
-    console.log('🚨 Activating emergency text fallbacks...');
+
     const socialLinks = document.querySelectorAll('.nav-social-link');
 
     socialLinks.forEach(link => {
@@ -2868,7 +2420,7 @@ function activateEmergencyTextFallbacks() {
 }
 
 function startDynamicBlockingMonitor() {
-    console.log('👁️ Starting dynamic blocking monitor...');
+
 
     let checkCount = 0;
     const maxChecks = 30;
@@ -2886,7 +2438,7 @@ function startDynamicBlockingMonitor() {
 
                 // Check if suddenly hidden by dynamic blocking
                 if (rect.width === 0 || style.display === 'none' || style.visibility === 'hidden') {
-                    console.log('⚡ Dynamic blocking detected - reactivating link');
+
 
                     // Force visibility
                     link.style.setProperty('display', 'flex', 'important');
@@ -2901,13 +2453,13 @@ function startDynamicBlockingMonitor() {
 
         if (checkCount >= maxChecks) {
             clearInterval(monitor);
-            console.log('🏁 Dynamic monitoring completed');
+
         }
     }, 1000);
 }
 
 function startContinuousAntiBlockingSystem() {
-    console.log('🛡️ Starting continuous anti-blocking system...');
+
 
     // Create a MutationObserver to watch for style changes
     const observer = new MutationObserver((mutations) => {
@@ -2919,7 +2471,7 @@ function startContinuousAntiBlockingSystem() {
                 if (target.classList.contains('nav-social-link')) {
                     const style = getComputedStyle(target);
                     if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') {
-                        console.log('🔄 Countering real-time blocking attempt');
+
 
                         // Override the blocking
                         target.style.setProperty('display', 'flex', 'important');

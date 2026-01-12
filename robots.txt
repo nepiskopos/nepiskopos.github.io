@@ -1,15 +1,11 @@
 # Enhanced robots.txt for SEO and indexing
 # Allow all major search engines full access to main content and assets
-# Reference sitemap for optimal crawling
 
 User-agent: *
 Allow: /
 
 # Sitemap location
 Sitemap: https://nepiskopos.github.io/sitemap.xml
-
-# Crawl delay (optional - be respectful to servers)
-Crawl-delay: 1
 
 # Explicitly allow all major search engines
 User-agent: Googlebot
@@ -30,33 +26,19 @@ Allow: /
 User-agent: YandexBot
 Allow: /
 
-# Block access to sensitive files (not needed for indexing)
-Disallow: /sw.js
-Disallow: /*.txt$
-Disallow: /*.pdf$
-
-# Allow access to all main sections and assets
+# Allow access to important resources
 Allow: /index.html
 Allow: /sitemap.xml
 Allow: /robots.txt
-Allow: /assets/css/
-Allow: /assets/js/
-Allow: /assets/img/
-Allow: /*.jpg$
-Allow: /*.jpeg$
-Allow: /*.png$
-Allow: /*.gif$
-Allow: /*.svg$
-Allow: /*.webp$
+Allow: /humans.txt
+Allow: /security.txt
+Allow: /.well-known/
+Allow: /manifest.json
+Allow: /assets/
+Allow: /404.html
 
-# Note: Fragment URLs (#section) are not processed by robots, but included for documentation
-# Allow: /#about
-# Allow: /#projects
-# Allow: /#experience
-# Allow: /#publications
-# Allow: /#contact
+# Crawl rate optimization
+Crawl-delay: 0
 
-# Additional SEO recommendations
-# - Keep sitemap updated with new sections
-# - Ensure all important content is linked from index.html
-# - Use descriptive alt text for images
+# Note: Fragment URLs (#section) are handled client-side
+# The sitemap.xml includes all important sections

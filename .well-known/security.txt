@@ -1,0 +1,26 @@
+Contact: https://linkedin.com/in/nepiskopos
+Contact: https://github.com/nepiskopos
+Preferred-Languages: en, el
+Canonical: https://nepiskopos.github.io/.well-known/security.txt
+Expires: 2027-01-13T23:59:59.000Z
+
+# Security Policy
+
+If you discover any security issues with this website, please report them responsibly.
+Please contact me through LinkedIn or GitHub with details of the vulnerability.
+
+# Scope
+
+This security policy applies to:
+- https://nepiskopos.github.io (primary domain)
+- All associated subdomains and resources
+
+# Out of Scope
+
+- Social engineering attacks
+- Denial of service attacks
+- Issues in third-party services (GitHub Pages infrastructure)
+
+# Response
+
+I aim to respond to security reports within 5 business days.

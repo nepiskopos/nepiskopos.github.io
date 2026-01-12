@@ -1,4 +1,4 @@
-# Nikolaos Episkopos - AI & Data Science Portfolio
+# Nikolaos Episkopos - AI Consultant Portfolio
 
 A professional, responsive portfolio website showcasing expertise in Artificial Intelligence, Machine Learning, and Data Science. Built with modern web technologies and optimized for performance, accessibility, and SEO.
 
@@ -12,24 +12,25 @@ A professional, responsive portfolio website showcasing expertise in Artificial 
 - **Interactive elements** with hover effects and micro-interactions
 
 ### 🚀 Performance & Technical
-- **Progressive Web App (PWA)** with offline capabilities
-- **Service Worker** for caching and background sync
-- **Optimized loading** with preload hints and lazy loading
 - **Minimal dependencies** - no external frameworks required
-- **Fast loading times** with optimized assets and code
+- **Optimized loading** with deferred JavaScript and lazy loading
+- **GZIP compression** for faster delivery
+- **System fonts** - no external font downloads
+- **Lightweight and fast** with optimized assets
 
 ### 🔍 SEO & Accessibility
 - **Comprehensive SEO** with structured data and meta tags
-- **Accessibility compliant** with ARIA labels and keyboard navigation
-- **Semantic HTML** for better search engine understanding
+- **Accessibility compliant** (WCAG 2.1 AA) with ARIA labels and keyboard navigation
+- **Semantic HTML5** for better search engine understanding
 - **Sitemap and robots.txt** for optimal crawling
 - **Open Graph tags** for social media sharing
+- **humans.txt** and **security.txt** for best practices
 
 ### 📱 Mobile & Cross-Browser
 - **Mobile-first design** with touch-friendly interactions
 - **Cross-browser compatibility** including modern and legacy browsers
 - **Progressive enhancement** for older devices
-- **PWA installation** support for mobile devices
+- **PWA manifest** for installable experience
 
 ## 🛠️ Technologies Used
 
@@ -37,17 +38,32 @@ A professional, responsive portfolio website showcasing expertise in Artificial 
 - **CSS3** - Modern styling with CSS Grid, Flexbox, and custom properties
 - **JavaScript (ES6+)** - Vanilla JS with modern features
 - **Font Awesome** - Icon library for professional icons
-- **Google Fonts** - Inter font family for typography
+- **System Fonts** - Native font stack for optimal performance
 - **GitHub Pages** - Free hosting and deployment
 
 ## 📁 Project Structure
 
 ```
-site/
-├── index.html                 # Main HTML file
-├── sw.js                     # Service worker
-├── sitemap.xml              # SEO sitemap
-├── robots.txt               # Search engine directives
+nepiskopos.github.io/
+├── .htaccess                  # Apache configuration
+├── .well-known/               # Standard directory
+│   └── security.txt          # Security policy
+├── 404.html                  # Custom error page
+├── assets/
+│   ├── css/                  # Stylesheets
+│   │   ├── style.css
+│   │   └── fontawesome.css
+│   ├── img/                  # Images and icons
+│   └── js/                   # JavaScript
+│       └── script.js
+├── humans.txt                # Team information
+├── index.html                # Main website
+├── manifest.json             # PWA manifest
+├── README.md                 # This file
+├── robots.txt                # Search engine rules
+├── security.txt              # Security policy
+└── sitemap.xml               # SEO sitemap
+```
 ├── assets/
 │   ├── css/
 │   │   ├── style.css        # Main stylesheet

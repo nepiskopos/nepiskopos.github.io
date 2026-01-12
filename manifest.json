@@ -1,0 +1,33 @@
+{
+  "name": "Nikolaos Episkopos - AI Consultant Portfolio",
+  "short_name": "N. Episkopos",
+  "description": "Professional portfolio of Nikolaos Episkopos, AI Consultant and AI Engineer specializing in Machine Learning, Large Language Models, and AI-driven business solutions",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/img/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "assets/img/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "https://avatars.githubusercontent.com/u/58558195?v=4",
+      "sizes": "460x460",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity", "technology"],
+  "lang": "en",
+  "dir": "ltr",
+  "scope": "/",
+  "prefer_related_applications": false
+}
