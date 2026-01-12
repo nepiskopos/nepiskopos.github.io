@@ -250,7 +250,7 @@ function initEmailProtection() {
                 // Email stays revealed until page refresh - no timer
 
             } catch (error) {
-                
+
                 this.textContent = 'Error revealing email. Please try again.';
             setTimeout(() => {
                 this.textContent = 'Click to reveal';
@@ -919,7 +919,7 @@ function loadExperience() {
             company: 'Grant Thornton',
             period: 'Jan 2026 - Present',
             type: 'In-house Project',
-            description: 'Leading enterprise AI transformation initiatives and developing cutting-edge artificial intelligence solutions for diverse client portfolios. Architecting and implementing custom AI agents, machine learning models, and intelligent automation systems that drive business value and operational excellence across multiple industries.'
+            description: 'Spearheading enterprise AI transformation initiatives for high-profile public sector clients, including the design, implementation, and deployment of sophisticated ML/DL models for Greece\'s Independent Authority for Public Revenue (IAPR). Architecting cutting-edge Agentic AI Solutions integrated with Retrieval-Augmented Generation (RAG) pipelines leveraging Azure AI Search and vector databases, enabling precise domain-specific knowledge retrieval tailored to client requirements through natural language interfaces. Partnering strategically with business units at IAPR to conduct comprehensive business analysis, gather mission-critical requirements, and fine-tune AI/ML/DL solutions in alignment with strategic objectives and regulatory compliance standards. Successfully implementing and deploying production-grade ML and AI services with intelligent automation systems on Microsoft Azure, driving measurable business value and operational excellence across diverse industries.'
         },
         {
             title: 'Public Sector Digital Transformation Leader',

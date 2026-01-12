@@ -2511,6 +2511,24 @@ a[href*="orcid.org"].nav-social-link {
     font-size: 1.2rem;
 }
 
+/* Internal Navigation Links */
+.internal-nav {
+    padding: 2rem 0;
+}
+
+.internal-nav a {
+    color: var(--accent-primary);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: color var(--transition-fast);
+}
+
+.internal-nav a:hover {
+    color: var(--accent-secondary);
+    text-decoration: underline;
+}
+
 /* Footer */
 .footer {
     background: var(--bg-tertiary);
