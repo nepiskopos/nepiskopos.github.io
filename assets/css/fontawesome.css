@@ -31,6 +31,7 @@
 .fa-envelope::before { content: "✉️"; }
 .fa-map-marker-alt::before { content: "📍"; }
 .fa-building::before { content: "🏢"; }
+.fa-briefcase::before { content: "💼"; }
 .fa-clock::before { content: "🕐"; }
 .fa-chevron-up::before { content: "▲"; }
 .fa-rocket::before { content: "🚀"; }
@@ -40,6 +41,8 @@
 .fa-code::before { content: "💻"; }
 .fa-database::before { content: "🗄️"; }
 .fa-cloud::before { content: "☁️"; }
+.fa-user-tie::before { content: "🤵"; }
+.fa-external-link-alt::before { content: "↗"; }
 
 /* Social Media Icons - Now using inline SVG instead of FontAwesome */
 /* Keeping essential FontAwesome classes for other icons */
@@ -78,6 +81,7 @@
 .fa-envelope,
 .fa-map-marker-alt,
 .fa-building,
+.fa-briefcase,
 .fa-clock,
 .fa-chevron-up,
 .fa-rocket,
@@ -86,7 +90,9 @@
 .fa-brain,
 .fa-code,
 .fa-database,
-.fa-cloud {
+.fa-cloud,
+.fa-user-tie,
+.fa-external-link-alt {
     font-style: normal;
     font-size: 1em;
     display: inline-block;
