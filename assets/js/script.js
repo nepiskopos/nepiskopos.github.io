@@ -796,26 +796,23 @@ function loadSkills() {
 
     const skillCategories = {
         'Artificial Intelligence': [
-            'Machine Learning', 'Deep Learning', 'Large Language Models (LLM)',
             'Retrieval-Augmented Generation (RAG)', 'AI Agents', 'Generative AI',
-            'Prompt Engineering', 'Natural Language Processing (NLP)', 'Federated Learning',
-            'Applied Machine Learning', 'Recommender Systems', 'Unsupervised Learning',
-            'Data Classification', 'Data Prediction', 'Model Development & Validation'
+            'Large Language Models (LLM)', 'Prompt Engineering', 'Machine Learning',
+            'Deep Learning', 'Natural Language Processing (NLP)', 'Federated Learning',
+            'Neural Networks'
         ],
         'Technologies & Frameworks': [
-            'Python', 'TensorFlow', 'PyTorch', 'LangGraph', 'LangChain', 'FastAPI',
-            'spaCy', 'Transformers', 'scikit-learn', 'Open WebUI', 'NumPy', 'Pandas',
-            'PIL', 'NLTK', 'OpenCV', 'REST APIs'
+            'Python', 'LangGraph', 'LangChain', 'TensorFlow', 'PyTorch',
+            'Transformers', 'FastAPI', 'scikit-learn', 'REST APIs', 'Jupyter'
         ],
         'Data Science & Engineering': [
-            'Data Engineering', 'Data Visualization', 'Forecasting', 'Spark', 'PySpark',
-            'Tableau', 'Microsoft Power BI', 'Data Science', 'NoSQL', 'SQL',
-            'SPARQL', 'RDF', 'RDFS'
+            'Data Science', 'Data Engineering', 'SQL', 'Apache Spark', 'PySpark',
+            'Data Analysis', 'Data Visualization', 'Tableau', 'Microsoft Power BI', 'Data Mining'
         ],
         'Cloud & Infrastructure': [
-            'Microsoft Azure', 'Azure AI Foundry', 'Azure AI Studio', 'Azure AI Search',
-            'Azure Databricks', 'Docker', 'MLOps', 'Amazon Web Services (AWS)',
-            'Open-Source Development', 'Research and Development (R&D)'
+            'Azure AI Foundry', 'Azure Databricks', 'Azure AI Studio', 'Azure Functions',
+            'Microsoft Azure Machine Learning', 'Microsoft Azure', 'Docker',
+            'Containerization', 'DevOps', 'Vector Databases'
         ]
     };
 
