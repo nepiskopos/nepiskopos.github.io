@@ -813,8 +813,9 @@ function loadSkills() {
             'SPARQL', 'RDF', 'RDFS'
         ],
         'Cloud & Infrastructure': [
-            'Microsoft Azure', 'Amazon Web Services (AWS)', 'Open-Source Development',
-            'Research and Development (R&D)'
+            'Microsoft Azure', 'Azure AI Foundry', 'Azure AI Studio', 'Azure AI Search',
+            'Azure Databricks', 'Docker', 'MLOps', 'Amazon Web Services (AWS)',
+            'Open-Source Development', 'Research and Development (R&D)'
         ]
     };
 
@@ -847,6 +848,18 @@ function loadProjects() {
 
     const projects = [
         {
+            title: 'Mackie — Agentic AI Social Media Assistant',
+            description: 'Conversational AI agent for nonprofit marketing teams, built on LangGraph with an agent-tools loop. Researches organizations via web search/scraping, drafts on-brand LinkedIn/Instagram/Facebook posts, remembers voice corrections across sessions, and tracks every post through a suggestion-to-published ledger. LLM-agnostic via LiteLLM.',
+            url: 'https://github.com/nepiskopos/mackie',
+            tech: ['LangGraph', 'Agentic AI', 'LiteLLM', 'Chainlit']
+        },
+        {
+            title: 'LLM Fine-tuning with LoRA',
+            description: 'End-to-end guide and toolkit for fine-tuning and deploying a custom LLM assistant using Low-Rank Adaptation (LoRA). Covers training, evaluation, and serving the fine-tuned model behind a web interface.',
+            url: 'https://github.com/nepiskopos/llm-finetuning-with-lora',
+            tech: ['LLM Fine-tuning', 'LoRA', 'PEFT', 'Model Deployment']
+        },
+        {
             title: 'LangGraph PII Detector',
             description: 'Advanced Personally Identifiable Information (PII) detector implemented in LangGraph powered by Azure OpenAI. Enterprise-grade privacy protection system with real-time detection capabilities.',
             url: 'https://github.com/nepiskopos/langgraph-pii-detector',
@@ -859,16 +872,22 @@ function loadProjects() {
             tech: ['LangGraph', 'Document AI', 'Summarization', 'NLP']
         },
         {
-            title: 'Federated Intrusion Detection',
-            description: 'Federated Learning-based Intrusion Detection System for cybersecurity. Collaborative AI model training while preserving data privacy across distributed networks.',
-            url: 'https://github.com/nepiskopos/simple_ids_with_flwr_iec104',
-            tech: ['Federated Learning', 'Cybersecurity', 'Neural Networks', 'Privacy']
+            title: 'Open WebUI Enhancements',
+            description: 'Custom tools, functions, and pipeline extensions for Open WebUI. Enhanced AI interface capabilities and workflow automation for improved productivity.',
+            url: 'https://github.com/nepiskopos/open-webui-enhancements',
+            tech: ['Open WebUI', 'AI Tools', 'Automation', 'Productivity']
         },
         {
-            title: 'Energy Forecasting AI',
-            description: 'Production-ready API for active energy time series forecasting using ARIMA and Prophet models. Real-time energy consumption prediction with high accuracy.',
-            url: 'https://github.com/nepiskopos/active-energy-forecast-time-series',
-            tech: ['Time Series', 'ARIMA', 'Prophet', 'Forecasting']
+            title: 'Federated Intrusion Detection (IEC 104)',
+            description: 'Federated Learning-based Intrusion Detection System for industrial SCADA/IEC 104 network traffic, built with Flower. Collaborative AI model training across distributed sites while preserving data privacy.',
+            url: 'https://github.com/nepiskopos/simple_ids_with_flwr_iec104',
+            tech: ['Federated Learning', 'Flower', 'Cybersecurity', 'Neural Networks']
+        },
+        {
+            title: 'Company Classification with LLMs',
+            description: 'Data pipeline that queries a SQLite database, prepares and analyzes the data, fine-tunes an LLM classifier for categorizing companies, and evaluates and reports on model performance.',
+            url: 'https://github.com/nepiskopos/company_classification_llm',
+            tech: ['LLM', 'Fine-tuning', 'Classification', 'Data Pipeline']
         },
         {
             title: 'BERT Word Prediction',
@@ -877,10 +896,16 @@ function loadProjects() {
             tech: ['BERT', 'NLTK', 'NLP', 'Sentiment Analysis']
         },
         {
-            title: 'Open WebUI Enhancements',
-            description: 'Custom tools, functions, and pipeline extensions for Open WebUI. Enhanced AI interface capabilities and workflow automation for improved productivity.',
-            url: 'https://github.com/nepiskopos/open-webui-enhancements',
-            tech: ['Open WebUI', 'AI Tools', 'Automation', 'Productivity']
+            title: 'Energy Forecasting AI',
+            description: 'Production-ready API for active energy time series forecasting using ARIMA and Prophet models. Real-time energy consumption prediction with high accuracy.',
+            url: 'https://github.com/nepiskopos/active-energy-forecast-time-series',
+            tech: ['Time Series', 'ARIMA', 'Prophet', 'Forecasting']
+        },
+        {
+            title: 'Face Detection Algorithms Evaluation',
+            description: 'Comparative evaluation of deep learning-based face detection algorithms, benchmarking accuracy and performance across models for computer vision applications.',
+            url: 'https://github.com/nepiskopos/simple_face_detection',
+            tech: ['Computer Vision', 'Deep Learning', 'Face Detection']
         }
     ];
 
@@ -915,18 +940,32 @@ function loadExperience() {
 
     const experiences = [
         {
-            title: 'AI Consultant & AI Engineer',
+            title: 'Senior ML Engineer, AI Consultant & Software Developer',
             company: 'Grant Thornton',
             period: 'Jan 2026 - Present',
             type: 'In-house Project',
             description: 'Leading enterprise AI transformation for Greece\'s Independent Authority for Public Revenue (IAPR), designing and deploying advanced ML/DL models and Agentic AI Solutions. Architecting RAG pipelines with Azure AI Search and vector databases for domain-specific knowledge retrieval, while implementing production-grade AI services and intelligent automation on Microsoft Azure that drive measurable business value across diverse industries.'
         },
         {
-            title: 'Public Sector Digital Transformation Leader',
+            title: 'Senior Software Engineering Consultant',
             company: 'EETAA',
             period: 'Feb 2025 - Present',
             type: 'In-house Project',
             description: 'Drove critical government modernization initiatives by orchestrating enterprise-scale systems migration from legacy infrastructure to cutting-edge frameworks. Redesigned operational workflows that deliver measurable efficiency gains while developing next-generation applications that serve evolving citizen needs, resulting in tangible performance improvements and significant cost savings for public sector operations.'
+        },
+        {
+            title: 'Open Source Software Developer',
+            company: 'Self-employed',
+            period: 'Dec 2020 - Present',
+            type: 'Ongoing',
+            description: 'Actively contribute to open-source AI/ML projects — delivering bug fixes, feature enhancements, and comprehensive documentation. Developed and maintain a portfolio of open-source projects on GitHub focused on Agentic AI, RAG, and MLOps tooling, demonstrating a commitment to sharing knowledge, code, and community collaboration.'
+        },
+        {
+            title: 'AI Consultant & Software Developer',
+            company: 'BWG Global',
+            period: 'Nov 2025 - Dec 2025',
+            type: 'Freelance Contract',
+            description: 'Designed and implemented custom indexes and indexers for Azure AI Search, optimizing data retrieval procedures and enhancing search relevance for large-scale datasets. Developed and optimized serverless Python web applications with clean architecture for seamless Azure API integration and high scalability. Acted as strategic consultant on emerging technologies, providing data-driven recommendations on stack selection.'
         },
         {
             title: 'Enterprise AI Banking Solutions Architect',
@@ -1066,39 +1105,45 @@ function loadPublications() {
 
     const publications = [
         {
-            title: 'SIAP: Synthetic Dataset for Maritime Vessel Risk Profiling',
+            title: 'SIAP: Synthetic Dataset for Maritime Vessel Risk Profiling and Illegal Activity Prediction',
             date: 'December 2025',
             venue: 'Data in Brief',
+            url: 'https://doi.org/10.1016/j.dib.2025.112101',
             description: 'Comprehensive dataset with 100,000 synthetically generated vessel profiles for training machine learning models to identify vessels with high likelihood of engaging in illegal maritime activities. Features crew criminal records, abnormal routing, inspection history, and cargo characteristics.'
         },
         {
-            title: 'Federated Intrusion Detection Systems: A Comprehensive Survey',
+            title: 'SIAP Dataset — Synthetic Vessel Risk Profiles (Zenodo Release)',
+            date: 'July 2025',
+            venue: 'Zenodo',
+            url: 'https://zenodo.org/doi/10.5281/zenodo.16631284',
+            description: 'Open-access dataset release accompanying the SIAP research, published on Zenodo for reproducibility and reuse by the maritime security and financial-crime detection research community.'
+        },
+        {
+            title: 'A Comprehensive Survey of Federated Intrusion Detection Systems: Techniques, Challenges and Solutions',
             date: 'May 2025',
             venue: 'Computer Science Review',
+            url: 'https://doi.org/10.1016/j.cosrev.2024.100717',
             description: 'Comprehensive survey of federated intrusion detection techniques, challenges, and solutions across IoT, IIoT, healthcare systems, smart manufacturing, and SCADA systems. Covers latest ML/DL frameworks and implementation strategies.'
         },
         {
-            title: 'AI-based Simulation Module for CRM-geothermal',
+            title: 'CRM-geothermal Deliverable 1.4: AI-based Simulation Module',
             date: 'April 2025',
-            venue: 'Zenodo',
+            venue: 'Zenodo (Horizon Europe CRM-geothermal Project)',
+            url: 'https://zenodo.org/doi/10.5281/zenodo.15294879',
             description: 'AI tool for uncovering intricate relationships between elemental features and Lithium concentrations in geothermal waters, integrating geological insights with advanced Machine Learning techniques for sustainable resource extraction.'
         },
         {
-            title: 'Optimal Video Bitrate Selection in MEC-Empowered Networks',
-            date: 'November 2023',
-            venue: 'IEEE',
+            title: 'To DASH, or Not to DASH? Optimal Video Bitrate Selection and Edge Network Caching in MEC-Empowered Slice-Enabled Networks',
+            date: 'April 2024',
+            venue: 'IEEE Transactions on Vehicular Technology',
+            url: 'https://doi.org/10.1109/TVT.2023.3329662',
             description: 'Research on joint video bitrate selection and edge network caching for 5G networks. Proposes dynamic programming solutions for optimal content delivery in slice-enabled networks, improving Quality of Experience through intelligent optimization.'
         },
         {
-            title: 'Peer-to-Peer Video Content Delivery Optimization',
-            date: 'October 2022',
-            venue: 'National & Kapodistrian University of Athens',
-            description: 'Master\'s thesis on innovative video streaming services combining edge caching, D2D communication, and adaptive streaming for improved user experience in 5G networks. Focuses on reducing delivery costs and network traffic while enhancing QoE.'
-        },
-        {
-            title: 'SECONDO: Cybersecurity Investment Platform',
+            title: 'SECONDO: A Platform for Cybersecurity Investments and Cyber Insurance Decisions',
             date: 'September 2020',
             venue: 'TrustBus 2020 Conference',
+            url: 'https://doi.org/10.1007/978-3-030-58986-8_5',
             description: 'Framework for cybersecurity investments and cyber-insurance decisions. Implements three-phase approach: cyber-physical risk assessment, investment-driven risk control, and blockchain-enabled insurance contracts.'
         }
     ];
@@ -1115,6 +1160,7 @@ function loadPublications() {
             </div>
             <p class="publication-venue">${publication.venue}</p>
             <p class="publication-description">${publication.description}</p>
+            ${publication.url ? `<a href="${publication.url}" target="_blank" rel="noopener noreferrer" class="publication-link">View Publication <i class="fas fa-external-link-alt" aria-hidden="true"></i></a>` : ''}
         `;
 
         publicationsGrid.appendChild(publicationCard);

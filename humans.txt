@@ -28,7 +28,7 @@
 
 # SITE
 
-    Last update: 2026/01/13
+    Last update: 2026/07/26
     Language: English
     Doctype: HTML5
     Accessibility: WCAG 2.1 AA Compliant
