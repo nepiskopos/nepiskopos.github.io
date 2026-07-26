@@ -1924,8 +1924,7 @@ a[href*="orcid.org"].nav-social-link {
 
 .about-content {
     display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 4rem;
+    grid-template-columns: 1fr;
     align-items: start;
 }
 
