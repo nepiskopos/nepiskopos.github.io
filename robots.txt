@@ -40,5 +40,5 @@ Allow: /404.html
 # Crawl rate optimization
 Crawl-delay: 0
 
-# Note: Fragment URLs (#section) are handled client-side
-# The sitemap.xml includes all important sections
+# Note: This is a single-page site; in-page sections (#about, #projects, etc.)
+# are anchors handled client-side, not separate crawlable URLs.
