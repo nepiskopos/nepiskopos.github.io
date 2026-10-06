@@ -2284,6 +2284,16 @@ a[href*="orcid.org"].nav-social-link {
     line-height: 1.6;
 }
 
+.timeline-item[hidden] {
+    display: none;
+}
+
+.timeline-toggle {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
 /* Publications Section */
 .publications {
     padding: 6rem 0;
@@ -2963,6 +2973,11 @@ a[href*="orcid.org"].nav-social-link {
     .accordion-content.active {
         max-height: 2000px;
         padding: 1.5rem 1rem 2rem 1rem;
+    }
+
+    /* The experience timeline outgrows the 2000px cap, especially once "Show more" is expanded */
+    #experience-content.active {
+        max-height: none;
     }
 
     /* Section spacing for accordion */

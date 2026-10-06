@@ -845,9 +845,21 @@ function loadProjects() {
 
     const projects = [
         {
+            title: 'Governed Analyst Agent',
+            description: 'Natural-language LLM analyst over a multi-tenant ClickHouse warehouse. A semantic layer makes common wrong answers structurally impossible, tenant isolation is enforced in the database, answers are grounded in guarded SQL, and a 46-item gold-set eval harness reports wrong answers before right ones. Includes a churn model with out-of-time validation.',
+            url: 'https://github.com/nepiskopos/governed-analyst-agent',
+            tech: ['Agentic AI', 'ClickHouse', 'Semantic Layer', 'LLM Evaluation']
+        },
+        {
+            title: 'API Information-Disclosure Hunting Agent',
+            description: 'Autonomous LLM agent that probes a running OWASP crAPI instance through a genuine reason-act-observe tool loop and reports information-disclosure findings: verbose errors, leaked secrets/PII, cross-account data exposure and exposed internal endpoints. Hardened over 25 review passes against the live target.',
+            url: 'https://github.com/nepiskopos/api-hunting-agent',
+            tech: ['AI Agents', 'Tool Calling', 'API Security', 'OWASP']
+        },
+        {
             title: 'Mackie — Agentic AI Social Media Assistant',
             description: 'Conversational AI agent for nonprofit marketing teams, built on LangGraph with an agent-tools loop. Researches organizations via web search/scraping, drafts on-brand LinkedIn/Instagram/Facebook posts, remembers voice corrections across sessions, and tracks every post through a suggestion-to-published ledger. LLM-agnostic via LiteLLM.',
-            url: 'https://github.com/nepiskopos/mackie',
+            url: 'https://github.com/nepiskopos/conversational-social-media-agent',
             tech: ['LangGraph', 'Agentic AI', 'LiteLLM', 'Chainlit']
         },
         {
@@ -938,10 +950,31 @@ function loadExperience() {
     const experiences = [
         {
             title: 'Senior ML Engineer, AI Consultant & Software Developer',
-            company: 'Grant Thornton',
+            company: 'Grant Thornton Greece',
             period: 'Jan 2026 - Present',
-            type: 'In-house Project',
-            description: 'Leading enterprise AI transformation for Greece\'s Independent Authority for Public Revenue (IAPR), designing and deploying advanced ML/DL models and Agentic AI Solutions. Architecting RAG pipelines with Azure AI Search and vector databases for domain-specific knowledge retrieval, while implementing production-grade AI services and intelligent automation on Microsoft Azure that drive measurable business value across diverse industries.'
+            type: 'Full-time Role',
+            description: 'Designing and delivering Data Science, Machine Learning and LLM-powered solutions for public sector, banking and cybersecurity clients. Architecting RAG pipelines and Agentic AI workflows with Azure AI Search and vector databases, and shipping production-grade AI services and intelligent automation on Microsoft Azure.'
+        },
+        {
+            title: 'Data and AI Driven Tax Audits',
+            company: 'Grant Thornton Greece',
+            period: 'Jan 2026 - Present',
+            type: 'Client Project',
+            description: 'Utilizing Data Science, Machine Learning and Large Language Models to suggest targeted audits to Greece\'s Independent Authority for Public Revenue (IAPR).'
+        },
+        {
+            title: 'Automated Information Retrieval & Extraction for Greek Public Funding Programs',
+            company: 'Grant Thornton Greece',
+            period: 'Feb 2026 - Present',
+            type: 'Client Project',
+            description: 'Building an information retrieval and extraction system for a banking client that crawls the websites of Greek public funding programs and uses LLMs to extract the key information from program announcements.'
+        },
+        {
+            title: 'FINCARE - ML-Driven Anomaly & Intrusion Detection',
+            company: 'Grant Thornton Greece',
+            period: 'Jan 2026 - Jun 2026',
+            type: 'Cybersecurity Project',
+            description: 'Designed and developed data and Machine Learning driven anomaly and intrusion detection systems for cybersecurity.'
         },
         {
             title: 'Senior Software Engineering Consultant',
@@ -1076,10 +1109,17 @@ function loadExperience() {
         }
     ];
 
+    // Only the most recent entries are shown initially; the rest sit behind a "Show more" toggle
+    const visibleCount = 6;
+
     experiences.forEach((experience, index) => {
         const timelineItem = document.createElement('div');
         timelineItem.className = 'timeline-item';
-        timelineItem.style.animationDelay = `${index * 0.2}s`;
+        if (index >= visibleCount) {
+            timelineItem.classList.add('timeline-item-extra');
+            timelineItem.hidden = true;
+        }
+        timelineItem.style.animationDelay = `${(index % visibleCount) * 0.2}s`;
 
         timelineItem.innerHTML = `
             <div class="timeline-marker"></div>
@@ -1092,6 +1132,33 @@ function loadExperience() {
         `;
 
         timeline.appendChild(timelineItem);
+    });
+
+    const hiddenCount = experiences.length - visibleCount;
+    if (hiddenCount <= 0) return;
+
+    const toggleWrapper = document.createElement('div');
+    toggleWrapper.className = 'timeline-toggle';
+    toggleWrapper.innerHTML = `
+        <button type="button" class="btn btn-secondary" id="experience-toggle" aria-expanded="false" aria-controls="experience-timeline">
+            <span class="timeline-toggle-label">Show ${hiddenCount} more</span>
+            <i class="fas fa-chevron-down" aria-hidden="true"></i>
+        </button>
+    `;
+    timeline.after(toggleWrapper);
+
+    const toggleButton = toggleWrapper.querySelector('button');
+    toggleButton.addEventListener('click', () => {
+        const expanded = toggleButton.getAttribute('aria-expanded') === 'true';
+        timeline.querySelectorAll('.timeline-item-extra').forEach(item => {
+            item.hidden = expanded;
+        });
+        toggleButton.setAttribute('aria-expanded', String(!expanded));
+        toggleButton.querySelector('.timeline-toggle-label').textContent = expanded ? `Show ${hiddenCount} more` : 'Show less';
+        toggleButton.querySelector('i').className = expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
+        if (expanded) {
+            document.getElementById('experience').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     });
 }
 
