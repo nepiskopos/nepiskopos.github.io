@@ -1110,7 +1110,7 @@ function loadExperience() {
     ];
 
     // Only the most recent entries are shown initially; the rest sit behind a "Show more" toggle
-    const visibleCount = 6;
+    const visibleCount = 7;
 
     experiences.forEach((experience, index) => {
         const timelineItem = document.createElement('div');
