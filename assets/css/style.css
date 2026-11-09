@@ -2284,7 +2284,8 @@ a[href*="orcid.org"].nav-social-link {
     line-height: 1.6;
 }
 
-.timeline-item[hidden] {
+.timeline-item[hidden],
+.project-card[hidden] {
     display: none;
 }
 

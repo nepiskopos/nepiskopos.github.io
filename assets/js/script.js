@@ -846,83 +846,213 @@ function loadProjects() {
 
     const projects = [
         {
+            category: 'AI',
             title: 'Governed Analyst Agent',
             description: 'Agent that answers business questions in natural language over a multi-tenant ClickHouse warehouse, with a semantic layer, database-enforced tenant isolation and guarded SQL. A 46-question gold-set evaluation scored 45 correct with no critical failures. Also includes a churn model with out-of-time validation.',
             url: 'https://github.com/nepiskopos/governed-analyst-agent',
             tech: ['Agentic AI', 'ClickHouse', 'Semantic Layer', 'LLM Evaluation']
         },
         {
+            category: 'AI',
             title: 'API Information-Disclosure Hunting Agent',
             description: 'Autonomous LLM agent that tests a running OWASP crAPI instance, a deliberately vulnerable API, through a reason-act-observe tool loop and reports information-disclosure flaws: verbose errors, leaked secrets and PII, cross-account data exposure and exposed internal endpoints. Hardened over 25 review passes against the live target, with 39 bugs fixed and 322 tests.',
             url: 'https://github.com/nepiskopos/api-hunting-agent',
             tech: ['AI Agents', 'Tool Calling', 'API Security', 'OWASP']
         },
         {
+            category: 'AI',
             title: 'Mackie — Agentic AI Social Media Assistant',
             description: 'LangGraph agent that plans and drafts on-brand social media posts for nonprofits, learns from voice corrections across sessions and isolates each organization\'s data with PostgreSQL row-level security. Runs on any LiteLLM model with fallback between providers. 1,000+ tests and 95% branch coverage in CI, covering prompt injection and SSRF.',
             url: 'https://github.com/nepiskopos/conversational-social-media-agent',
             tech: ['LangGraph', 'Agentic AI', 'LiteLLM', 'Chainlit']
         },
         {
-            title: 'LLM Fine-tuning with LoRA',
-            description: 'End-to-end guide and toolkit for fine-tuning and deploying a custom LLM assistant using Low-Rank Adaptation (LoRA). Covers training, evaluation, and serving the fine-tuned model behind a web interface.',
-            url: 'https://github.com/nepiskopos/llm-finetuning-with-lora',
-            tech: ['LLM Fine-tuning', 'LoRA', 'PEFT', 'Model Deployment']
-        },
-        {
+            category: 'AI',
             title: 'LangGraph PII Detector',
-            description: 'Advanced Personally Identifiable Information (PII) detector implemented in LangGraph powered by Azure OpenAI. Enterprise-grade privacy protection system with real-time detection capabilities.',
+            description: 'Agent that detects names, addresses, phone numbers, emails and other personal data in documents, built with LangGraph and Azure OpenAI GPT-4o using a graph-based flow with parallel execution. A simplified public version of a more feature-rich detector built at IBM for the National Bank of Greece.',
             url: 'https://github.com/nepiskopos/langgraph-pii-detector',
             tech: ['LangGraph', 'Azure OpenAI', 'PII Detection', 'Privacy']
         },
         {
+            category: 'AI',
             title: 'Document Summarization AI',
-            description: 'Intelligent document content summarization system built with LangGraph and Azure OpenAI. Automates document processing and information extraction for enterprise workflows.',
+            description: 'Document summarization agent built with LangGraph and Azure OpenAI GPT-4o, using a graph-based flow with parallel execution. A simplified public version of work done at IBM for the National Bank of Greece.',
             url: 'https://github.com/nepiskopos/langgraph-document-summarization',
             tech: ['LangGraph', 'Document AI', 'Summarization', 'NLP']
         },
         {
+            category: 'AI',
             title: 'Open WebUI Enhancements',
-            description: 'Custom tools, functions, and pipeline extensions for Open WebUI. Enhanced AI interface capabilities and workflow automation for improved productivity.',
+            description: 'Custom tools, functions and pipeline extensions for Open WebUI, focused on prompt engineering, RAG and experimental LLM workflows with Azure OpenAI GPT-4o. Developed at IBM for the National Bank of Greece.',
             url: 'https://github.com/nepiskopos/open-webui-enhancements',
             tech: ['Open WebUI', 'AI Tools', 'Automation', 'Productivity']
         },
         {
-            title: 'Federated Intrusion Detection (IEC 104)',
-            description: 'Intrusion detection models trained with federated learning across distributed sites, keeping data private. The Flower version is trained on a power-grid control protocol dataset (IEC 60870-5-104); a companion repository uses TensorFlow Federated. 30+ GitHub stars combined.',
-            url: 'https://github.com/nepiskopos/simple_ids_with_flwr_iec104',
-            tech: ['Federated Learning', 'Flower', 'Cybersecurity', 'Neural Networks']
+            category: 'AI',
+            title: 'LLM Fine-tuning with LoRA',
+            description: 'End-to-end pipeline for fine-tuning a Qwen3-0.6B chat assistant with LoRA and 4-bit quantization: data exploration and preparation, training with PEFT, and deployment behind a FastAPI web API in CPU and GPU Docker containers.',
+            url: 'https://github.com/nepiskopos/llm-finetuning-with-lora',
+            tech: ['LLM Fine-tuning', 'LoRA', 'PEFT', 'Model Deployment']
         },
         {
+            category: 'AI',
             title: 'Company Classification with LLMs',
             description: 'Data pipeline that queries a SQLite database, prepares and analyzes the data, fine-tunes an LLM classifier for categorizing companies, and evaluates and reports on model performance.',
             url: 'https://github.com/nepiskopos/company_classification_llm',
             tech: ['LLM', 'Fine-tuning', 'Classification', 'Data Pipeline']
         },
         {
+            category: 'AI',
             title: 'BERT Word Prediction',
-            description: 'API-based missing word predictor using BERT MLM and NLTK. Intelligent text completion with positive sentiment analysis and context awareness.',
+            description: 'API that predicts a masked word giving a sentence a positive sentiment, using BERT masked language modelling and NLTK. Packaged with Docker, with a load-balanced option of Nginx over four backends.',
             url: 'https://github.com/nepiskopos/missing-positive-word-prediction-mlm',
             tech: ['BERT', 'NLTK', 'NLP', 'Sentiment Analysis']
         },
         {
+            category: 'AI',
+            title: 'Data-to-Text Generation Models Evaluation',
+            description: 'Comparison of three natural language generation models (neural-template-gen, TGen, wiki2bio) on the E2E and WikiBio datasets, including bug fixes, porting and retraining; the TGen changes were upstreamed. Co-developed as an MSc final project.',
+            url: 'https://github.com/nepiskopos/templates_to_language_evaluation',
+            tech: ['NLG', 'PyTorch', 'TensorFlow', 'Docker']
+        },
+        {
+            category: 'AI',
+            extra: true,
+            title: 'Blocks World Automated Planning',
+            description: 'Automated planning for the Blocks World problem using A* search with a misplaced-blocks heuristic, for up to 26 blocks.',
+            url: 'https://github.com/nepiskopos/blocks-world',
+            tech: ['Automated Planning', 'A* Search', 'Python']
+        },
+        {
+            category: 'ML',
+            title: 'Federated Intrusion Detection (IEC 104)',
+            description: 'Intrusion detection neural network for a power-grid control protocol (IEC 60870-5-104), trained with federated learning using Flower, with a Dockerized aggregation server and three training clients, so that each site\'s data stays private.',
+            url: 'https://github.com/nepiskopos/simple_ids_with_flwr_iec104',
+            tech: ['Federated Learning', 'Flower', 'Cybersecurity', 'Neural Networks']
+        },
+        {
+            category: 'ML',
+            title: 'Federated Intrusion Detection (TensorFlow Federated)',
+            description: 'Intrusion detection neural network for IEC 104 traffic, trained with federated learning using TensorFlow Federated in a Docker Compose setup. The most-starred repository on my profile.',
+            url: 'https://github.com/nepiskopos/simple_ids_with_tff',
+            tech: ['Federated Learning', 'TensorFlow Federated', 'Cybersecurity', 'Docker']
+        },
+        {
+            category: 'ML',
+            title: 'Federated Intrusion Detection (DNP3)',
+            description: 'Intrusion detection neural network trained with Flower on the DNP3 Intrusion Detection Dataset, with a preprocessing notebook and a Dockerized aggregation server and three training clients.',
+            url: 'https://github.com/nepiskopos/simple_ids_with_flwr_dnp3',
+            tech: ['Federated Learning', 'Flower', 'Cybersecurity', 'DNP3']
+        },
+        {
+            category: 'ML',
             title: 'Energy Forecasting AI',
             description: 'Time-series forecasting of active power with ARIMA and Prophet, using electrical and weather data as exogenous regressors, served as an API behind an Nginx load balancer over four Docker containers.',
             url: 'https://github.com/nepiskopos/active-energy-forecast-time-series',
             tech: ['Time Series', 'ARIMA', 'Prophet', 'Forecasting']
         },
         {
+            category: 'ML',
+            title: 'News Sentiment Analysis',
+            description: 'Command-line tool that queries News API for a topic and runs sentiment analysis with a selectable analyzer: NLTK, TextBlob, spaCy or CoreNLP.',
+            url: 'https://github.com/nepiskopos/how_the_world_feels',
+            tech: ['Sentiment Analysis', 'NLP', 'NLTK', 'spaCy']
+        },
+        {
+            category: 'ML',
             title: 'Face Detection Algorithms Evaluation',
-            description: 'Comparative evaluation of deep learning-based face detection algorithms, benchmarking accuracy and performance across models for computer vision applications.',
+            description: 'Comparison of seven face detectors (OpenCV Haar cascade, OpenCV DNN, HOG with linear SVM, MMOD CNN, MTCNN, YOLOv3 and YOLOv5) on detection time and number of faces found.',
             url: 'https://github.com/nepiskopos/simple_face_detection',
             tech: ['Computer Vision', 'Deep Learning', 'Face Detection']
+        },
+        {
+            category: 'ML',
+            title: 'Face Alignment Algorithms Evaluation',
+            description: 'Comparison of three face alignment methods (OpenCV Haar cascade eye detection, dlib 5-point landmarks and YOLOv5Face keypoints) on alignment time and number of faces aligned.',
+            url: 'https://github.com/nepiskopos/simple_face_alignment',
+            tech: ['Computer Vision', 'Face Alignment', 'dlib', 'YOLOv5']
+        },
+        {
+            category: 'ML',
+            title: 'Dense vs Convolutional Neural Networks',
+            description: 'Comparison of fully connected and convolutional networks for multi-class image classification on MNIST and SVHN, measuring training time, accuracy, log-loss, precision, recall and F1.',
+            url: 'https://github.com/nepiskopos/dense-vs-cnn',
+            tech: ['Deep Learning', 'CNN', 'TensorFlow', 'Image Classification']
+        },
+        {
+            category: 'ML',
+            extra: true,
+            title: 'MNIST Neural Network Architecture Study',
+            description: 'Fully connected networks on MNIST, comparing ReLU, tanh and logistic activations across 5, 20 and 40 dense layers.',
+            url: 'https://github.com/nepiskopos/dnn-mnist-basic',
+            tech: ['Deep Learning', 'Neural Networks', 'MNIST']
+        },
+        {
+            category: 'ML',
+            extra: true,
+            title: 'SVHN CNN Early Stopping Study',
+            description: 'Convolutional networks on SVHN, measuring how early-stopping patience affects multi-class classification loss.',
+            url: 'https://github.com/nepiskopos/cnn-svhn-basic',
+            tech: ['Deep Learning', 'CNN', 'TensorFlow', 'SVHN']
+        },
+        {
+            category: 'ML',
+            extra: true,
+            title: 'California Housing Regression',
+            description: 'Comparison of Linear Regression, Ridge Regression and Neural Network regression on the California Housing dataset.',
+            url: 'https://github.com/nepiskopos/california-housing-regression',
+            tech: ['Regression', 'Machine Learning', 'Neural Networks']
+        },
+        {
+            category: 'ML',
+            extra: true,
+            title: 'Texture Classification with GLCM Features',
+            description: 'MATLAB texture classification using gray-level co-occurrence features (contrast, homogeneity, energy) with 3-NN and minimum Euclidean distance classifiers.',
+            url: 'https://github.com/nepiskopos/image-classification-textural-features',
+            tech: ['Pattern Recognition', 'MATLAB', 'Image Classification']
+        },
+        {
+            category: 'ML',
+            extra: true,
+            title: 'Image Classification with Moment Invariants',
+            description: 'MATLAB image classification using Hu moment invariants with 3-NN and minimum Euclidean distance classifiers, tested on noisy images.',
+            url: 'https://github.com/nepiskopos/image-classification-moment-invariants',
+            tech: ['Pattern Recognition', 'MATLAB', 'Image Classification']
+        },
+        {
+            category: 'Data',
+            title: 'Fake Job Posting Detection with Spark',
+            description: 'Analysis and detection of fraudulent job ads: Spark and Scala aggregations, PySpark statistics, outlier detection and n-grams, then ten classifiers compared, from Naive Bayes and boosting to a custom deep learning model.',
+            url: 'https://github.com/nepiskopos/spark-fraud-detection',
+            tech: ['Apache Spark', 'PySpark', 'Scala', 'scikit-learn']
+        },
+        {
+            category: 'Data',
+            title: 'Duplicate Question Detection with LSH',
+            description: 'Duplicate detection on Quora Question Pairs, comparing brute-force cosine and Jaccard similarity with Locality Sensitive Hashing using SimHash and MinHash.',
+            url: 'https://github.com/nepiskopos/duplicate-questions-detection-lsh',
+            tech: ['LSH', 'MinHash', 'SimHash', 'NLP']
+        },
+        {
+            category: 'Data',
+            title: 'RE-CENT Performance Data Analysis',
+            description: 'Data analysis notebooks for evaluating and comparing the systems developed in the RE-CENT project, used in the research behind the IEEE TVT paper listed under Publications.',
+            url: 'https://github.com/nepiskopos/recent-data-analysis-set-1',
+            tech: ['Data Analysis', 'pandas', 'Matplotlib', 'Evaluation']
         }
     ];
+
+    // Ordered AI, ML, Data, then anything else; unrelated and coursework-level projects sit behind the "Show more" toggle
+    const isExtraProject = project => project.extra || project.category === 'Other';
 
     projects.forEach((project, index) => {
         const projectCard = document.createElement('div');
         projectCard.className = 'project-card';
-        projectCard.style.animationDelay = `${index * 0.1}s`;
+        if (isExtraProject(project)) {
+            projectCard.classList.add('project-card-extra');
+            projectCard.hidden = true;
+        }
+        projectCard.style.animationDelay = `${(index % 12) * 0.1}s`;
 
         projectCard.innerHTML = `
             <div class="project-header">
@@ -940,6 +1070,33 @@ function loadProjects() {
         `;
 
         projectsGrid.appendChild(projectCard);
+    });
+
+    const hiddenCount = projects.filter(isExtraProject).length;
+    if (hiddenCount <= 0) return;
+
+    const toggleWrapper = document.createElement('div');
+    toggleWrapper.className = 'timeline-toggle';
+    toggleWrapper.innerHTML = `
+        <button type="button" class="btn btn-secondary" id="projects-toggle" aria-expanded="false" aria-controls="projects-grid">
+            <span class="timeline-toggle-label">Show ${hiddenCount} more</span>
+            <i class="fas fa-chevron-down" aria-hidden="true"></i>
+        </button>
+    `;
+    projectsGrid.after(toggleWrapper);
+
+    const toggleButton = toggleWrapper.querySelector('button');
+    toggleButton.addEventListener('click', () => {
+        const expanded = toggleButton.getAttribute('aria-expanded') === 'true';
+        projectsGrid.querySelectorAll('.project-card-extra').forEach(card => {
+            card.hidden = expanded;
+        });
+        toggleButton.setAttribute('aria-expanded', String(!expanded));
+        toggleButton.querySelector('.timeline-toggle-label').textContent = expanded ? `Show ${hiddenCount} more` : 'Show less';
+        toggleButton.querySelector('i').className = expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
+        if (expanded) {
+            document.getElementById('projects').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     });
 }
 
