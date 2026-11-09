@@ -795,24 +795,23 @@ function loadSkills() {
     if (!skillsGrid) return;
 
     const skillCategories = {
-        'Artificial Intelligence': [
-            'Retrieval-Augmented Generation (RAG)', 'AI Agents', 'Generative AI',
-            'Large Language Models (LLM)', 'Prompt Engineering', 'Machine Learning',
-            'Deep Learning', 'Natural Language Processing (NLP)', 'Federated Learning',
-            'Neural Networks'
+        'Generative AI & Agents': [
+            'LLMs', 'AI Agents', 'LangGraph', 'LangChain', 'RAG', 'Vector Databases', 'Prompt Engineering', 'Azure OpenAI', 'Azure AI Foundry', 'Azure AI Search', 'LLM Evaluation', 'PII Redaction', 'LoRA Fine-tuning', 'Transformers (BERT)', 'NLP (NLTK)'
         ],
-        'Technologies & Frameworks': [
-            'Python', 'LangGraph', 'LangChain', 'TensorFlow', 'PyTorch',
-            'Transformers', 'FastAPI', 'scikit-learn', 'REST APIs', 'Jupyter'
+        'ML & Data Science': [
+            'Deep Learning', 'scikit-learn', 'XGBoost', 'PyTorch', 'TensorFlow / Keras', 'AutoML', 'Federated Learning (Flower)', 'Time-series Forecasting', 'Feature Engineering', 'Statistical Inference', 'Model Validation', 'Geospatial Data (GeoPandas)'
         ],
-        'Data Science & Engineering': [
-            'Data Science', 'Data Engineering', 'SQL', 'Apache Spark', 'PySpark',
-            'Data Analysis', 'Data Visualization', 'Tableau', 'Microsoft Power BI', 'Data Mining'
+        'Data & MLOps': [
+            'Apache Spark (PySpark)', 'pandas', 'NumPy', 'Power BI', 'Azure Databricks', 'Azure Machine Learning', 'MLflow', 'ETL / ELT', 'PostgreSQL', 'ClickHouse', 'Beautiful Soup'
         ],
-        'Cloud & Infrastructure': [
-            'Azure AI Foundry', 'Azure Databricks', 'Azure AI Studio', 'Azure Functions',
-            'Microsoft Azure Machine Learning', 'Microsoft Azure', 'Docker',
-            'Containerization', 'DevOps', 'Vector Databases'
+        'Engineering & Cloud': [
+            'Python', 'SQL', 'C# / .NET', 'Java', 'Scala', 'Microsoft Azure', 'Azure Functions', 'AWS', 'FastAPI', 'REST APIs', 'Docker', 'CI/CD (Azure DevOps)', 'Git', 'Linux', 'Bash'
+        ],
+        'Security': [
+            'Prompt Injection Protection', 'API Security Testing', 'Intrusion Detection'
+        ],
+        'Client Delivery': [
+            'Scoping Workshops', 'Prototyping & Demos', 'Requirements Analysis', 'Stakeholder Management', 'User Training & Handover', 'Mentoring', 'Technical Project Management', 'EU Proposal & Technical Writing'
         ]
     };
 
@@ -821,10 +820,12 @@ function loadSkills() {
         categoryDiv.className = 'skill-category';
 
         const iconMap = {
-            'Artificial Intelligence': 'fas fa-brain',
-            'Technologies & Frameworks': 'fas fa-code',
-            'Data Science & Engineering': 'fas fa-database',
-            'Cloud & Infrastructure': 'fas fa-cloud'
+            'Generative AI & Agents': 'fas fa-brain',
+            'ML & Data Science': 'fas fa-chart-line',
+            'Data & MLOps': 'fas fa-database',
+            'Engineering & Cloud': 'fas fa-cloud',
+            'Security': 'fas fa-shield-alt',
+            'Client Delivery': 'fas fa-user-tie'
         };
 
         categoryDiv.innerHTML = `
@@ -846,19 +847,19 @@ function loadProjects() {
     const projects = [
         {
             title: 'Governed Analyst Agent',
-            description: 'Natural-language LLM analyst over a multi-tenant ClickHouse warehouse. A semantic layer makes common wrong answers structurally impossible, tenant isolation is enforced in the database, answers are grounded in guarded SQL, and a 46-item gold-set eval harness reports wrong answers before right ones. Includes a churn model with out-of-time validation.',
+            description: 'Agent that answers business questions in natural language over a multi-tenant ClickHouse warehouse, with a semantic layer, database-enforced tenant isolation and guarded SQL. A 46-question gold-set evaluation scored 45 correct with no critical failures. Also includes a churn model with out-of-time validation.',
             url: 'https://github.com/nepiskopos/governed-analyst-agent',
             tech: ['Agentic AI', 'ClickHouse', 'Semantic Layer', 'LLM Evaluation']
         },
         {
             title: 'API Information-Disclosure Hunting Agent',
-            description: 'Autonomous LLM agent that probes a running OWASP crAPI instance through a genuine reason-act-observe tool loop and reports information-disclosure findings: verbose errors, leaked secrets/PII, cross-account data exposure and exposed internal endpoints. Hardened over 25 review passes against the live target.',
+            description: 'Autonomous LLM agent that tests a running OWASP crAPI instance, a deliberately vulnerable API, through a reason-act-observe tool loop and reports information-disclosure flaws: verbose errors, leaked secrets and PII, cross-account data exposure and exposed internal endpoints. Hardened over 25 review passes against the live target, with 39 bugs fixed and 322 tests.',
             url: 'https://github.com/nepiskopos/api-hunting-agent',
             tech: ['AI Agents', 'Tool Calling', 'API Security', 'OWASP']
         },
         {
             title: 'Mackie — Agentic AI Social Media Assistant',
-            description: 'Conversational AI agent for nonprofit marketing teams, built on LangGraph with an agent-tools loop. Researches organizations via web search/scraping, drafts on-brand LinkedIn/Instagram/Facebook posts, remembers voice corrections across sessions, and tracks every post through a suggestion-to-published ledger. LLM-agnostic via LiteLLM.',
+            description: 'LangGraph agent that plans and drafts on-brand social media posts for nonprofits, learns from voice corrections across sessions and isolates each organization\'s data with PostgreSQL row-level security. Runs on any LiteLLM model with fallback between providers. 1,000+ tests and 95% branch coverage in CI, covering prompt injection and SSRF.',
             url: 'https://github.com/nepiskopos/conversational-social-media-agent',
             tech: ['LangGraph', 'Agentic AI', 'LiteLLM', 'Chainlit']
         },
@@ -888,7 +889,7 @@ function loadProjects() {
         },
         {
             title: 'Federated Intrusion Detection (IEC 104)',
-            description: 'Federated Learning-based Intrusion Detection System for industrial SCADA/IEC 104 network traffic, built with Flower. Collaborative AI model training across distributed sites while preserving data privacy.',
+            description: 'Intrusion detection models trained with federated learning across distributed sites, keeping data private. The Flower version is trained on a power-grid control protocol dataset (IEC 60870-5-104); a companion repository uses TensorFlow Federated. 30+ GitHub stars combined.',
             url: 'https://github.com/nepiskopos/simple_ids_with_flwr_iec104',
             tech: ['Federated Learning', 'Flower', 'Cybersecurity', 'Neural Networks']
         },
@@ -906,7 +907,7 @@ function loadProjects() {
         },
         {
             title: 'Energy Forecasting AI',
-            description: 'Production-ready API for active energy time series forecasting using ARIMA and Prophet models. Real-time energy consumption prediction with high accuracy.',
+            description: 'Time-series forecasting of active power with ARIMA and Prophet, using electrical and weather data as exogenous regressors, served as an API behind an Nginx load balancer over four Docker containers.',
             url: 'https://github.com/nepiskopos/active-energy-forecast-time-series',
             tech: ['Time Series', 'ARIMA', 'Prophet', 'Forecasting']
         },
@@ -949,25 +950,25 @@ function loadExperience() {
 
     const experiences = [
         {
-            title: 'Senior ML Engineer, AI Consultant & Software Developer',
+            title: 'Senior ML Engineer & AI Consultant',
             company: 'Grant Thornton Greece',
             period: 'Jan 2026 - Present',
             type: 'Full-time Role',
-            description: 'Designing and delivering Data Science, Machine Learning and LLM-powered solutions for public sector, banking and cybersecurity clients. Architecting RAG pipelines and Agentic AI workflows with Azure AI Search and vector databases, and shipping production-grade AI services and intelligent automation on Microsoft Azure.'
+            description: 'Scoped and built agentic AI and RAG solutions on Azure AI Foundry for a banking client and Greece\'s tax authority (IAPR), from business goals to production. Ran MLOps pipelines on Azure Databricks for model packaging, versioning, registration, tracking, drift monitoring, retraining and serving, and engineered PySpark ETL/ELT pipelines using the Medallion architecture.'
         },
         {
             title: 'Data and AI Driven Tax Audits',
             company: 'Grant Thornton Greece',
             period: 'Jan 2026 - Present',
             type: 'Client Project',
-            description: 'Utilizing Data Science, Machine Learning and Large Language Models to suggest targeted audits to Greece\'s Independent Authority for Public Revenue (IAPR).'
+            description: 'Co-developed ML and deep learning models for IAPR that selected high-risk businesses for audits, targeted debt collection and detected fraud networks. Deployed the models and their user interfaces as Databricks web apps through Azure DevOps CI/CD pipelines, and trained IAPR staff.'
         },
         {
             title: 'Automated Information Retrieval & Extraction for Greek Public Funding Programs',
             company: 'Grant Thornton Greece',
             period: 'Feb 2026 - Present',
             type: 'Client Project',
-            description: 'Building an information retrieval and extraction system for a banking client that crawls the websites of Greek public funding programs and uses LLMs to extract the key information from program announcements.'
+            description: 'Built an AI agent that crawled Greek funding portals for a bank\'s corporate clients and used chained LLM prompts to turn each program\'s legal PDFs into structured JSON.'
         },
         {
             title: 'FINCARE - ML-Driven Anomaly & Intrusion Detection',
@@ -977,140 +978,168 @@ function loadExperience() {
             description: 'Designed and developed data and Machine Learning driven anomaly and intrusion detection systems for cybersecurity.'
         },
         {
+            title: 'AI Consultant & Software Developer',
+            company: 'BWG Global (United States, remote)',
+            period: 'Nov 2025 - Dec 2025',
+            type: 'Freelance Contract',
+            description: 'Designed Azure AI Search indexes and indexers to improve search relevance and information retrieval. Built serverless Python applications on Azure Functions for an add-on to conference software, and advised the client\'s US-based team on choosing a technology stack that fit their long-term business goals.'
+        },
+        {
             title: 'Senior Software Engineering Consultant',
             company: 'EETAA',
             period: 'Feb 2025 - Present',
-            type: 'In-house Project',
-            description: 'Drove critical government modernization initiatives by orchestrating enterprise-scale systems migration from legacy infrastructure to cutting-edge frameworks. Redesigned operational workflows that deliver measurable efficiency gains while developing next-generation applications that serve evolving citizen needs, resulting in tangible performance improvements and significant cost savings for public sector operations.'
+            type: 'Consulting Role',
+            description: 'Developed and secured external-facing REST APIs that give third-party entities compliant access to sensitive information systems used in public tenders. Extended web applications and services to support newer and more complex tenders, refactored the services architecture to reduce system overhead, and migrated legacy services to modern frameworks.'
+        },
+        {
+            title: 'AI Engineer & AI Consultant',
+            company: 'IBM (for the National Bank of Greece)',
+            period: 'Jan 2025 - Dec 2025',
+            type: 'Full-time Role',
+            description: 'Co-built NBG-GPT (staff assistant) and Sophia (customer assistant), the National Bank of Greece\'s main LLM chatbots; Sophia now handles about 25% of customer inquiries, around 200,000 chats a month. Led development of 10+ LLM chatbots and agents with RAG on Azure AI Search, deployed as containerized Azure web apps via Azure DevOps CI/CD. Implemented LangGraph routers between agents, built PII redaction and LLM evaluation checks, and created the integration functions that became the standard for connecting NBG-GPT backends to third-party APIs. Owned use cases end-to-end on-site with business units, from scoping workshop to production within weeks.'
         },
         {
             title: 'Open Source Software Developer',
             company: 'Self-employed',
             period: 'Dec 2020 - Present',
             type: 'Ongoing',
-            description: 'Actively contribute to open-source AI/ML projects — delivering bug fixes, feature enhancements, and comprehensive documentation. Developed and maintain a portfolio of open-source projects on GitHub focused on Agentic AI, RAG, and MLOps tooling, demonstrating a commitment to sharing knowledge, code, and community collaboration.'
+            description: 'Develop and maintain a portfolio of open-source projects on GitHub focused on agentic AI, LLM systems and federated learning, and contribute bug fixes, features and documentation to open-source projects.'
         },
         {
-            title: 'AI Consultant & Software Developer',
-            company: 'BWG Global',
-            period: 'Nov 2025 - Dec 2025',
-            type: 'Freelance Contract',
-            description: 'Designed and implemented custom indexes and indexers for Azure AI Search, optimizing data retrieval procedures and enhancing search relevance for large-scale datasets. Developed and optimized serverless Python web applications with clean architecture for seamless Azure API integration and high scalability. Acted as strategic consultant on emerging technologies, providing data-driven recommendations on stack selection.'
+            title: 'Data Scientist & Technical Project Manager, R&D',
+            company: 'INLECOM',
+            period: 'Sep 2023 - Dec 2024',
+            type: 'Full-time Role',
+            description: 'Worked on Horizon Europe R&D projects. Cut the overall resource overhead of a public-transport data pipeline, including its route-tracing algorithm, by more than 75%, and wrote technical sections of successful EU funding proposals.'
         },
         {
-            title: 'Enterprise AI Banking Solutions Architect',
-            company: 'IBM',
-            period: 'Jan 2025 - Dec 2025',
-            type: 'In-house Project',
-            description: 'Lead the National Bank of Greece\'s comprehensive AI transformation by architecting and deploying intelligent automation agents that revolutionize critical banking operations. Implemented state-of-the-art AI solutions that dramatically reduce processing times, eliminate manual errors, and enhance customer experience while ensuring strict regulatory compliance and security standards.'
-        },
-        {
-            title: 'AI-Blockchain Convergence Innovation Lead',
+            title: 'AI and Distributed Ledger Convergence',
             company: 'INLECOM',
             period: 'Mar 2024 - Dec 2024',
             type: 'In-house Project',
-            description: 'Pioneered breakthrough research combining Artificial Intelligence with Blockchain technology to solve complex enterprise scalability and trust challenges. Developed practical implementation frameworks that demonstrate how distributed ledger technology addresses AI transparency, data integrity, and decentralized learning challenges, creating sustainable competitive advantages for adopting organizations.'
+            description: 'Led an in-house project that combined data science with smart contracts to reward useful contributions to machine learning research.'
         },
         {
-            title: 'CONNECTOR - EU Border Security Intelligence System',
+            title: 'CONNECTOR - Synthetic Data for Customs and Border Security',
             company: 'INLECOM',
             period: 'Apr 2024 - Dec 2024',
             type: 'Horizon Europe Project',
             gaId: 'GA ID: 101121271',
-            description: 'Engineered mission-critical synthetic data systems supporting European border security operations. Created advanced simulation environments that enable police and customs authorities to train AI systems without compromising sensitive data, directly contributing to enhanced border protection capabilities and streamlined customs operations across all EU member states.'
+            description: 'Led the generation of privacy-preserving synthetic datasets for fraud and illegal-activity detection, including the SIAP maritime vessel risk dataset published in Data in Brief.'
         },
         {
-            title: 'EMERALDS - Smart City Mobility Intelligence Platform',
+            title: 'EMERALDS - Urban Mobility Data Analytics',
             company: 'INLECOM',
             period: 'Mar 2024 - Dec 2024',
             type: 'Horizon Europe Project',
             gaId: 'GA ID: 101093051',
-            description: 'Solved complex urban mobility challenges by developing high-performance algorithms that process terabytes of transportation data in real-time. Built intelligent systems that optimize passenger flow and route planning for Utrecht and The Hague, delivering measurable improvements in commute times, reduced traffic congestion, and enhanced citizen satisfaction with public transportation services.'
+            description: 'Worked on urban mobility data pipelines and geospatial analysis for public transport passenger flow and route planning.'
         },
         {
-            title: 'CRM-geothermal - Sustainable Resource AI Platform',
+            title: 'CRM-geothermal - AI Tool for Critical Raw Materials',
             company: 'INLECOM',
             period: 'Sep 2023 - Dec 2024',
             type: 'Horizon Europe Project',
             gaId: 'GA ID: 101058163',
-            description: 'Revolutionized sustainable resource extraction by developing the innovative CRM AI Tool platform, seamlessly combining geothermal energy production with critical raw material mining. Created sophisticated Machine Learning models with Explainable AI that accurately predict lithium concentrations, supporting Europe\'s green energy transition while reducing dependency on imported raw materials and maximizing extraction efficiency.'
+            description: 'Co-designed and, as sole developer, built the AI tool for Critical Raw Materials, which estimates lithium concentration in underground brines to support exploration: explainable ML models, data pipelines and a web interface, deployed through CI/CD.'
         },
         {
-            title: 'ELECTRON - Energy Infrastructure Cyber-Defense Platform',
+            title: 'Data Scientist & Software Developer, R&D',
+            company: 'MetaMind Innovations',
+            period: 'Sep 2022 - Aug 2023',
+            type: 'Full-time Role',
+            description: 'Built a Federated Learning Security Toolkit for intrusion detection (Flower, FedTree, TensorFlow, Docker). Developed federated edge AI intrusion and anomaly detection models for EV charging stations with Greece\'s Public Power Corporation (PPC). Co-authored a survey of federated intrusion detection systems in Computer Science Review, and mentored junior engineers.'
+        },
+        {
+            title: 'ELECTRON - Energy Infrastructure Cybersecurity',
             company: 'MetaMind Innovations',
             period: 'Feb 2023 - Aug 2023',
             type: 'Horizon 2020 Project',
             gaId: 'GA ID: 101021936',
-            description: 'Safeguarded critical energy infrastructure by architecting next-generation AI-powered cybersecurity systems. Developed privacy-preserving anomaly detection using advanced Federated Learning that protects against sophisticated cyber-attacks while maintaining operational continuity, delivering enterprise-grade security solutions that ensure energy system resilience against rapidly evolving threats.'
+            description: 'Developed privacy-preserving anomaly detection with Federated Learning to protect energy infrastructure against cyber-attacks.'
         },
         {
-            title: 'DYNABIC - Enterprise Resilience AI Framework',
+            title: 'DYNABIC - Resilience of Critical Services',
             company: 'MetaMind Innovations',
             period: 'Jan 2023 - Aug 2023',
             type: 'Horizon Europe Project',
             gaId: 'GA ID: 101070455',
-            description: 'Enhanced European critical services business continuity by building intelligent cybersecurity frameworks that adapt dynamically to emerging threats. Implemented advanced AI-driven defense systems using privacy-preserving Federated Learning, ensuring organizational resilience while maintaining optimal operational efficiency during complex cyber-physical incidents.'
+            description: 'Applied privacy-preserving Federated Learning to cybersecurity for the business continuity of European critical services.'
         },
         {
-            title: 'TERMINET - Enterprise IoT Modernization Platform',
+            title: 'TERMINET - Next-Generation IoT',
             company: 'MetaMind Innovations',
             period: 'Dec 2022 - Aug 2023',
             type: 'Horizon 2020 Project',
             gaId: 'GA ID: 957406',
-            description: 'Accelerated enterprise IoT transformation by leading strategic platform migrations for next-generation architectures. Guided cross-functional teams through complex technology transitions, implementing cutting-edge Federated Learning solutions that deliver superior performance, reduced latency, and enhanced scalability for market-oriented IoT deployments with measurable ROI improvements.'
+            description: 'Implemented Federated Learning solutions for next-generation IoT deployments.'
         },
         {
-            title: 'AI4CYBER - Enterprise AI Security Ecosystem',
+            title: 'AI4CYBER - Trustworthy AI for Cybersecurity',
             company: 'MetaMind Innovations',
             period: 'Sep 2022 - Aug 2023',
             type: 'Horizon Europe Project',
             gaId: 'GA ID: 101070450',
-            description: 'Built comprehensive AI-powered cybersecurity ecosystems that protect enterprises against advanced threats. Developed trustworthy AI frameworks with demonstrable explainability and fairness, implementing privacy-preserving Federated Learning for distributed threat intelligence that maintains competitive advantage while ensuring full regulatory compliance and operational transparency.'
+            description: 'Developed privacy-preserving Federated Learning for distributed threat detection within a trustworthy AI cybersecurity framework.'
         },
         {
-            title: 'OPTIMIST - 5G Video Commerce Innovation Platform',
+            title: 'Data Scientist & Software Developer, R&D',
+            company: 'Fogus Innovations and Services',
+            period: 'May 2019 - Aug 2022',
+            type: 'Full-time Role',
+            description: 'Designed a system that optimized video streaming between nearby devices at the network edge, using caching, DASH adaptive streaming, blockchain and smart contracts, and led its performance evaluation (acknowledged in an IEEE Transactions on Vehicular Technology paper, 2024). Built a 4G (LTE) testbed with OpenAirInterface and USRP software-defined radios, ran an OpenStack private cloud, and taught ns-3 network simulation to early-stage researchers. Earlier intern (May - Aug 2018), building an in-house Android application.'
+        },
+        {
+            title: 'OPTIMIST - Personalized Video Delivery in 5G',
             company: 'Fogus Innovations',
             period: 'Jun 2021 - Jul 2022',
             type: 'Horizon 2020 Project',
             gaId: 'GA ID: 872866',
-            description: 'Pioneered personalized video content delivery in 5G networks by engineering intelligent traffic management systems. Developed revenue-generating RESTful services that enabled innovative subscription-based business models, optimizing content placement and delivery to maximize user engagement while creating substantial new monetization opportunities for telecom operators worldwide.'
+            description: 'Developed RESTful services for traffic management and content placement in personalized video delivery over 5G networks.'
         },
         {
-            title: 'INCOGNITO - Enterprise Privacy Identity Solution',
+            title: 'INCOGNITO - Privacy-Preserving Digital Identity',
             company: 'Fogus Innovations',
             period: 'Jun 2020 - Jun 2021',
             type: 'Horizon 2020 Project',
             gaId: 'GA ID: 824015',
-            description: 'Revolutionized digital identity management by creating privacy-first authentication platforms that fully comply with GDPR requirements. Designed comprehensive cross-platform solutions spanning web and mobile environments, enabling secure identity verification that builds customer trust while significantly reducing compliance risks and operational overhead for service providers.'
+            description: 'Worked on GDPR-compliant digital identity management across web and mobile platforms.'
         },
         {
-            title: 'RE-CENT - Decentralized Content Monetization Ecosystem',
+            title: 'RE-CENT - Decentralized Video Content Sharing',
             company: 'Fogus Innovations',
             period: 'May 2019 - Jan 2021',
             type: 'Greek National Project',
             gaId: 'GA ID: Τ1ΕΔΚ-03524',
-            description: 'Transformed content distribution economics by building innovative private LTE networks with intelligent edge caching. Created breakthrough peer-to-peer video sharing platforms integrated with Ethereum-based payment systems, establishing revolutionary new revenue models for content creators while reducing distribution costs and significantly improving user experience quality.'
+            description: 'Built private LTE networks with edge caching and peer-to-peer video sharing integrated with Ethereum-based payments.'
         },
         {
-            title: 'SECONDO - Strategic Cybersecurity Investment Optimizer',
+            title: 'SECONDO - Cybersecurity Investment and Cyber Insurance',
             company: 'Fogus Innovations',
             period: 'Jun 2019 - Jun 2020',
             type: 'Horizon 2020 Project',
             gaId: 'GA ID: 823997',
-            description: 'Optimized enterprise cybersecurity investments by integrating diverse assessment modules into comprehensive risk quantification platforms. Developed intelligent decision-support tools that effectively balance security effectiveness with insurance cost optimization, enabling data-driven investment strategies that maximize protection while minimizing total cost of ownership and operational disruption.'
+            description: 'Integrated assessment modules into a platform for cybersecurity investment and cyber insurance decisions, and co-authored the SECONDO paper (TrustBus 2020).'
         },
         {
-            title: 'CROSSFIRE - Mobile Network Performance Optimizer',
+            title: 'CROSSFIRE - Video Streaming over 4G and 5G',
             company: 'National & Kapodistrian University of Athens',
-            period: 'Sep 2018 - Jan 2019',
+            period: 'Sep 2018 - Dec 2018',
             type: 'FP7 People Project',
             gaId: 'GA ID: 317126',
-            description: 'Enhanced mobile network efficiency by developing innovative Android applications that optimize video streaming performance in cellular environments. Created user-centric solutions that significantly improved Quality of Experience (QoE) metrics, reducing network congestion and increasing customer satisfaction for mobile operators while maximizing spectrum utilization efficiency and network profitability.'
+            description: 'Improved video streaming quality of experience over 4G and 5G networks and built Android streaming applications.'
+        },
+        {
+            title: 'Earlier Experience',
+            company: 'Athens, Greece',
+            period: 'Sep 2016 - Aug 2018',
+            type: 'IT Specialist',
+            description: 'Deployed and customized OpenEMR (electronic health records) on a LAMP stack for an ophthalmology practice.'
         }
     ];
 
     // Only the most recent entries are shown initially; the rest sit behind a "Show more" toggle
-    const visibleCount = 7;
+    const visibleCount = 8;
 
     experiences.forEach((experience, index) => {
         const timelineItem = document.createElement('div');
@@ -1180,7 +1209,7 @@ function loadPublications() {
             date: 'July 2025',
             venue: 'Zenodo',
             url: 'https://zenodo.org/doi/10.5281/zenodo.16631284',
-            description: 'Open-access dataset release accompanying the SIAP research, published on Zenodo for reproducibility and reuse by the maritime security and financial-crime detection research community.'
+            description: 'Open-access dataset release accompanying the SIAP research, published on Zenodo for reproducibility and reuse by the maritime security and illegal-activity detection research community.'
         },
         {
             title: 'A Comprehensive Survey of Federated Intrusion Detection Systems: Techniques, Challenges and Solutions',
@@ -1199,9 +1228,9 @@ function loadPublications() {
         {
             title: 'To DASH, or Not to DASH? Optimal Video Bitrate Selection and Edge Network Caching in MEC-Empowered Slice-Enabled Networks',
             date: 'April 2024',
-            venue: 'IEEE Transactions on Vehicular Technology',
+            venue: 'IEEE Transactions on Vehicular Technology (acknowledged contributor)',
             url: 'https://doi.org/10.1109/TVT.2023.3329662',
-            description: 'Research on joint video bitrate selection and edge network caching for 5G networks. Proposes dynamic programming solutions for optimal content delivery in slice-enabled networks, improving Quality of Experience through intelligent optimization.'
+            description: 'Single-author paper by D. Xenakis on joint video bitrate selection and edge network caching in 5G networks. I am acknowledged in the paper because I carried out its experimental work: setting up the experiments, developing and running the software, and collecting and analyzing the data to identify problems in the design and the need for algorithmic optimization, and producing the final results.'
         },
         {
             title: 'SECONDO: A Platform for Cybersecurity Investments and Cyber Insurance Decisions',
