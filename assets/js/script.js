@@ -84,12 +84,25 @@ function initThemeSwitcher() {
     const themeIcon = themeToggle.querySelector('i');
 
     // Check for saved theme preference or default to light theme
-    const savedTheme = localStorage.getItem('theme');
+    // Storage can be blocked (private modes, strict settings); the theme still works for the current page
+    function readSavedTheme() {
+        try {
+            return localStorage.getItem('theme');
+        } catch (e) {
+            return null;
+        }
+    }
+
+    const savedTheme = readSavedTheme();
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
     function setTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
+        try {
+            localStorage.setItem('theme', theme);
+        } catch (e) {
+            // Not persisted
+        }
 
         // Update icon
         if (theme === 'dark') {
@@ -125,7 +138,7 @@ function initThemeSwitcher() {
 
     // Listen for system theme changes
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-        if (!localStorage.getItem('theme')) {
+        if (!readSavedTheme()) {
             setTheme(e.matches ? 'dark' : 'light');
         }
     });
@@ -136,45 +149,18 @@ function initEmailProtection() {
     const emailDisplay = document.getElementById('email-display');
     if (!emailDisplay) return;
 
-    // Obfuscated email data - multiple layers of protection
-    const emailParts = [
-        'bmVwaXNrbw==', // Base64: 'nepisko'
-        'Z21haWw=',     // Base64: 'gmail'
-        'Y29t'          // Base64: 'com'
-    ];
+    // Encoded address, decoded only after the visitor's clicks so it never reaches the page source or DOM on load
+    const encodedEmail = [52, 4, 24, 6, 5, 22, 235, 203, 245, 244, 193, 206, 194, 155, 223, 172, 167];
 
-    // Additional obfuscation with character codes
-    const charCodes = [110, 101, 112, 105, 115, 107, 111]; // 'nepisko'
-    const domainCodes = [103, 109, 97, 105, 108]; // 'gmail'
-    const tldCodes = [99, 111, 109]; // 'com'
+    function constructEmail() {
+        return encodedEmail.map((value, index) => String.fromCharCode(value ^ ((90 + index * 7) & 255))).join('');
+    }
 
     // Decoy data to confuse scrapers
     const decoys = [
         'spam@example.com', 'bot@crawler.net', 'fake@scraper.org',
         'dummy@harvester.com', 'test@robot.crawler', 'noreply@spam.com'
     ];
-
-    // Email construction function with multiple fallback methods
-    function constructEmail() {
-        try {
-            // Method 1: Try Base64 decoding
-            const user = atob(emailParts[0]);
-            const domain = atob(emailParts[1]);
-            const tld = atob(emailParts[2]);
-            return `${user}@${domain}.${tld}`;
-        } catch (e) {
-            try {
-                // Method 2: Use character codes
-                const user = String.fromCharCode(...charCodes);
-                const domain = String.fromCharCode(...domainCodes);
-                const tld = String.fromCharCode(...tldCodes);
-                return `${user}@${domain}.${tld}`;
-            } catch (e2) {
-                // Method 3: Fallback (should never reach here)
-                return 'nepisko@gmail.com';
-            }
-        }
-    }
 
     // Create hidden decoy elements to confuse scrapers
     decoys.forEach(decoy => {
@@ -185,104 +171,42 @@ function initEmailProtection() {
         document.body.appendChild(hiddenSpan);
     });
 
-    let clickCount = 0;
-    const maxClicks = 3;
-    let isRevealed = false;
-
-    // Remove any existing event listeners to prevent conflicts
-    const newEmailDisplay = emailDisplay.cloneNode(true);
-    emailDisplay.parentNode.replaceChild(newEmailDisplay, emailDisplay);
-
-    const freshEmailDisplay = document.getElementById('email-display');
-
-    freshEmailDisplay.addEventListener('click', function(e) {
+    emailDisplay.addEventListener('click', function(e) {
         e.preventDefault();
-        e.stopPropagation();
 
-        // If already revealed, copy to clipboard
-        if (isRevealed) {
-            const email = constructEmail();
+        // Scripted clicks from crawlers are ignored; the address is only decoded for a real visitor action
+        if (!e.isTrusted) return;
 
+        const email = constructEmail();
+
+        const wrapper = document.createElement('span');
+        wrapper.className = 'contact-email';
+
+        const link = document.createElement('a');
+        link.className = 'contact-email-link';
+        link.href = `mailto:${email}`;
+        link.textContent = email;
+
+        const copyButton = document.createElement('button');
+        copyButton.type = 'button';
+        copyButton.className = 'contact-email-copy';
+        copyButton.textContent = 'Copy';
+        copyButton.setAttribute('aria-label', 'Copy email address');
+        copyButton.addEventListener('click', function() {
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(email).then(() => {
-                    showNotification('Email copied to clipboard! 📧', 'success');
+                    showNotification('Email copied to clipboard!', 'success');
                 }).catch(() => {
                     fallbackCopy(email);
                 });
             } else {
                 fallbackCopy(email);
             }
-            return;
-        }
+        });
 
-        clickCount++;
-
-        if (clickCount >= maxClicks) {
-            try {
-                // Construct email using obfuscated data
-                const email = constructEmail();
-
-                // Display the email permanently
-            this.textContent = email;
-            this.style.userSelect = 'text';
-            this.style.webkitUserSelect = 'text';
-            this.style.mozUserSelect = 'text';
-            this.style.msUserSelect = 'text';
-            this.style.cursor = 'text';
-                this.style.color = 'var(--accent-primary)';
-                this.style.fontWeight = 'bold';
-
-                // Set revealed state
-                isRevealed = true;
-                this.setAttribute('data-revealed', 'true');
-
-            // Copy to clipboard
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(email).then(() => {
-                        showNotification('Email copied to clipboard! 📧', 'success');
-                }).catch(() => {
-                    fallbackCopy(email);
-                });
-            } else {
-                fallbackCopy(email);
-            }
-
-                // Email stays revealed until page refresh - no timer
-
-            } catch (error) {
-
-                this.textContent = 'Error revealing email. Please try again.';
-            setTimeout(() => {
-                this.textContent = 'Click to reveal';
-                clickCount = 0;
-                    isRevealed = false;
-                    this.removeAttribute('data-revealed');
-                }, 2000);
-            }
-        } else {
-            // Show progress
-            const remaining = maxClicks - clickCount;
-            this.textContent = `Click ${remaining} more time${remaining > 1 ? 's' : ''} to reveal`;
-            this.style.color = 'var(--accent-primary)';
-
-            setTimeout(() => {
-                if (!isRevealed) {
-                this.textContent = 'Click to reveal';
-                this.style.color = '';
-                }
-            }, 1500);
-        }
-    });
-
-    // Simple hover effect
-    freshEmailDisplay.addEventListener('mouseenter', function() {
-        if (!isRevealed) {
-            this.style.textDecoration = 'underline';
-        }
-    });
-
-    freshEmailDisplay.addEventListener('mouseleave', function() {
-        this.style.textDecoration = '';
+        wrapper.append(link, copyButton);
+        this.replaceWith(wrapper);
+        link.focus();
     });
 }
 
@@ -699,14 +623,6 @@ document.addEventListener('keydown', function(e) {
             mobileMenu.classList.remove('active');
         }
     }
-
-    // Space/Enter to reveal email
-    if (e.key === ' ' || e.key === 'Enter') {
-        const emailDisplay = document.getElementById('email-display');
-        if (emailDisplay && document.activeElement === emailDisplay) {
-            emailDisplay.click();
-        }
-    }
 });
 
 // Add focus management for accessibility
@@ -896,32 +812,10 @@ function loadProjects() {
         },
         {
             category: 'AI',
-            title: 'Company Classification with LLMs',
-            description: 'Data pipeline that queries a SQLite database, prepares and analyzes the data, fine-tunes an LLM classifier for categorizing companies, and evaluates and reports on model performance.',
-            url: 'https://github.com/nepiskopos/company_classification_llm',
-            tech: ['LLM', 'Fine-tuning', 'Classification', 'Data Pipeline']
-        },
-        {
-            category: 'AI',
             title: 'BERT Word Prediction',
             description: 'API that predicts a masked word giving a sentence a positive sentiment, using BERT masked language modelling and NLTK. Packaged with Docker, with a load-balanced option of Nginx over four backends.',
             url: 'https://github.com/nepiskopos/missing-positive-word-prediction-mlm',
             tech: ['BERT', 'NLTK', 'NLP', 'Sentiment Analysis']
-        },
-        {
-            category: 'AI',
-            title: 'Data-to-Text Generation Models Evaluation',
-            description: 'Comparison of three natural language generation models (neural-template-gen, TGen, wiki2bio) on the E2E and WikiBio datasets, including bug fixes, porting and retraining; the TGen changes were upstreamed. Co-developed as an MSc final project.',
-            url: 'https://github.com/nepiskopos/templates_to_language_evaluation',
-            tech: ['NLG', 'PyTorch', 'TensorFlow', 'Docker']
-        },
-        {
-            category: 'AI',
-            extra: true,
-            title: 'Blocks World Automated Planning',
-            description: 'Automated planning for the Blocks World problem using A* search with a misplaced-blocks heuristic, for up to 26 blocks.',
-            url: 'https://github.com/nepiskopos/blocks-world',
-            tech: ['Automated Planning', 'A* Search', 'Python']
         },
         {
             category: 'ML',
@@ -939,17 +833,45 @@ function loadProjects() {
         },
         {
             category: 'ML',
-            title: 'Federated Intrusion Detection (DNP3)',
-            description: 'Intrusion detection neural network trained with Flower on the DNP3 Intrusion Detection Dataset, with a preprocessing notebook and a Dockerized aggregation server and three training clients.',
-            url: 'https://github.com/nepiskopos/simple_ids_with_flwr_dnp3',
-            tech: ['Federated Learning', 'Flower', 'Cybersecurity', 'DNP3']
-        },
-        {
-            category: 'ML',
             title: 'Energy Forecasting AI',
             description: 'Time-series forecasting of active power with ARIMA and Prophet, using electrical and weather data as exogenous regressors, served as an API behind an Nginx load balancer over four Docker containers.',
             url: 'https://github.com/nepiskopos/active-energy-forecast-time-series',
             tech: ['Time Series', 'ARIMA', 'Prophet', 'Forecasting']
+        },
+        {
+            category: 'Data',
+            title: 'Fake Job Posting Detection with Spark',
+            description: 'Analysis and detection of fraudulent job ads: Spark and Scala aggregations, PySpark statistics, outlier detection and n-grams, then ten classifiers compared, from Naive Bayes and boosting to a custom deep learning model.',
+            url: 'https://github.com/nepiskopos/spark-fraud-detection',
+            tech: ['Apache Spark', 'PySpark', 'Scala', 'scikit-learn']
+        },
+        {
+            category: 'AI',
+            title: 'Company Classification with LLMs',
+            description: 'Data pipeline that queries a SQLite database, prepares and analyzes the data, fine-tunes an LLM classifier for categorizing companies, and evaluates and reports on model performance.',
+            url: 'https://github.com/nepiskopos/company_classification_llm',
+            tech: ['LLM', 'Fine-tuning', 'Classification', 'Data Pipeline']
+        },
+        {
+            category: 'AI',
+            title: 'Data-to-Text Generation Models Evaluation',
+            description: 'Comparison of three natural language generation models (neural-template-gen, TGen, wiki2bio) on the E2E and WikiBio datasets, including bug fixes, porting and retraining; the TGen changes were upstreamed. Co-developed as an MSc final project.',
+            url: 'https://github.com/nepiskopos/templates_to_language_evaluation',
+            tech: ['NLG', 'PyTorch', 'TensorFlow', 'Docker']
+        },
+        {
+            category: 'AI',
+            title: 'Blocks World Automated Planning',
+            description: 'Automated planning for the Blocks World problem using A* search with a misplaced-blocks heuristic, for up to 26 blocks.',
+            url: 'https://github.com/nepiskopos/blocks-world',
+            tech: ['Automated Planning', 'A* Search', 'Python']
+        },
+        {
+            category: 'ML',
+            title: 'Federated Intrusion Detection (DNP3)',
+            description: 'Intrusion detection neural network trained with Flower on the DNP3 Intrusion Detection Dataset, with a preprocessing notebook and a Dockerized aggregation server and three training clients.',
+            url: 'https://github.com/nepiskopos/simple_ids_with_flwr_dnp3',
+            tech: ['Federated Learning', 'Flower', 'Cybersecurity', 'DNP3']
         },
         {
             category: 'ML',
@@ -981,7 +903,6 @@ function loadProjects() {
         },
         {
             category: 'ML',
-            extra: true,
             title: 'MNIST Neural Network Architecture Study',
             description: 'Fully connected networks on MNIST, comparing ReLU, tanh and logistic activations across 5, 20 and 40 dense layers.',
             url: 'https://github.com/nepiskopos/dnn-mnist-basic',
@@ -989,7 +910,6 @@ function loadProjects() {
         },
         {
             category: 'ML',
-            extra: true,
             title: 'SVHN CNN Early Stopping Study',
             description: 'Convolutional networks on SVHN, measuring how early-stopping patience affects multi-class classification loss.',
             url: 'https://github.com/nepiskopos/cnn-svhn-basic',
@@ -997,7 +917,6 @@ function loadProjects() {
         },
         {
             category: 'ML',
-            extra: true,
             title: 'California Housing Regression',
             description: 'Comparison of Linear Regression, Ridge Regression and Neural Network regression on the California Housing dataset.',
             url: 'https://github.com/nepiskopos/california-housing-regression',
@@ -1005,7 +924,6 @@ function loadProjects() {
         },
         {
             category: 'ML',
-            extra: true,
             title: 'Texture Classification with GLCM Features',
             description: 'MATLAB texture classification using gray-level co-occurrence features (contrast, homogeneity, energy) with 3-NN and minimum Euclidean distance classifiers.',
             url: 'https://github.com/nepiskopos/image-classification-textural-features',
@@ -1013,18 +931,10 @@ function loadProjects() {
         },
         {
             category: 'ML',
-            extra: true,
             title: 'Image Classification with Moment Invariants',
             description: 'MATLAB image classification using Hu moment invariants with 3-NN and minimum Euclidean distance classifiers, tested on noisy images.',
             url: 'https://github.com/nepiskopos/image-classification-moment-invariants',
             tech: ['Pattern Recognition', 'MATLAB', 'Image Classification']
-        },
-        {
-            category: 'Data',
-            title: 'Fake Job Posting Detection with Spark',
-            description: 'Analysis and detection of fraudulent job ads: Spark and Scala aggregations, PySpark statistics, outlier detection and n-grams, then ten classifiers compared, from Naive Bayes and boosting to a custom deep learning model.',
-            url: 'https://github.com/nepiskopos/spark-fraud-detection',
-            tech: ['Apache Spark', 'PySpark', 'Scala', 'scikit-learn']
         },
         {
             category: 'Data',
@@ -1042,17 +952,18 @@ function loadProjects() {
         }
     ];
 
-    // Ordered AI, ML, Data, then anything else; unrelated and coursework-level projects sit behind the "Show more" toggle
-    const isExtraProject = project => project.extra || project.category === 'Other';
+    // The first 12 are chosen for AI Engineer roles, then ML Engineer and Data Scientist roles (each block ordered AI, ML, Data);
+    // the rest sit behind the "Show more" toggle
+    const visibleProjectCount = 12;
 
     projects.forEach((project, index) => {
         const projectCard = document.createElement('div');
         projectCard.className = 'project-card';
-        if (isExtraProject(project)) {
+        if (index >= visibleProjectCount) {
             projectCard.classList.add('project-card-extra');
             projectCard.hidden = true;
         }
-        projectCard.style.animationDelay = `${(index % 12) * 0.1}s`;
+        projectCard.style.animationDelay = `${(index % visibleProjectCount) * 0.1}s`;
 
         projectCard.innerHTML = `
             <div class="project-header">
@@ -1072,7 +983,7 @@ function loadProjects() {
         projectsGrid.appendChild(projectCard);
     });
 
-    const hiddenCount = projects.filter(isExtraProject).length;
+    const hiddenCount = projects.length - visibleProjectCount;
     if (hiddenCount <= 0) return;
 
     const toggleWrapper = document.createElement('div');
@@ -1102,83 +1013,81 @@ function loadProjects() {
 
 // Load Experience Timeline from Work_Projects.txt
 function loadExperience() {
-    const timeline = document.getElementById('experience-timeline');
-    if (!timeline) return;
-
-    const experiences = [
+    const professionalProjects = [
         {
-            title: 'Senior ML Engineer & AI Consultant',
-            company: 'Grant Thornton Greece',
+            title: 'Agentic AI and RAG Solutions',
+            company: 'Through Grant Thornton Greece',
             period: 'Jan 2026 - Present',
-            type: 'Full-time Role',
-            description: 'Scoped and built agentic AI and RAG solutions on Azure AI Foundry for a banking client and Greece\'s tax authority (IAPR), from business goals to production. Ran MLOps pipelines on Azure Databricks for model packaging, versioning, registration, tracking, drift monitoring, retraining and serving, and engineered PySpark ETL/ELT pipelines using the Medallion architecture.'
+            type: 'Client Project',
+            description: 'Scoped and built agentic AI and RAG solutions on Azure AI Foundry for a banking client and Greece\'s tax authority (IAPR), from business goals to production.'
         },
         {
             title: 'Data and AI Driven Tax Audits',
-            company: 'Grant Thornton Greece',
+            company: 'Through Grant Thornton Greece',
             period: 'Jan 2026 - Present',
             type: 'Client Project',
-            description: 'Co-developed ML and deep learning models for IAPR that selected high-risk businesses for audits, targeted debt collection and detected fraud networks. Deployed the models and their user interfaces as Databricks web apps through Azure DevOps CI/CD pipelines, and trained IAPR staff.'
+            description: 'Co-developed ML and deep learning models for Greece\'s tax authority (IAPR) that selected high-risk businesses for audits, targeted debt collection and detected fraud networks. Deployed the models and their user interfaces as Databricks web apps through Azure DevOps CI/CD pipelines, and trained IAPR staff.'
         },
         {
             title: 'Automated Information Retrieval & Extraction for Greek Public Funding Programs',
-            company: 'Grant Thornton Greece',
+            company: 'Through Grant Thornton Greece',
             period: 'Feb 2026 - Present',
             type: 'Client Project',
             description: 'Built an AI agent that crawled Greek funding portals for a bank\'s corporate clients and used chained LLM prompts to turn each program\'s legal PDFs into structured JSON.'
         },
         {
+            title: 'MLOps and Data Engineering on Azure Databricks',
+            company: 'Through Grant Thornton Greece',
+            period: 'Jan 2026 - Present',
+            type: 'Client Project',
+            description: 'Ran MLOps pipelines on Azure Databricks for model packaging, versioning, registration, tracking, drift monitoring, retraining and serving, and engineered PySpark ETL/ELT pipelines using the Medallion architecture.'
+        },
+        {
             title: 'FINCARE - ML-Driven Anomaly & Intrusion Detection',
-            company: 'Grant Thornton Greece',
+            company: 'Through Grant Thornton Greece',
             period: 'Jan 2026 - Jun 2026',
             type: 'Cybersecurity Project',
             description: 'Designed and developed data and Machine Learning driven anomaly and intrusion detection systems for cybersecurity.'
         },
         {
-            title: 'AI Consultant & Software Developer',
-            company: 'BWG Global (United States, remote)',
+            title: 'Azure AI Search and Conference Software Add-on',
+            company: 'Through BWG Global',
             period: 'Nov 2025 - Dec 2025',
-            type: 'Freelance Contract',
-            description: 'Designed Azure AI Search indexes and indexers to improve search relevance and information retrieval. Built serverless Python applications on Azure Functions for an add-on to conference software, and advised the client\'s US-based team on choosing a technology stack that fit their long-term business goals.'
+            type: 'Freelance Project',
+            description: 'Designed Azure AI Search indexes and indexers to improve search relevance and information retrieval, built serverless Python applications on Azure Functions for an add-on to conference software, and advised the client\'s US-based team on choosing a technology stack that fit their long-term business goals.'
         },
         {
-            title: 'Senior Software Engineering Consultant',
-            company: 'EETAA',
+            title: 'Public Tender Information Systems',
+            company: 'Through EETAA',
             period: 'Feb 2025 - Present',
-            type: 'Consulting Role',
-            description: 'Developed and secured external-facing REST APIs that give third-party entities compliant access to sensitive information systems used in public tenders. Extended web applications and services to support newer and more complex tenders, refactored the services architecture to reduce system overhead, and migrated legacy services to modern frameworks.'
+            type: 'Public Sector Project',
+            description: 'Developed and secured external-facing REST APIs that give third-party entities compliant access to sensitive information systems used in public tenders, and extended web applications and services to support newer and more complex tenders. Refactored the services architecture to reduce system overhead, and migrated legacy services to modern frameworks.'
         },
         {
-            title: 'AI Engineer & AI Consultant',
-            company: 'IBM (for the National Bank of Greece)',
+            title: 'NBG-GPT and Sophia - LLM Assistants for the National Bank of Greece',
+            company: 'Through IBM',
             period: 'Jan 2025 - Dec 2025',
-            type: 'Full-time Role',
-            description: 'Co-built NBG-GPT (staff assistant) and Sophia (customer assistant), the National Bank of Greece\'s main LLM chatbots; Sophia now handles about 25% of customer inquiries, around 200,000 chats a month. Led development of 10+ LLM chatbots and agents with RAG on Azure AI Search, deployed as containerized Azure web apps via Azure DevOps CI/CD. Implemented LangGraph routers between agents, built PII redaction and LLM evaluation checks, and created the integration functions that became the standard for connecting NBG-GPT backends to third-party APIs. Owned use cases end-to-end on-site with business units, from scoping workshop to production within weeks.'
+            type: 'Client Project',
+            description: 'Co-built NBG-GPT (staff assistant) and Sophia (customer assistant), the bank\'s main LLM chatbots; Sophia now handles about 25% of customer inquiries, around 200,000 chats a month. Led development of 10+ LLM chatbots and agents with RAG on Azure AI Search, deployed as containerized Azure web apps via Azure DevOps CI/CD. Implemented LangGraph routers that sent each request to the right agent, built PII redaction and LLM evaluation checks from architecture to production, and created the integration functions that became the standard for connecting NBG-GPT backends to third-party APIs. Owned use cases end-to-end on-site with business units, from scoping workshop to production within weeks.'
         },
         {
-            title: 'Open Source Software Developer',
-            company: 'Self-employed',
-            period: 'Dec 2020 - Present',
-            type: 'Ongoing',
-            description: 'Develop and maintain a portfolio of open-source projects on GitHub focused on agentic AI, LLM systems and federated learning, and contribute bug fixes, features and documentation to open-source projects.'
-        },
-        {
-            title: 'Data Scientist & Technical Project Manager, R&D',
-            company: 'INLECOM',
+            title: 'CRM-geothermal - AI Tool for Critical Raw Materials',
+            company: 'Through INLECOM',
             period: 'Sep 2023 - Dec 2024',
-            type: 'Full-time Role',
-            description: 'Worked on Horizon Europe R&D projects. Cut the overall resource overhead of a public-transport data pipeline, including its route-tracing algorithm, by more than 75%, and wrote technical sections of successful EU funding proposals.'
+            type: 'Horizon Europe Project',
+            gaId: 'GA ID: 101058163',
+            description: 'Co-designed and, as sole developer, built the AI tool for Critical Raw Materials, which estimates lithium concentration in underground brines to support exploration: explainable ML models, data pipelines and a web interface, deployed through CI/CD.'
         },
         {
-            title: 'AI and Distributed Ledger Convergence',
-            company: 'INLECOM',
-            period: 'Mar 2024 - Dec 2024',
-            type: 'In-house Project',
-            description: 'Led an in-house project that combined data science with smart contracts to reward useful contributions to machine learning research.'
+            title: 'Public-Transport Data Pipeline Optimization',
+            company: 'Through INLECOM',
+            period: 'Sep 2023 - Dec 2024',
+            type: 'R&D Project',
+            description: 'Cut the overall resource overhead of a public-transport data pipeline, including its route-tracing algorithm, by more than 75%.'
         },
         {
             title: 'CONNECTOR - Synthetic Data for Customs and Border Security',
-            company: 'INLECOM',
+            company: 'Through INLECOM',
             period: 'Apr 2024 - Dec 2024',
             type: 'Horizon Europe Project',
             gaId: 'GA ID: 101121271',
@@ -1186,30 +1095,36 @@ function loadExperience() {
         },
         {
             title: 'EMERALDS - Urban Mobility Data Analytics',
-            company: 'INLECOM',
+            company: 'Through INLECOM',
             period: 'Mar 2024 - Dec 2024',
             type: 'Horizon Europe Project',
             gaId: 'GA ID: 101093051',
             description: 'Worked on urban mobility data pipelines and geospatial analysis for public transport passenger flow and route planning.'
         },
         {
-            title: 'CRM-geothermal - AI Tool for Critical Raw Materials',
-            company: 'INLECOM',
-            period: 'Sep 2023 - Dec 2024',
-            type: 'Horizon Europe Project',
-            gaId: 'GA ID: 101058163',
-            description: 'Co-designed and, as sole developer, built the AI tool for Critical Raw Materials, which estimates lithium concentration in underground brines to support exploration: explainable ML models, data pipelines and a web interface, deployed through CI/CD.'
+            title: 'AI and Distributed Ledger Convergence',
+            company: 'Through INLECOM',
+            period: 'Mar 2024 - Dec 2024',
+            type: 'In-house Project',
+            description: 'Led an in-house project that combined data science with smart contracts to reward useful contributions to machine learning research.'
         },
         {
-            title: 'Data Scientist & Software Developer, R&D',
-            company: 'MetaMind Innovations',
+            title: 'Federated Learning Security Toolkit',
+            company: 'Through MetaMind Innovations',
             period: 'Sep 2022 - Aug 2023',
-            type: 'Full-time Role',
-            description: 'Built a Federated Learning Security Toolkit for intrusion detection (Flower, FedTree, TensorFlow, Docker). Developed federated edge AI intrusion and anomaly detection models for EV charging stations with Greece\'s Public Power Corporation (PPC). Co-authored a survey of federated intrusion detection systems in Computer Science Review, and mentored junior engineers.'
+            type: 'R&D Project',
+            description: 'Built a Federated Learning Security Toolkit for intrusion detection (Flower, FedTree, TensorFlow, Docker), and co-authored a survey of federated intrusion detection systems in Computer Science Review.'
+        },
+        {
+            title: 'Federated Intrusion Detection for EV Charging Stations',
+            company: 'Through MetaMind Innovations',
+            period: 'Sep 2022 - Aug 2023',
+            type: 'R&D Project',
+            description: 'Developed federated edge AI intrusion and anomaly detection models for EV charging stations with Greece\'s Public Power Corporation (PPC).'
         },
         {
             title: 'ELECTRON - Energy Infrastructure Cybersecurity',
-            company: 'MetaMind Innovations',
+            company: 'Through MetaMind Innovations',
             period: 'Feb 2023 - Aug 2023',
             type: 'Horizon 2020 Project',
             gaId: 'GA ID: 101021936',
@@ -1217,7 +1132,7 @@ function loadExperience() {
         },
         {
             title: 'DYNABIC - Resilience of Critical Services',
-            company: 'MetaMind Innovations',
+            company: 'Through MetaMind Innovations',
             period: 'Jan 2023 - Aug 2023',
             type: 'Horizon Europe Project',
             gaId: 'GA ID: 101070455',
@@ -1225,7 +1140,7 @@ function loadExperience() {
         },
         {
             title: 'TERMINET - Next-Generation IoT',
-            company: 'MetaMind Innovations',
+            company: 'Through MetaMind Innovations',
             period: 'Dec 2022 - Aug 2023',
             type: 'Horizon 2020 Project',
             gaId: 'GA ID: 957406',
@@ -1233,22 +1148,22 @@ function loadExperience() {
         },
         {
             title: 'AI4CYBER - Trustworthy AI for Cybersecurity',
-            company: 'MetaMind Innovations',
+            company: 'Through MetaMind Innovations',
             period: 'Sep 2022 - Aug 2023',
             type: 'Horizon Europe Project',
             gaId: 'GA ID: 101070450',
             description: 'Developed privacy-preserving Federated Learning for distributed threat detection within a trustworthy AI cybersecurity framework.'
         },
         {
-            title: 'Data Scientist & Software Developer, R&D',
-            company: 'Fogus Innovations and Services',
+            title: 'Edge Video Streaming Optimization',
+            company: 'Through Fogus Innovations and Services',
             period: 'May 2019 - Aug 2022',
-            type: 'Full-time Role',
-            description: 'Designed a system that optimized video streaming between nearby devices at the network edge, using caching, DASH adaptive streaming, blockchain and smart contracts, and led its performance evaluation (acknowledged in an IEEE Transactions on Vehicular Technology paper, 2024). Built a 4G (LTE) testbed with OpenAirInterface and USRP software-defined radios, ran an OpenStack private cloud, and taught ns-3 network simulation to early-stage researchers. Earlier intern (May - Aug 2018), building an in-house Android application.'
+            type: 'R&D Project',
+            description: 'Designed a system that optimized video streaming between nearby devices at the network edge, using caching, DASH adaptive streaming, blockchain and smart contracts, and led its performance evaluation (acknowledged in an IEEE Transactions on Vehicular Technology paper, 2024). Built a 4G (LTE) testbed with OpenAirInterface and USRP software-defined radios, and ran an OpenStack private cloud.'
         },
         {
             title: 'OPTIMIST - Personalized Video Delivery in 5G',
-            company: 'Fogus Innovations',
+            company: 'Through Fogus Innovations and Services',
             period: 'Jun 2021 - Jul 2022',
             type: 'Horizon 2020 Project',
             gaId: 'GA ID: 872866',
@@ -1256,7 +1171,7 @@ function loadExperience() {
         },
         {
             title: 'INCOGNITO - Privacy-Preserving Digital Identity',
-            company: 'Fogus Innovations',
+            company: 'Through Fogus Innovations and Services',
             period: 'Jun 2020 - Jun 2021',
             type: 'Horizon 2020 Project',
             gaId: 'GA ID: 824015',
@@ -1264,7 +1179,7 @@ function loadExperience() {
         },
         {
             title: 'RE-CENT - Decentralized Video Content Sharing',
-            company: 'Fogus Innovations',
+            company: 'Through Fogus Innovations and Services',
             period: 'May 2019 - Jan 2021',
             type: 'Greek National Project',
             gaId: 'GA ID: Τ1ΕΔΚ-03524',
@@ -1272,7 +1187,7 @@ function loadExperience() {
         },
         {
             title: 'SECONDO - Cybersecurity Investment and Cyber Insurance',
-            company: 'Fogus Innovations',
+            company: 'Through Fogus Innovations and Services',
             period: 'Jun 2019 - Jun 2020',
             type: 'Horizon 2020 Project',
             gaId: 'GA ID: 823997',
@@ -1280,25 +1195,30 @@ function loadExperience() {
         },
         {
             title: 'CROSSFIRE - Video Streaming over 4G and 5G',
-            company: 'National & Kapodistrian University of Athens',
+            company: 'Through National & Kapodistrian University of Athens',
             period: 'Sep 2018 - Dec 2018',
             type: 'FP7 People Project',
             gaId: 'GA ID: 317126',
             description: 'Improved video streaming quality of experience over 4G and 5G networks and built Android streaming applications.'
         },
         {
-            title: 'Earlier Experience',
-            company: 'Athens, Greece',
+            title: 'OpenEMR Electronic Health Records',
+            company: 'Through an ophthalmology practice',
             period: 'Sep 2016 - Aug 2018',
-            type: 'IT Specialist',
-            description: 'Deployed and customized OpenEMR (electronic health records) on a LAMP stack for an ophthalmology practice.'
+            type: 'IT Project',
+            description: 'Deployed and customized OpenEMR (electronic health records) on a LAMP stack.'
         }
     ];
 
-    // Only the most recent entries are shown initially; the rest sit behind a "Show more" toggle
-    const visibleCount = 8;
+    // Work history is listed by project, each naming its employer and period
+    renderTimeline('experience-timeline', professionalProjects, 8, 'experience-toggle', 'experience');
+}
 
-    experiences.forEach((experience, index) => {
+function renderTimeline(timelineId, items, visibleCount, toggleId, headingId) {
+    const timeline = document.getElementById(timelineId);
+    if (!timeline) return;
+
+    items.forEach((item, index) => {
         const timelineItem = document.createElement('div');
         timelineItem.className = 'timeline-item';
         if (index >= visibleCount) {
@@ -1310,23 +1230,23 @@ function loadExperience() {
         timelineItem.innerHTML = `
             <div class="timeline-marker"></div>
             <div class="timeline-content">
-                <h3 class="timeline-title">${experience.title}</h3>
-                <p class="timeline-company">${experience.company} • ${experience.period}</p>
-                <p class="timeline-type">${experience.type}${experience.gaId ? ` • ${experience.gaId}` : ''}</p>
-                <p class="timeline-description">${experience.description}</p>
+                <h3 class="timeline-title">${item.title}</h3>
+                <p class="timeline-company">${item.company} • ${item.period}</p>
+                <p class="timeline-type">${item.type}${item.gaId ? ` • ${item.gaId}` : ''}</p>
+                <p class="timeline-description">${item.description}</p>
             </div>
         `;
 
         timeline.appendChild(timelineItem);
     });
 
-    const hiddenCount = experiences.length - visibleCount;
+    const hiddenCount = items.length - visibleCount;
     if (hiddenCount <= 0) return;
 
     const toggleWrapper = document.createElement('div');
     toggleWrapper.className = 'timeline-toggle';
     toggleWrapper.innerHTML = `
-        <button type="button" class="btn btn-secondary" id="experience-toggle" aria-expanded="false" aria-controls="experience-timeline">
+        <button type="button" class="btn btn-secondary" id="${toggleId}" aria-expanded="false" aria-controls="${timelineId}">
             <span class="timeline-toggle-label">Show ${hiddenCount} more</span>
             <i class="fas fa-chevron-down" aria-hidden="true"></i>
         </button>
@@ -1336,14 +1256,14 @@ function loadExperience() {
     const toggleButton = toggleWrapper.querySelector('button');
     toggleButton.addEventListener('click', () => {
         const expanded = toggleButton.getAttribute('aria-expanded') === 'true';
-        timeline.querySelectorAll('.timeline-item-extra').forEach(item => {
-            item.hidden = expanded;
+        timeline.querySelectorAll('.timeline-item-extra').forEach(entry => {
+            entry.hidden = expanded;
         });
         toggleButton.setAttribute('aria-expanded', String(!expanded));
         toggleButton.querySelector('.timeline-toggle-label').textContent = expanded ? `Show ${hiddenCount} more` : 'Show less';
         toggleButton.querySelector('i').className = expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
         if (expanded) {
-            document.getElementById('experience').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.getElementById(headingId).scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     });
 }

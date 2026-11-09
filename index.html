@@ -92,6 +92,7 @@
             width: 100%;
             z-index: 1000;
             background: rgba(255, 255, 255, 0.95);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
         }
     </style>
@@ -403,7 +404,7 @@
 
             <!-- Collapsible content -->
             <div class="accordion-content" id="experience-content">
-                <div class="timeline" id="experience-timeline" aria-label="Professional experience timeline">
+                <div class="timeline" id="experience-timeline" aria-label="Professional projects timeline">
                     <!-- Timeline will be populated by JavaScript -->
                 </div>
             </div>
@@ -455,7 +456,7 @@
                         <i class="fas fa-envelope" aria-hidden="true"></i>
                         <div class="contact-details">
                             <span class="contact-label">Email</span>
-                            <button class="contact-value" id="email-display" aria-label="Click to reveal email address">Click to reveal</button>
+                            <button type="button" class="contact-value" id="email-display">Show email address</button>
                         </div>
                     </div>
                     <div class="contact-item">
